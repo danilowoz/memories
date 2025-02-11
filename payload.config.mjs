@@ -8,7 +8,12 @@ export default buildConfig({
 	editor: lexicalEditor(),
 
 	// Define and configure your collections in this array
-	collections: [],
+	collections: [
+		{
+			slug: "album",
+			fields: [{ name: "name", type: "text" }],
+		},
+	],
 
 	// Your Payload secret - should be a complex and secure string, unguessable
 	secret: process.env.PAYLOAD_SECRET || "",
