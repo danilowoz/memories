@@ -10,11 +10,17 @@
 		"format": "biome format --write"
 	},
 	"dependencies": {
+		"@payloadcms/db-postgres": "^3.22.0",
+		"@payloadcms/next": "^3.22.0",
+		"@payloadcms/richtext-lexical": "^3.22.0",
 		"@tailwindcss/postcss": "^4.0.6",
+		"graphql": "^16.10.0",
 		"next": "15.1.6",
+		"payload": "^3.22.0",
 		"postcss": "^8.5.2",
 		"react": "^19.0.0",
 		"react-dom": "^19.0.0",
+		"sharp": "^0.33.5",
 		"tailwindcss": "^4.0.6"
 	},
 	"devDependencies": {
