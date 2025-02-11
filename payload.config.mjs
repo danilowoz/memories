@@ -18,7 +18,7 @@ export default buildConfig({
 		// Postgres-specific arguments go here.
 		// `pool` is required.
 		pool: {
-			connectionString: process.env.DATABASE_URI,
+			connectionString: process.env.DATABASE_URL,
 		},
 	}),
 	// If you want to resize images, crop, set focal point, etc.
