@@ -44,6 +44,10 @@ export const Media: CollectionConfig = {
 			type: "text",
 		},
 		{
+			name: "enabled",
+			type: "checkbox",
+		},
+		{
 			name: "album",
 			type: "relationship",
 			relationTo: "album",

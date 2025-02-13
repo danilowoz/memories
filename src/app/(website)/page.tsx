@@ -8,10 +8,12 @@ export default async function Home() {
 	const payload = await getPayload({ config });
 	const { docs: album } = await payload.find({
 		collection: "album",
+		where: { enabled: { equals: true } },
 	});
 
 	const { docs: allMedia } = await payload.find({
 		collection: "media",
+		where: { enabled: { equals: true } },
 	});
 
 	const mediaMetaData = allMedia.reduce(
@@ -43,7 +45,7 @@ const Album = async ({ id }: { id: string | number }) => {
 	const payload = await getPayload({ config });
 	const { docs: media } = await payload.find({
 		collection: "media",
-		where: { album: { equals: id } },
+		where: { album: { equals: id }, enabled: { equals: true } },
 	});
 
 	const album = await payload.findByID({
@@ -58,8 +60,8 @@ const Album = async ({ id }: { id: string | number }) => {
 			</div>
 
 			{media.map((item) => (
-				<figure key={item.id} className="item w-screen min-h-screen flex px-20">
-					<div className="m-auto">
+				<figure key={item.id} className="flex">
+					<div className="m-auto px-[40px]">
 						{item.url && (
 							<img className="h-[80vh] max-w-none" src={item.url} alt="" />
 						)}

@@ -3,6 +3,10 @@
 import React from "react";
 import { cn } from "./utils";
 
+const LANDSCAPE_RATIO = 1.5;
+const PORTRAIT_RATIO = 0.66;
+const PADDING_RATIO = 0.8;
+
 export const Scroller = ({
 	children,
 	albumLength,
@@ -20,17 +24,19 @@ export const Scroller = ({
 		const controller = new AbortController();
 
 		function calcBodyHeight() {
-			const screenWidth = document.body.clientWidth;
+			const screenWidth = window.innerWidth;
+			const screenHeight = window.innerHeight;
 
-			let bodyHeight = 0;
+			let horizontalScroll = 0;
 
-			bodyHeight += albumLength * screenWidth;
-			bodyHeight += portraitLength * (window.screen.height * 0.8 * 0.76);
-			bodyHeight += landscapeLength * screenWidth;
+			const heightWithRatio = (screenHeight + 120) * PADDING_RATIO;
+			horizontalScroll += albumLength * screenWidth;
+			horizontalScroll += portraitLength * (heightWithRatio * PORTRAIT_RATIO);
+			horizontalScroll += landscapeLength * (heightWithRatio * LANDSCAPE_RATIO);
 
-			console.log(bodyHeight);
+			const ratio = horizontalScroll / screenWidth;
 
-			document.body.style.height = `${bodyHeight}px`;
+			document.body.style.height = `${screenHeight * ratio}px`;
 		}
 
 		calcBodyHeight();
@@ -43,7 +49,11 @@ export const Scroller = ({
 			"scroll",
 			(event) => {
 				if (ref.current) {
-					ref.current.scrollLeft = window.scrollY;
+					const screenWidth = window.innerWidth;
+					const screenHeight = window.innerHeight;
+					const ratio = screenWidth / screenHeight;
+
+					ref.current.scrollLeft = window.scrollY * ratio;
 				}
 			},
 			{ signal: controller.signal },

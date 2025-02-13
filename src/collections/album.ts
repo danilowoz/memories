@@ -6,7 +6,19 @@ export const Album: CollectionConfig = {
 		useAsTitle: "name",
 	},
 	fields: [
-		{ name: "name", type: "text", required: true, admin: {} },
-		{ name: "dark", type: "checkbox" },
+		{
+			name: "name",
+			type: "text",
+			required: true,
+			admin: {},
+		},
+		{
+			name: "dark",
+			type: "checkbox",
+		},
+		{
+			name: "enabled",
+			type: "checkbox",
+		},
 	],
 };
