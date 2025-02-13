@@ -1,17 +1,76 @@
 import config from "@payload-config";
 import { getPayload } from "payload";
+import "./globals.css";
+import React from "react";
+import { Scroller } from "./scroller";
 
 export default async function Home() {
 	const payload = await getPayload({ config });
-	const { docs: data } = await payload.find({
+	const { docs: album } = await payload.find({
 		collection: "album",
 	});
 
+	const { docs: allMedia } = await payload.find({
+		collection: "media",
+	});
+
+	const mediaMetaData = allMedia.reduce(
+		(acc, item) => {
+			if (item.width > item.height) {
+				acc.landscape += 1;
+			} else {
+				acc.portrait += 1;
+			}
+			return acc;
+		},
+		{ portrait: 0, landscape: 0 },
+	);
+
 	return (
-		<div>
-			{data.map((item) => {
-				return <p key={item.id}>{item.name}</p>;
+		<Scroller
+			albumLength={album.length}
+			portraitLength={mediaMetaData.portrait}
+			landscapeLength={mediaMetaData.landscape}
+		>
+			{album.map((item) => {
+				return <Album key={item.id} id={item.id} />;
 			})}
-		</div>
+		</Scroller>
 	);
 }
+
+const Album = async ({ id }: { id: string | number }) => {
+	const payload = await getPayload({ config });
+	const { docs: media } = await payload.find({
+		collection: "media",
+		where: { album: { equals: id } },
+	});
+
+	const album = await payload.findByID({
+		collection: "album",
+		id: id,
+	});
+
+	return (
+		<>
+			<div className="item min-w-screen min-h-screen flex">
+				<h2 className="m-auto">{album.name}</h2>
+			</div>
+
+			{media.map((item) => (
+				<figure key={item.id} className="item w-screen min-h-screen flex px-20">
+					<div className="m-auto">
+						{item.url && (
+							<img className="h-[80vh] max-w-none" src={item.url} alt="" />
+						)}
+
+						<figcaption>
+							<p>{item.location}</p>
+							<small>{item.date}</small>
+						</figcaption>
+					</div>
+				</figure>
+			))}
+		</>
+	);
+};
