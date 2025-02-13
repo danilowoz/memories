@@ -1,3 +1,5 @@
+import { Album } from "@/collections/album";
+import { Media } from "@/collections/media";
 import { postgresAdapter } from "@payloadcms/db-postgres";
 import { lexicalEditor } from "@payloadcms/richtext-lexical";
 import { buildConfig } from "payload";
@@ -8,12 +10,7 @@ export default buildConfig({
 	editor: lexicalEditor(),
 
 	// Define and configure your collections in this array
-	collections: [
-		{
-			slug: "album",
-			fields: [{ name: "name", type: "text" }],
-		},
-	],
+	collections: [Album, Media],
 
 	// Your Payload secret - should be a complex and secure string, unguessable
 	secret: process.env.PAYLOAD_SECRET || "",
