@@ -86,7 +86,7 @@ export const Scroller = ({
 			ref={ref}
 			className={cn(
 				"h-screen w-screen fixed inset-0",
-				"flex flex-row flex-nowrap overflow-x-auto",
+				"flex flex-row flex-nowrap overflow-hidden",
 			)}
 		>
 			{children}

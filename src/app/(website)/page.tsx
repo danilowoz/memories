@@ -4,6 +4,11 @@ import "./globals.css";
 import React from "react";
 import { Scroller } from "./scroller";
 
+const MAP_COLORS = {
+	"1": "#679668",
+	"2": "#966767",
+} as const;
+
 export default async function Home() {
 	const payload = await getPayload({ config });
 	const { docs: album } = await payload.find({
@@ -53,10 +58,42 @@ const Album = async ({ id }: { id: string | number }) => {
 		id: id,
 	});
 
+	const renderTitle = () => {
+		const leftSide = album.name.indexOf("Memories") === 0;
+
+		if (leftSide) {
+			return (
+				<>
+					<span>Memories</span>
+					<span className="opacity-40">
+						{album.name.replace("Memories", "")}
+					</span>
+				</>
+			);
+		}
+
+		return (
+			<>
+				<span className="opacity-40">{album.name.replace("Memories", "")}</span>
+				<span>Memories</span>
+			</>
+		);
+	};
+
 	return (
 		<>
-			<div className="item min-w-screen min-h-screen flex">
-				<h2 className="m-auto">{album.name}</h2>
+			<div className="item min-w-screen min-h-screen flex relative">
+				<div
+					style={{ backgroundImage: `url(${media[0].url})` }}
+					className="absolute inset-0 bg-center saturate-20"
+				/>
+				<div
+					style={{ backgroundColor: MAP_COLORS[id] }}
+					className="absolute inset-0 opacity-70"
+				/>
+				<h2 className="m-auto font-serif text-[60px] text-gray-50 mix-blend-plus-lighter">
+					{renderTitle()}
+				</h2>
 			</div>
 
 			{media.map((item) => (

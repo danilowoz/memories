@@ -1,5 +1,12 @@
 import "./globals.css";
 
+import { Instrument_Serif } from "next/font/google";
+
+const serif = Instrument_Serif({
+	weight: "400",
+	variable: "--font-serif",
+});
+
 export default function RootLayout({
 	children,
 }: Readonly<{
@@ -7,7 +14,7 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="en">
-			<body className="antialiased">{children}</body>
+			<body className={`antialiased ${serif.variable}`}>{children}</body>
 		</html>
 	);
 }
