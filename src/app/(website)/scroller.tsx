@@ -5,7 +5,7 @@ import { cn } from "./utils";
 
 const LANDSCAPE_RATIO = 1.5;
 const PORTRAIT_RATIO = 0.66;
-const PADDING_RATIO = 0.8;
+const PHOTO_SIZE_RATIO = 0.8;
 
 export const Scroller = ({
 	children,
@@ -20,28 +20,45 @@ export const Scroller = ({
 }) => {
 	const ref = React.useRef<HTMLDivElement>(null);
 
-	React.useLayoutEffect(() => {
+	React.useEffect(() => {
 		const controller = new AbortController();
 
-		function calcBodyHeight() {
+		const imageWrapper = document.querySelector(".image-wrapper");
+		if (!imageWrapper) {
+			throw new Error("`.image-wrapper` not found");
+		}
+
+		const photoPadding = Number(
+			window
+				.getComputedStyle(imageWrapper)
+				.getPropertyValue("padding-left")
+				.replace("px", ""),
+		);
+
+		function calcScrollView() {
 			const screenWidth = window.innerWidth;
 			const screenHeight = window.innerHeight;
 
-			let horizontalScroll = 0;
+			const heightWithRatio =
+				(screenHeight + photoPadding * 2) * PHOTO_SIZE_RATIO;
 
-			const heightWithRatio = (screenHeight + 120) * PADDING_RATIO;
-			horizontalScroll += albumLength * screenWidth;
-			horizontalScroll += portraitLength * (heightWithRatio * PORTRAIT_RATIO);
-			horizontalScroll += landscapeLength * (heightWithRatio * LANDSCAPE_RATIO);
+			let horizontalScrollLength = 0;
+			horizontalScrollLength += albumLength * screenWidth;
+			horizontalScrollLength +=
+				portraitLength * (heightWithRatio * PORTRAIT_RATIO);
+			horizontalScrollLength +=
+				landscapeLength * (heightWithRatio * LANDSCAPE_RATIO);
+			horizontalScrollLength += photoPadding; // extra padding, but I don't know why
 
-			const ratio = horizontalScroll / screenWidth;
+			const ratio = horizontalScrollLength / screenWidth;
+			const verticalScrollLength = screenHeight * ratio;
 
-			document.body.style.height = `${screenHeight * ratio}px`;
+			document.body.style.height = `${verticalScrollLength}px`;
 		}
 
-		calcBodyHeight();
+		calcScrollView();
 
-		window.addEventListener("resize", calcBodyHeight, {
+		window.addEventListener("resize", calcScrollView, {
 			signal: controller.signal,
 		});
 

@@ -61,14 +61,14 @@ const Album = async ({ id }: { id: string | number }) => {
 
 			{media.map((item) => (
 				<figure key={item.id} className="flex">
-					<div className="m-auto px-[40px]">
+					<div className="image-wrapper m-auto px-40">
 						{item.url && (
 							<img className="h-[80vh] max-w-none" src={item.url} alt="" />
 						)}
 
-						<figcaption>
-							<p>{item.location}</p>
-							<small>{item.date}</small>
+						<figcaption className="pt-4">
+							<p className="text-gray-900 font-semibold">{item.location}</p>
+							<small className="text-gray-600 uppercase">{item.date}</small>
 						</figcaption>
 					</div>
 				</figure>

@@ -27,5 +27,5 @@ export default buildConfig({
 	// make sure to install it and pass it to the config.
 	// This is optional - if you don't need to do these things,
 	// you don't need it!
-	sharp,
+	// sharp,
 });
