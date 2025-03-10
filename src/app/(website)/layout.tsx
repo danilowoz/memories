@@ -3,18 +3,18 @@ import "./globals.css";
 import { Instrument_Serif } from "next/font/google";
 
 const serif = Instrument_Serif({
-	weight: "400",
-	variable: "--font-serif",
+  weight: "400",
+  variable: "--font-serif",
 });
 
 export default function RootLayout({
-	children,
+  children,
 }: Readonly<{
-	children: React.ReactNode;
+  children: React.ReactNode;
 }>) {
-	return (
-		<html lang="en">
-			<body className={`antialiased ${serif.variable}`}>{children}</body>
-		</html>
-	);
+  return (
+    <html lang="en">
+      <body className={`antialiased ${serif.variable}`}>{children}</body>
+    </html>
+  );
 }
