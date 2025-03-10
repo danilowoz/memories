@@ -2,23 +2,40 @@
 
 import React from "react";
 import { cn } from "@/utils/classname";
-
-const LANDSCAPE_RATIO = 1.5;
-const PORTRAIT_RATIO = 0.66;
-const PHOTO_SIZE_RATIO = 0.8;
+import { Timeline } from "./timeline";
+import type { Memories } from "@/utils/types";
+import { PHOTO_SIZE_RATIO } from "./constants";
+import { LANDSCAPE_RATIO, PORTRAIT_RATIO } from "./constants";
 
 export const Scroller = ({
   children,
-  albumLength,
-  portraitLength,
-  landscapeLength,
+  payload,
 }: {
-  albumLength: number;
-  portraitLength: number;
-  landscapeLength: number;
+  payload: Memories;
   children: React.ReactNode;
 }) => {
+  const mediaMetaData = payload
+    .flatMap((item) => item.photos)
+    .reduce(
+      (acc, item) => {
+        if (item.width > item.height) {
+          acc.landscape += 1;
+        } else {
+          acc.portrait += 1;
+        }
+        return acc;
+      },
+      { portrait: 0, landscape: 0 },
+    );
+
+  const albumLength = payload.length;
+  const portraitLength = mediaMetaData.portrait;
+  const landscapeLength = mediaMetaData.landscape;
+
   const ref = React.useRef<HTMLDivElement>(null);
+  const [totalScrollLength, setTotalScrollLength] = React.useState<
+    number | null
+  >(null);
 
   React.useEffect(() => {
     const controller = new AbortController();
@@ -43,17 +60,27 @@ export const Scroller = ({
         (screenHeight + photoPadding * 2) * PHOTO_SIZE_RATIO;
 
       let horizontalScrollLength = 0;
+
+      // cover
       horizontalScrollLength += albumLength * screenWidth;
+
+      // portrait
       horizontalScrollLength +=
         portraitLength * (heightWithRatio * PORTRAIT_RATIO);
+
+      // landscape
       horizontalScrollLength +=
         landscapeLength * (heightWithRatio * LANDSCAPE_RATIO);
-      horizontalScrollLength += photoPadding; // extra padding, but I don't know why
+
+      // extra padding, but I don't know why
+      horizontalScrollLength += photoPadding;
 
       const ratio = horizontalScrollLength / screenWidth;
       const verticalScrollLength = screenHeight * ratio;
 
       document.body.style.height = `${verticalScrollLength}px`;
+
+      setTotalScrollLength(horizontalScrollLength);
     }
 
     calcScrollView();
@@ -90,6 +117,8 @@ export const Scroller = ({
       )}
     >
       {children}
+
+      <Timeline payload={payload} totalScrollLength={totalScrollLength} />
     </div>
   );
 };

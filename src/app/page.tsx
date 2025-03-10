@@ -10,26 +10,8 @@ const MAP_COLORS = {
 } as const;
 
 export default async function Home() {
-  const allMedias = payload.flatMap((item) => item.photos);
-
-  const mediaMetaData = allMedias.reduce(
-    (acc, item) => {
-      if (item.width > item.height) {
-        acc.landscape += 1;
-      } else {
-        acc.portrait += 1;
-      }
-      return acc;
-    },
-    { portrait: 0, landscape: 0 },
-  );
-
   return (
-    <Scroller
-      albumLength={payload.length}
-      portraitLength={mediaMetaData.portrait}
-      landscapeLength={mediaMetaData.landscape}
-    >
+    <Scroller payload={payload}>
       {payload.map((item) => {
         return (
           <Album
@@ -40,8 +22,6 @@ export default async function Home() {
           />
         );
       })}
-
-      <Timeline payload={payload} />
     </Scroller>
   );
 }
