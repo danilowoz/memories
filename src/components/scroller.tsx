@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { cn } from "./utils";
+import { cn } from "@/utils/classname";
 
 const LANDSCAPE_RATIO = 1.5;
 const PORTRAIT_RATIO = 0.66;

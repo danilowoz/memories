@@ -1,4 +1,4 @@
-import "./globals.css";
+import "@/styles/globals.css";
 
 import { Instrument_Serif } from "next/font/google";
 

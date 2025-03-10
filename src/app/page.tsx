@@ -1,17 +1,8 @@
-import "./globals.css";
 import React from "react";
-import { Scroller } from "./scroller";
-import { Timeline } from "./timeline";
-import payload from "@/app/data.json";
-
-type Media = {
-  id: string | number;
-  url: string;
-  width: number;
-  height: number;
-  location: string;
-  date: string;
-};
+import { Scroller } from "../components/scroller";
+import { Timeline } from "../components/timeline";
+import payload from "@/data.json";
+import type { Photo } from "@/utils/types";
 
 const MAP_COLORS = {
   "1": "#679668",
@@ -50,7 +41,7 @@ export default async function Home() {
         );
       })}
 
-      <Timeline />
+      <Timeline payload={payload} />
     </Scroller>
   );
 }
@@ -59,7 +50,7 @@ const Album = async ({
   name,
   photos,
   id,
-}: { name: string; photos: Media[]; id: string | number }) => {
+}: { name: string; photos: Photo[]; id: string | number }) => {
   const renderTitle = () => {
     const leftSide = name.indexOf("Memories") === 0;
 
@@ -84,7 +75,9 @@ const Album = async ({
     <>
       <div className="item min-w-screen min-h-screen flex relative">
         <div
-          style={{ backgroundImage: `url(${photos[0].url})` }}
+          style={{
+            backgroundImage: `url(/media/${photos[0].filename})`,
+          }}
           className="absolute inset-0 bg-center saturate-20"
         />
         <div
@@ -99,8 +92,12 @@ const Album = async ({
       {photos.map((item) => (
         <figure key={item.id} className="flex">
           <div className="image-wrapper m-auto px-40">
-            {item.url && (
-              <img className="h-[80vh] max-w-none" src={item.url} alt="" />
+            {item.filename && (
+              <img
+                className="h-[80vh] max-w-none"
+                src={`/media/${item.filename}`}
+                alt=""
+              />
             )}
 
             <figcaption className="pt-4">
