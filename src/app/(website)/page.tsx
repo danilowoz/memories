@@ -1,8 +1,17 @@
-import config from "@payload-config";
-import { getPayload } from "payload";
 import "./globals.css";
 import React from "react";
 import { Scroller } from "./scroller";
+import { Timeline } from "./timeline";
+import payload from "@/app/data.json";
+
+type Media = {
+  id: string | number;
+  url: string;
+  width: number;
+  height: number;
+  location: string;
+  date: string;
+};
 
 const MAP_COLORS = {
   "1": "#679668",
@@ -10,18 +19,9 @@ const MAP_COLORS = {
 } as const;
 
 export default async function Home() {
-  const payload = await getPayload({ config });
-  const { docs: album } = await payload.find({
-    collection: "album",
-    where: { enabled: { equals: true } },
-  });
+  const allMedias = payload.flatMap((item) => item.photos);
 
-  const { docs: allMedia } = await payload.find({
-    collection: "media",
-    where: { enabled: { equals: true } },
-  });
-
-  const mediaMetaData = allMedia.reduce(
+  const mediaMetaData = allMedias.reduce(
     (acc, item) => {
       if (item.width > item.height) {
         acc.landscape += 1;
@@ -35,46 +35,46 @@ export default async function Home() {
 
   return (
     <Scroller
-      albumLength={album.length}
+      albumLength={payload.length}
       portraitLength={mediaMetaData.portrait}
       landscapeLength={mediaMetaData.landscape}
     >
-      {album.map((item) => {
-        return <Album key={item.id} id={item.id} />;
+      {payload.map((item) => {
+        return (
+          <Album
+            key={item.id}
+            name={item.name}
+            photos={item.photos}
+            id={item.id}
+          />
+        );
       })}
+
+      <Timeline />
     </Scroller>
   );
 }
 
-const Album = async ({ id }: { id: string | number }) => {
-  const payload = await getPayload({ config });
-  const { docs: media } = await payload.find({
-    collection: "media",
-    where: { album: { equals: id }, enabled: { equals: true } },
-  });
-
-  const album = await payload.findByID({
-    collection: "album",
-    id: id,
-  });
-
+const Album = async ({
+  name,
+  photos,
+  id,
+}: { name: string; photos: Media[]; id: string | number }) => {
   const renderTitle = () => {
-    const leftSide = album.name.indexOf("Memories") === 0;
+    const leftSide = name.indexOf("Memories") === 0;
 
     if (leftSide) {
       return (
         <>
           <span>Memories</span>
-          <span className="opacity-40">
-            {album.name.replace("Memories", "")}
-          </span>
+          <span className="opacity-40">{name.replace("Memories", "")}</span>
         </>
       );
     }
 
     return (
       <>
-        <span className="opacity-40">{album.name.replace("Memories", "")}</span>
+        <span className="opacity-40">{name.replace("Memories", "")}</span>
         <span>Memories</span>
       </>
     );
@@ -84,7 +84,7 @@ const Album = async ({ id }: { id: string | number }) => {
     <>
       <div className="item min-w-screen min-h-screen flex relative">
         <div
-          style={{ backgroundImage: `url(${media[0].url})` }}
+          style={{ backgroundImage: `url(${photos[0].url})` }}
           className="absolute inset-0 bg-center saturate-20"
         />
         <div
@@ -96,7 +96,7 @@ const Album = async ({ id }: { id: string | number }) => {
         </h2>
       </div>
 
-      {media.map((item) => (
+      {photos.map((item) => (
         <figure key={item.id} className="flex">
           <div className="image-wrapper m-auto px-40">
             {item.url && (

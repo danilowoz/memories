@@ -1,0 +1,118 @@
+[
+  {
+    "id": 2,
+    "name": "Memories By Her",
+    "dark": null,
+    "enabled": true,
+    "photos": [
+      {
+        "id": 7,
+        "date": "February, 2025",
+        "location": "Campinas, Brazil",
+        "enabled": true,
+        "album": {
+          "id": 2,
+          "name": "Memories By Her",
+          "dark": null,
+          "enabled": true,
+          "updatedAt": "2025-02-15T19:08:17.257Z",
+          "createdAt": "2025-02-11T01:26:47.227Z"
+        },
+        "updatedAt": "2025-02-13T22:13:52.068Z",
+        "createdAt": "2025-02-13T00:14:32.864Z",
+        "url": "/api/media/file/DSCF1685-1.jpg",
+        "thumbnailURL": null,
+        "filename": "DSCF1685-1.jpg",
+        "mimeType": "image/jpeg",
+        "filesize": 1133609,
+        "width": 3840,
+        "height": 2560,
+        "focalX": 50,
+        "focalY": 50
+      },
+      {
+        "id": 6,
+        "date": "February, 2025",
+        "location": "Campinas, Brazil",
+        "enabled": true,
+        "album": {
+          "id": 2,
+          "name": "Memories By Her",
+          "dark": null,
+          "enabled": true,
+          "updatedAt": "2025-02-15T19:08:17.257Z",
+          "createdAt": "2025-02-11T01:26:47.227Z"
+        },
+        "updatedAt": "2025-02-13T22:13:56.386Z",
+        "createdAt": "2025-02-13T00:05:20.953Z",
+        "url": "/api/media/file/DSCF1685.jpg",
+        "thumbnailURL": null,
+        "filename": "DSCF1685.jpg",
+        "mimeType": "image/jpeg",
+        "filesize": 1133630,
+        "width": 3840,
+        "height": 2560,
+        "focalX": 50,
+        "focalY": 50
+      }
+    ]
+  },
+  {
+    "id": 1,
+    "name": "Travel Memories ",
+    "dark": null,
+    "enabled": true,
+    "photos": [
+      {
+        "id": 5,
+        "date": "February, 2025",
+        "location": "Barra Velha, Brazil",
+        "enabled": true,
+        "album": {
+          "id": 1,
+          "name": "Travel Memories ",
+          "dark": null,
+          "enabled": true,
+          "updatedAt": "2025-02-13T23:17:25.759Z",
+          "createdAt": "2025-02-11T01:26:32.827Z"
+        },
+        "updatedAt": "2025-02-13T23:17:35.894Z",
+        "createdAt": "2025-02-13T00:04:29.289Z",
+        "url": "/api/media/file/DSCF1792.jpg",
+        "thumbnailURL": null,
+        "filename": "DSCF1792.jpg",
+        "mimeType": "image/jpeg",
+        "filesize": 2018057,
+        "width": 2560,
+        "height": 3840,
+        "focalX": 50,
+        "focalY": 50
+      },
+      {
+        "id": 4,
+        "date": "February, 2025",
+        "location": "Barra Velha, Brazil",
+        "enabled": true,
+        "album": {
+          "id": 1,
+          "name": "Travel Memories ",
+          "dark": null,
+          "enabled": true,
+          "updatedAt": "2025-02-13T23:17:25.759Z",
+          "createdAt": "2025-02-11T01:26:32.827Z"
+        },
+        "updatedAt": "2025-02-13T23:17:49.031Z",
+        "createdAt": "2025-02-13T00:03:43.579Z",
+        "url": "/api/media/file/DSCF1778.jpg",
+        "thumbnailURL": null,
+        "filename": "DSCF1778.jpg",
+        "mimeType": "image/jpeg",
+        "filesize": 1890999,
+        "width": 2592,
+        "height": 3888,
+        "focalX": 50,
+        "focalY": 50
+      }
+    ]
+  }
+]
