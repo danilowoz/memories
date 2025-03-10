@@ -104,6 +104,20 @@
         "height": 3840,
         "focalX": 50,
         "focalY": 50
+      },
+      {
+        "id": 7123,
+        "date": "February, 2025",
+        "location": "Campinas, Brazil",
+        "enabled": true,
+        "thumbnailURL": null,
+        "filename": "DSCF1685-1.jpg",
+        "mimeType": "image/jpeg",
+        "filesize": 1133609,
+        "width": 3840,
+        "height": 2560,
+        "focalX": 50,
+        "focalY": 50
       }
     ]
   }

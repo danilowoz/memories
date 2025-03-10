@@ -1,9 +1,8 @@
 "use client";
 
 import React from "react";
-import type { Memories, Memory } from "@/utils/types";
-import { LANDSCAPE_RATIO, PORTRAIT_RATIO } from "./constants";
-import { PHOTO_SIZE_RATIO } from "./constants";
+import type { Memories, Photo } from "@/utils/types";
+import { calculateScrollView, getPhotoPadding } from "@/utils/scroll";
 
 export const Timeline = ({
   payload,
@@ -17,7 +16,7 @@ export const Timeline = ({
     <div className="fixed left-0 right-0 bottom-0 m-4 flex flex-row gap-4">
       {payload.map((item) => (
         <TimelineItem
-          item={item}
+          photos={item.photos}
           key={item.id}
           totalScrollLength={totalScrollLength}
         />
@@ -27,78 +26,47 @@ export const Timeline = ({
 };
 
 const TimelineItem = ({
-  item,
+  photos,
   totalScrollLength,
-}: { item: Memory; totalScrollLength: number }) => {
+}: { photos: Photo[]; totalScrollLength: number }) => {
   const [size, setSize] = React.useState<number | null>(null);
-
-  const portraitLength = item.photos.filter(
-    (photo) => photo.width < photo.height,
-  ).length;
-  const landscapeLength = item.photos.filter(
-    (photo) => photo.width > photo.height,
-  ).length;
-
-  const albumLength = 1;
 
   React.useEffect(() => {
     const controller = new AbortController();
 
-    const imageWrapper = document.querySelector(".image-wrapper");
-    if (!imageWrapper) {
-      throw new Error("`.image-wrapper` not found");
-    }
+    function handleResize() {
+      const photoPadding = getPhotoPadding();
+      const metadata = {
+        albumLength: 1,
+        portraitLength: photos.filter((photo) => photo.width < photo.height)
+          .length,
+        landscapeLength: photos.filter((photo) => photo.width > photo.height)
+          .length,
+      };
 
-    const photoPadding = Number(
-      window
-        .getComputedStyle(imageWrapper)
-        .getPropertyValue("padding-left")
-        .replace("px", ""),
-    );
+      const { ratio } = calculateScrollView(
+        metadata,
+        photoPadding,
+        totalScrollLength,
+      );
 
-    function calcScrollView() {
-      const screenWidth = window.innerWidth;
-      const screenHeight = window.innerHeight;
-
-      const heightWithRatio =
-        (screenHeight + photoPadding * 2) * PHOTO_SIZE_RATIO;
-
-      let horizontalScrollLength = 0;
-
-      // cover
-      horizontalScrollLength += albumLength * screenWidth;
-
-      // portrait
-      horizontalScrollLength +=
-        portraitLength * (heightWithRatio * PORTRAIT_RATIO);
-
-      // landscape
-      horizontalScrollLength +=
-        landscapeLength * (heightWithRatio * LANDSCAPE_RATIO);
-
-      // extra padding, but I don't know why
-      horizontalScrollLength += photoPadding;
-
-      const ratio = (horizontalScrollLength / totalScrollLength) * 100;
       setSize(ratio);
     }
 
-    calcScrollView();
+    handleResize();
 
-    window.addEventListener("resize", calcScrollView, {
+    window.addEventListener("resize", handleResize, {
       signal: controller.signal,
     });
 
     return () => {
       controller.abort();
     };
-  }, [item, portraitLength, landscapeLength, totalScrollLength]);
+  }, [totalScrollLength, photos]);
 
   if (size === null) {
     return null;
   }
 
-  return (
-    <div className="bg-red-500 h-2" key={item.id} style={{ flexGrow: size }} />
-  );
+  return <div className="bg-red-500 h-2" style={{ flexGrow: size }} />;
 };
