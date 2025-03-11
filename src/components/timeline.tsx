@@ -14,47 +14,47 @@ export const Timeline = ({
   windowLength: number;
   windowProgress: number;
 }) => {
-  const [lengths, setLengths] = React.useState<Array<[number, number]>>(
+  const [albumSizes, setAlbumSizes] = React.useState<Array<[number, number]>>(
     new Array(payload.length).fill([0, 0]),
   );
 
-  const handleSizeCalculated = React.useCallback(
-    (index: number, ratio: number, totalScrollLength: number) => {
-      setLengths((prev) => {
+  const handleAlbumSizeCalculated = React.useCallback(
+    (albumIndex: number, flexRatio: number, albumWidth: number) => {
+      setAlbumSizes((prev) => {
         const next = [...prev];
-        next[index] = [ratio, totalScrollLength];
+        next[albumIndex] = [flexRatio, albumWidth];
         return next;
       });
     },
     [],
   );
 
-  const positions = React.useMemo(() => {
-    let cumulative = 0;
-    return lengths.map(([_, totalScrollLength]) => {
-      const start = cumulative;
-      cumulative += totalScrollLength;
-      return { start, length: totalScrollLength };
+  const albumPositions = React.useMemo(() => {
+    let horizontalOffset = 0;
+    return albumSizes.map(([_, albumWidth]) => {
+      const startOffset = horizontalOffset;
+      horizontalOffset += albumWidth;
+      return { startOffset, albumWidth };
     });
-  }, [lengths]);
+  }, [albumSizes]);
 
   return (
     <div className="fixed left-0 right-0 bottom-0 mx-6 flex flex-row gap-6 items-center h-[60px]">
-      {payload.map((item, index) => (
-        <React.Fragment key={item.id}>
+      {payload.map((album, index) => (
+        <React.Fragment key={album.id}>
           <SizeCalculator
-            photos={item.photos}
+            photos={album.photos}
             windowLength={windowLength}
-            onSizeCalculated={(ratio, totalScrollLength) =>
-              handleSizeCalculated(index, ratio, totalScrollLength)
+            onSizeCalculated={(flexRatio, albumWidth) =>
+              handleAlbumSizeCalculated(index, flexRatio, albumWidth)
             }
           />
 
           <TimelineItem
-            length={lengths[index][0]}
+            flexRatio={albumSizes[index][0]}
             windowProgress={windowProgress}
-            startPosition={positions[index].start}
-            itemLength={positions[index].length}
+            startOffset={albumPositions[index].startOffset}
+            albumWidth={albumPositions[index].albumWidth}
           />
         </React.Fragment>
       ))}
@@ -69,61 +69,58 @@ const SizeCalculator = ({
 }: {
   photos: Photo[];
   windowLength: number;
-  onSizeCalculated: (size: number, scrollLength: number) => void;
+  onSizeCalculated: (flexRatio: number, albumWidth: number) => void;
 }) => {
-  const [ratio, totalScrollLength] = useCalculateSectionLength(
+  const [flexRatio, albumWidth] = useCalculateSectionLength(
     windowLength,
     photos,
   );
 
   React.useEffect(() => {
-    onSizeCalculated(ratio, totalScrollLength);
-  }, [ratio, totalScrollLength]);
+    onSizeCalculated(flexRatio, albumWidth);
+  }, [flexRatio, albumWidth]);
 
   return null;
 };
 
 const TimelineItem = ({
-  length,
+  flexRatio,
   windowProgress,
-  startPosition,
-  itemLength,
+  startOffset,
+  albumWidth,
 }: {
-  length: number;
+  flexRatio: number;
   windowProgress: number;
-  startPosition: number;
-  itemLength: number;
+  startOffset: number;
+  albumWidth: number;
 }) => {
-  const itemProgress = windowProgress - startPosition;
-  const relativeProgress = Math.max(
+  const progressOffset = windowProgress - startOffset + window.innerWidth;
+  const progressPercentage = Math.max(
     0,
-    Math.min(100, (itemProgress / itemLength) * 100),
+    Math.min(100, (progressOffset / albumWidth) * 100),
   );
 
   return (
     <motion.div
-      className="h-2 rounded-full bg-gray-400/10 relative"
+      className="h-2 rounded-full bg-gray-400/10 relative overflow-hidden"
       style={{
-        flexGrow: length,
+        flexGrow: flexRatio,
       }}
     >
       {/* Progress */}
       <motion.div
-        className="absolute inset-0 rounded-full bg-gray-400/50"
+        className="absolute w-full h-full rounded-full bg-gray-400/50"
         style={{
-          right: `${100 - relativeProgress}%`,
+          right: `${100 - progressPercentage}%`,
         }}
       />
     </motion.div>
   );
 };
 
-function useCalculateSectionLength(
-  globalScrollLength: number,
-  photos: Photo[],
-) {
-  const [ratio, setRatio] = React.useState<number>(0);
-  const [totalScrollLength, setTotalScrollLength] = React.useState<number>(0);
+function useCalculateSectionLength(windowLength: number, photos: Photo[]) {
+  const [flexRatio, setFlexRatio] = React.useState<number>(0);
+  const [albumWidth, setAlbumWidth] = React.useState<number>(0);
 
   React.useEffect(() => {
     const controller = new AbortController();
@@ -138,14 +135,14 @@ function useCalculateSectionLength(
           .length,
       };
 
-      const [totalLength, ratio] = calculateScrollViewLength(
+      const [totalWidth, ratio] = calculateScrollViewLength(
         metadata,
         photoPadding,
-        globalScrollLength,
+        windowLength,
       );
 
-      setRatio(ratio);
-      setTotalScrollLength(totalLength);
+      setFlexRatio(ratio);
+      setAlbumWidth(totalWidth);
     }
 
     handleResize();
@@ -157,9 +154,9 @@ function useCalculateSectionLength(
     return () => {
       controller.abort();
     };
-  }, [globalScrollLength, photos]);
+  }, [windowLength, photos]);
 
-  return [ratio, totalScrollLength] as const;
+  return [flexRatio, albumWidth] as const;
 }
 
 // const barAnimation = useAnimation();
