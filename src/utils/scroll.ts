@@ -49,8 +49,13 @@ export function calculateScrollView(
   horizontalScrollLength +=
     metadata.landscapeLength * (heightWithRatio * LANDSCAPE_RATIO);
 
-  // extra padding
-  horizontalScrollLength += photoPadding;
+  // extra padding between photos
+  horizontalScrollLength +=
+    photoPadding * metadata.portraitLength +
+    photoPadding * metadata.landscapeLength;
+
+  // extra padding at the end of the last photo
+  horizontalScrollLength += photoPadding * metadata.albumLength;
 
   // Calculate ratio based on whether we're calculating for timeline or scroller
   const ratio = totalScrollLength

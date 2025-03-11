@@ -2,7 +2,7 @@
   {
     "id": 1,
     "name": "Travel Memories",
-    "dark": null,
+    "dark": false,
     "photos": [
       {
         "id": 0,
@@ -95,7 +95,7 @@
   {
     "id": 2,
     "name": "Memories By Her (WIP)",
-    "dark": null,
+    "dark": false,
     "photos": [
       {
         "id": 1,
@@ -118,7 +118,7 @@
   {
     "id": 3,
     "name": "Memories in Layers",
-    "dark": null,
+    "dark": true,
     "photos": [
       {
         "id": 1,
@@ -127,6 +127,13 @@
         "filename": "IMG_2258.jpg",
         "format": "portrait",
         "cover": true
+      },
+      {
+        "id": 2,
+        "date": "05/12/2024",
+        "location": "Prague, Czech Republic",
+        "filename": "IMG_2258.jpg",
+        "format": "portrait"
       }
     ]
   }

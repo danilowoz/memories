@@ -10,7 +10,7 @@ export interface Photo {
 export interface Memory {
   id: number;
   name: string;
-  dark: boolean | null;
+  dark: boolean;
   photos: Photo[];
 }
 

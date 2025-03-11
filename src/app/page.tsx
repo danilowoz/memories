@@ -2,21 +2,25 @@ import React from "react";
 import { Scroller } from "../components/scroller";
 import { Timeline } from "../components/timeline";
 import payload from "@/data.json";
-import type { Photo } from "@/utils/types";
+import type { Memories, Photo } from "@/utils/types";
 import { MAP_COLORS } from "@/utils/colors";
+import { cn } from "@/utils/classname";
 
 export default async function Home() {
   return (
-    <Scroller payload={payload}>
+    <Scroller payload={payload as Memories}>
       {payload.map((item) => {
+        const sortedPhotos = item.photos.sort(
+          (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
+        ) as Photo[];
+
         return (
           <Album
             key={item.id}
             name={item.name}
-            photos={item.photos.sort(
-              (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
-            )}
+            photos={sortedPhotos}
             id={item.id}
+            dark={item.dark}
           />
         );
       })}
@@ -28,7 +32,8 @@ const Album = async ({
   name,
   photos,
   id,
-}: { name: string; photos: Photo[]; id: string | number }) => {
+  dark,
+}: { name: string; photos: Photo[]; id: string | number; dark: boolean }) => {
   const renderTitle = () => {
     const leftSide = name.indexOf("Memories") === 0;
 
@@ -69,8 +74,15 @@ const Album = async ({
         </h2>
       </div>
 
-      {photos.map((item) => (
-        <figure key={item.id} className="flex">
+      {photos.map((item, index) => (
+        <figure
+          key={item.id}
+          className={cn("flex", {
+            "pl-40": index === 0,
+            "pr-40": index === photos.length - 1,
+            "bg-black": dark,
+          })}
+        >
           <div className="image-wrapper m-auto px-40">
             {item.filename && (
               <img
@@ -81,8 +93,18 @@ const Album = async ({
             )}
 
             <figcaption className="pt-4">
-              <p className="text-gray-900 font-semibold">{item.location}</p>
-              <small className="text-gray-600 uppercase">
+              <p
+                className={cn("text-gray-900 font-semibold", {
+                  "text-white": dark,
+                })}
+              >
+                {item.location}
+              </p>
+              <small
+                className={cn("text-gray-600 uppercase", {
+                  "text-white opacity-50": dark,
+                })}
+              >
                 {formatDate(item.date)}
               </small>
             </figcaption>
