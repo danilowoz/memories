@@ -17,7 +17,7 @@ export const Scroller = ({
     .flatMap((item) => item.photos)
     .reduce(
       (acc, item) => {
-        if (item.width > item.height) {
+        if (item.format === "landscape") {
           acc.landscape += 1;
         } else {
           acc.portrait += 1;

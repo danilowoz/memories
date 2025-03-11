@@ -3,6 +3,7 @@ export interface Photo {
   date: string;
   location: string;
   filename: string;
+  format: "portrait" | "landscape";
   cover?: boolean;
 }
 

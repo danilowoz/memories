@@ -36,14 +36,14 @@ const Album = async ({
       return (
         <>
           <span>Memories</span>
-          <span className="opacity-40">{name.replace("Memories", "")}</span>
+          <span className="opacity-30">{name.replace("Memories", "")}</span>
         </>
       );
     }
 
     return (
       <>
-        <span className="opacity-40">{name.replace("Memories", "")}</span>
+        <span className="opacity-30">{name.replace("Memories", "")}</span>
         <span>Memories</span>
       </>
     );

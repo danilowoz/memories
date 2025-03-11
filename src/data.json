@@ -1,5 +1,98 @@
 [
   {
+    "id": 1,
+    "name": "Travel Memories",
+    "dark": null,
+    "photos": [
+      {
+        "id": 0,
+        "date": "02/01/2025",
+        "location": "Guaramirim, Brazil",
+        "filename": "DSCF1762.jpg",
+        "format": "portrait"
+      },
+      {
+        "id": 2,
+        "date": "02/01/2025",
+        "location": "Barra Velha, Brazil",
+        "filename": "DSCF1778.jpg",
+        "format": "portrait"
+      },
+      {
+        "id": 3,
+        "date": "02/01/2025",
+        "location": "Barcelona, Spain",
+        "filename": "DSCF1859.jpg",
+        "format": "portrait"
+      },
+      {
+        "id": 4,
+        "date": "02/01/2025",
+        "location": "Barcelona, Spain",
+        "filename": "DSCF1948.jpg",
+        "format": "portrait"
+      },
+      {
+        "id": 5,
+        "date": "05/25/2024",
+        "location": "Agra, India",
+        "filename": "000064.jpg",
+        "format": "landscape",
+        "cover": true
+      },
+      {
+        "id": 6,
+        "date": "04/26/2024",
+        "location": "Annapurna Base Camp, Nepal",
+        "filename": "000055.jpg",
+        "format": "portrait"
+      },
+      {
+        "id": 7,
+        "date": "10/11/2024",
+        "location": "Porto, Portugal",
+        "filename": "000045_1.jpg",
+        "format": "portrait"
+      },
+      {
+        "id": 8,
+        "date": "07/30/2023",
+        "location": "Porto, Portugal",
+        "filename": "IMG_4209.jpg",
+        "format": "portrait"
+      },
+      {
+        "id": 9,
+        "date": "06/29/2023",
+        "location": "Florianópolis, Brazil",
+        "filename": "000059.jpg",
+        "format": "portrait"
+      },
+      {
+        "id": 10,
+        "date": "03/22/2023",
+        "location": "Havana, Cuba",
+        "filename": "IMG_6590.jpg",
+        "format": "portrait"
+      },
+      {
+        "id": 11,
+        "date": "10/01/2022",
+        "location": "Istanbul, Türkiye",
+        "filename": "IMG_5791.jpg",
+        "format": "portrait"
+      },
+      {
+        "id": 12,
+        "date": "09/10/2022",
+        "location": "Kotor, Montenegro",
+        "filename": "IMG_4987.jpg",
+        "format": "portrait"
+      }
+    ]
+  },
+
+  {
     "id": 2,
     "name": "Memories By Her (WIP)",
     "dark": null,
@@ -9,96 +102,19 @@
         "date": "08/02/2025",
         "location": "Campinas, Brazil",
         "filename": "DSCF1685.jpg",
+        "format": "landscape",
         "cover": true
       },
       {
         "id": 2,
         "date": "02/03/2025",
         "location": "Porto, Portugal",
-        "filename": "IMG_6407.jpg"
+        "filename": "IMG_6407.jpg",
+        "format": "portrait"
       }
     ]
   },
-  {
-    "id": 1,
-    "name": "Travel Memories",
-    "dark": null,
-    "photos": [
-      {
-        "id": 0,
-        "date": "02/01/2025",
-        "location": "Guaramirim, Brazil",
-        "filename": "DSCF1762.jpg"
-      },
-      {
-        "id": 2,
-        "date": "02/01/2025",
-        "location": "Barra Velha, Brazil",
-        "filename": "DSCF1778.jpg"
-      },
-      {
-        "id": 3,
-        "date": "02/01/2025",
-        "location": "Barcelona, Spain",
-        "filename": "DSCF1859.jpg"
-      },
-      {
-        "id": 4,
-        "date": "02/01/2025",
-        "location": "Barcelona, Spain",
-        "filename": "DSCF1948.jpg"
-      },
-      {
-        "id": 5,
-        "date": "05/25/2024",
-        "location": "Agra, India",
-        "filename": "000064.JPG",
-        "cover": true
-      },
-      {
-        "id": 6,
-        "date": "04/26/2024",
-        "location": "Annapurna Base Camp, Nepal",
-        "filename": "000055.JPG"
-      },
-      {
-        "id": 7,
-        "date": "10/11/2024",
-        "location": "Porto, Portugal",
-        "filename": "000045_1.JPG"
-      },
-      {
-        "id": 8,
-        "date": "07/30/2023",
-        "location": "Porto, Portugal",
-        "filename": "IMG_4209.jpeg"
-      },
-      {
-        "id": 9,
-        "date": "06/29/2023",
-        "location": "Florianópolis, Brazil",
-        "filename": "000059.JPG"
-      },
-      {
-        "id": 10,
-        "date": "03/22/2023",
-        "location": "Havana, Cuba",
-        "filename": "IMG_6590.JPG"
-      },
-      {
-        "id": 11,
-        "date": "10/01/2022",
-        "location": "Istanbul, Türkiye",
-        "filename": "IMG_5791.JPG"
-      },
-      {
-        "id": 12,
-        "date": "09/10/2022",
-        "location": "Kotor, Montenegro",
-        "filename": "IMG_4987.JPG"
-      }
-    ]
-  },
+
   {
     "id": 3,
     "name": "Memories in Layers",
@@ -108,7 +124,8 @@
         "id": 1,
         "date": "05/12/2024",
         "location": "Prague, Czech Republic",
-        "filename": "IMG_2258.jpeg",
+        "filename": "IMG_2258.jpg",
+        "format": "portrait",
         "cover": true
       }
     ]
