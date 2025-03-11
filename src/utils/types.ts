@@ -2,22 +2,14 @@ export interface Photo {
   id: number;
   date: string;
   location: string;
-  enabled: boolean;
-  thumbnailURL: string | null;
   filename: string;
-  mimeType: string;
-  filesize: number;
-  width: number;
-  height: number;
-  focalX: number;
-  focalY: number;
+  cover?: boolean;
 }
 
 export interface Memory {
   id: number;
   name: string;
   dark: boolean | null;
-  enabled: boolean;
   photos: Photo[];
 }
 

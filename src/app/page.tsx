@@ -3,11 +3,7 @@ import { Scroller } from "../components/scroller";
 import { Timeline } from "../components/timeline";
 import payload from "@/data.json";
 import type { Photo } from "@/utils/types";
-
-const MAP_COLORS = {
-  "1": "#679668",
-  "2": "#966767",
-} as const;
+import { MAP_COLORS } from "@/utils/colors";
 
 export default async function Home() {
   return (
@@ -17,7 +13,9 @@ export default async function Home() {
           <Album
             key={item.id}
             name={item.name}
-            photos={item.photos}
+            photos={item.photos.sort(
+              (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
+            )}
             id={item.id}
           />
         );
@@ -51,18 +49,20 @@ const Album = async ({
     );
   };
 
+  const coverPhoto = photos.find((photo) => photo.cover);
+
   return (
     <>
       <div className="item min-w-screen min-h-screen flex relative">
         <div
           style={{
-            backgroundImage: `url(/media/${photos[0].filename})`,
+            backgroundImage: `url(/media/${coverPhoto?.filename})`,
           }}
-          className="absolute inset-0 bg-center saturate-20"
+          className="absolute inset-0 bg-center saturate-20 bg-cover"
         />
         <div
           style={{ backgroundColor: MAP_COLORS[id as keyof typeof MAP_COLORS] }}
-          className="absolute inset-0 opacity-70"
+          className="absolute inset-0 opacity-70 "
         />
         <h2 className="m-auto font-serif text-[60px] text-gray-50 mix-blend-plus-lighter">
           {renderTitle()}
@@ -76,13 +76,15 @@ const Album = async ({
               <img
                 className="h-[80vh] max-w-none"
                 src={`/media/${item.filename}`}
-                alt=""
+                alt={item.location}
               />
             )}
 
             <figcaption className="pt-4">
               <p className="text-gray-900 font-semibold">{item.location}</p>
-              <small className="text-gray-600 uppercase">{item.date}</small>
+              <small className="text-gray-600 uppercase">
+                {formatDate(item.date)}
+              </small>
             </figcaption>
           </div>
         </figure>
@@ -90,3 +92,17 @@ const Album = async ({
     </>
   );
 };
+
+function formatDate(date: string) {
+  const fullDate = new Date(date);
+
+  const month = fullDate.toLocaleDateString("en-US", {
+    month: "long",
+  });
+
+  const year = fullDate.toLocaleDateString("en-US", {
+    year: "numeric",
+  });
+
+  return `${month}, ${year}`;
+}
