@@ -4,7 +4,7 @@ import React from "react";
 import { cn } from "@/utils/classname";
 import { Timeline } from "./timeline";
 import type { Memories } from "@/utils/types";
-import { calculateScrollView, getPhotoPadding } from "@/utils/scroll";
+import { calculateScrollViewLength, getPhotoPadding } from "@/utils/scroll";
 
 export const Scroller = ({
   children,
@@ -13,27 +13,26 @@ export const Scroller = ({
   payload: Memories;
   children: React.ReactNode;
 }) => {
-  const mediaMetaData = payload
-    .flatMap((item) => item.photos)
-    .reduce(
-      (acc, item) => {
-        if (item.format === "landscape") {
-          acc.landscape += 1;
-        } else {
-          acc.portrait += 1;
-        }
-        return acc;
-      },
-      { portrait: 0, landscape: 0 },
-    );
-
   const ref = React.useRef<HTMLDivElement>(null);
-  const [totalScrollLength, setTotalScrollLength] = React.useState<
-    number | null
-  >(null);
+  const [length, setLength] = React.useState(0);
+  const [progress, setProgress] = React.useState(0);
 
   React.useEffect(() => {
     const controller = new AbortController();
+
+    const mediaMetaData = payload
+      .flatMap((item) => item.photos)
+      .reduce(
+        (acc, item) => {
+          if (item.format === "landscape") {
+            acc.landscape += 1;
+          } else {
+            acc.portrait += 1;
+          }
+          return acc;
+        },
+        { portrait: 0, landscape: 0 },
+      );
 
     function handleResize() {
       const photoPadding = getPhotoPadding();
@@ -44,16 +43,13 @@ export const Scroller = ({
         landscapeLength: mediaMetaData.landscape,
       };
 
-      const { horizontalScrollLength, ratio } = calculateScrollView(
-        metadata,
-        photoPadding,
-      );
+      const [length, ratio] = calculateScrollViewLength(metadata, photoPadding);
 
       const screenHeight = window.innerHeight;
       const verticalScrollLength = screenHeight * ratio;
       document.body.style.height = `${verticalScrollLength}px`;
 
-      setTotalScrollLength(horizontalScrollLength);
+      setLength(length);
     }
 
     handleResize();
@@ -70,6 +66,8 @@ export const Scroller = ({
           const screenHeight = window.innerHeight;
           const ratio = screenWidth / screenHeight;
 
+          setProgress(window.scrollY * ratio);
+
           ref.current.scrollLeft = window.scrollY * ratio;
         }
       },
@@ -79,7 +77,7 @@ export const Scroller = ({
     return () => {
       controller.abort();
     };
-  }, [mediaMetaData, payload]);
+  }, [payload]);
 
   return (
     <div
@@ -91,7 +89,11 @@ export const Scroller = ({
     >
       {children}
 
-      <Timeline payload={payload} totalScrollLength={totalScrollLength} />
+      <Timeline
+        payload={payload}
+        windowLength={length}
+        windowProgress={progress}
+      />
     </div>
   );
 };

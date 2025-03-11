@@ -2,37 +2,128 @@
 
 import React from "react";
 import type { Memories, Photo } from "@/utils/types";
-import { calculateScrollView, getPhotoPadding } from "@/utils/scroll";
-import { MAP_COLORS } from "@/utils/colors";
-import { motion, useAnimation } from "motion/react";
+import { calculateScrollViewLength, getPhotoPadding } from "@/utils/scroll";
+import { motion } from "motion/react";
+
 export const Timeline = ({
   payload,
-  totalScrollLength,
-}: { payload: Memories; totalScrollLength: number | null }) => {
-  if (totalScrollLength === null) {
-    return null;
-  }
+  windowLength,
+  windowProgress,
+}: {
+  payload: Memories;
+  windowLength: number;
+  windowProgress: number;
+}) => {
+  const [lengths, setLengths] = React.useState<Array<[number, number]>>(
+    new Array(payload.length).fill([0, 0]),
+  );
+
+  const handleSizeCalculated = React.useCallback(
+    (index: number, ratio: number, totalScrollLength: number) => {
+      setLengths((prev) => {
+        const next = [...prev];
+        next[index] = [ratio, totalScrollLength];
+        return next;
+      });
+    },
+    [],
+  );
+
+  const positions = React.useMemo(() => {
+    let cumulative = 0;
+    return lengths.map(([_, totalScrollLength]) => {
+      const start = cumulative;
+      cumulative += totalScrollLength;
+      return { start, length: totalScrollLength };
+    });
+  }, [lengths]);
 
   return (
-    <div className="fixed left-0 right-0 bottom-0 mx-6 flex flex-row gap-6 mix-blend-multiply items-center h-[60px]">
-      {payload.map((item) => (
-        <TimelineItem
-          photos={item.photos}
-          key={item.id}
-          totalScrollLength={totalScrollLength}
-          id={item.id}
-        />
+    <div className="fixed left-0 right-0 bottom-0 mx-6 flex flex-row gap-6 items-center h-[60px]">
+      {payload.map((item, index) => (
+        <React.Fragment key={item.id}>
+          <SizeCalculator
+            photos={item.photos}
+            windowLength={windowLength}
+            onSizeCalculated={(ratio, totalScrollLength) =>
+              handleSizeCalculated(index, ratio, totalScrollLength)
+            }
+          />
+
+          <TimelineItem
+            length={lengths[index][0]}
+            windowProgress={windowProgress}
+            startPosition={positions[index].start}
+            itemLength={positions[index].length}
+          />
+        </React.Fragment>
       ))}
     </div>
   );
 };
 
-const TimelineItem = ({
+const SizeCalculator = ({
   photos,
-  totalScrollLength,
-  id,
-}: { photos: Photo[]; totalScrollLength: number; id: number }) => {
-  const [size, setSize] = React.useState<number | null>(null);
+  windowLength,
+  onSizeCalculated,
+}: {
+  photos: Photo[];
+  windowLength: number;
+  onSizeCalculated: (size: number, scrollLength: number) => void;
+}) => {
+  const [ratio, totalScrollLength] = useCalculateSectionLength(
+    windowLength,
+    photos,
+  );
+
+  React.useEffect(() => {
+    onSizeCalculated(ratio, totalScrollLength);
+  }, [ratio, totalScrollLength]);
+
+  return null;
+};
+
+const TimelineItem = ({
+  length,
+  windowProgress,
+  startPosition,
+  itemLength,
+}: {
+  length: number;
+  windowProgress: number;
+  startPosition: number;
+  itemLength: number;
+}) => {
+  const itemProgress = windowProgress - startPosition;
+  const relativeProgress = Math.max(
+    0,
+    Math.min(100, (itemProgress / itemLength) * 100),
+  );
+
+  return (
+    <motion.div
+      className="h-2 rounded-full bg-gray-400/10 relative"
+      style={{
+        flexGrow: length,
+      }}
+    >
+      {/* Progress */}
+      <motion.div
+        className="absolute inset-0 rounded-full bg-gray-400/50"
+        style={{
+          right: `${100 - relativeProgress}%`,
+        }}
+      />
+    </motion.div>
+  );
+};
+
+function useCalculateSectionLength(
+  globalScrollLength: number,
+  photos: Photo[],
+) {
+  const [ratio, setRatio] = React.useState<number>(0);
+  const [totalScrollLength, setTotalScrollLength] = React.useState<number>(0);
 
   React.useEffect(() => {
     const controller = new AbortController();
@@ -47,13 +138,14 @@ const TimelineItem = ({
           .length,
       };
 
-      const { ratio } = calculateScrollView(
+      const [totalLength, ratio] = calculateScrollViewLength(
         metadata,
         photoPadding,
-        totalScrollLength,
+        globalScrollLength,
       );
 
-      setSize(ratio);
+      setRatio(ratio);
+      setTotalScrollLength(totalLength);
     }
 
     handleResize();
@@ -65,125 +157,80 @@ const TimelineItem = ({
     return () => {
       controller.abort();
     };
-  }, [totalScrollLength, photos]);
+  }, [globalScrollLength, photos]);
 
-  const barAnimation = useAnimation();
-  const childAnimation = useAnimation();
-
-  // React.useEffect(() => {
-  //   const controller = new AbortController();
-
-  //   document.addEventListener(
-  //     "mousemove",
-  //     (event) => {
-  //       const topOffset = window.innerHeight * 0.7;
-  //       const bottomOffset = window.innerHeight * 0.1;
-  //       const windowHeight = window.innerHeight - topOffset - bottomOffset;
-
-  //       if (event.clientY < topOffset) {
-  //         barAnimation.set({ height: 8 });
-
-  //         return;
-  //       }
-
-  //       if (event.clientY > window.innerHeight - bottomOffset) {
-  //         return;
-  //       }
-
-  //       const mouseY = event.clientY - topOffset;
-  //       const ratio = mouseY / windowHeight;
-
-  //       barAnimation.set({
-  //         height: lerp(8, 16, ratio),
-  //       });
-  //     },
-  //     { signal: controller.signal },
-  //   );
-
-  //   return () => {
-  //     controller.abort();
-  //   };
-  // }, []);
-
-  // React.useEffect(() => {
-  //   const controller = new AbortController();
-
-  //   document.addEventListener(
-  //     "mousemove",
-  //     (event) => {
-  //       const topOffset = window.innerHeight * 0.8;
-  //       const bottomOffset = window.innerHeight * 0.1;
-  //       const windowHeight = window.innerHeight - topOffset - bottomOffset;
-
-  //       if (event.clientY < topOffset) {
-  //         childAnimation.set({ opacity: 0 });
-
-  //         return;
-  //       }
-
-  //       if (event.clientY > window.innerHeight - bottomOffset) {
-  //         return;
-  //       }
-
-  //       const mouseY = event.clientY - topOffset;
-  //       const ratio = mouseY / windowHeight;
-
-  //       childAnimation.set({ opacity: lerp(0, 1, ratio) });
-  //     },
-  //     {
-  //       signal: controller.signal,
-  //     },
-  //   );
-
-  //   return () => {
-  //     controller.abort();
-  //   };
-  // }, []);
-
-  if (size === null) {
-    return null;
-  }
-
-  return (
-    <motion.div
-      className="h-2 rounded-full bg-gray-200 relative"
-      style={{
-        flexGrow: size,
-      }}
-      // animate={barAnimation}
-      // transition={{
-      //   type: "spring",
-      //   duration: 0.1,
-      //   bounce: 0,
-      // }}
-      // initial={{
-      //   height: 16,
-      //   transition: {
-      //     type: "spring",
-      //     duration: 0.5,
-      //     bounce: 0.2,
-      //   },
-      // }}
-      // whileHover={{
-      //   height: 32,
-      //   transition: {
-      //     type: "spring",
-      //     duration: 0.6,
-      //     bounce: 0.4,
-      //   },
-      // }}
-    >
-      <motion.div
-        // animate={childAnimation}
-        className="absolute inset-0 rounded-full opacity-0"
-        style={{
-          backgroundColor: MAP_COLORS[id as keyof typeof MAP_COLORS],
-        }}
-      />
-    </motion.div>
-  );
-};
-
-function lerp(a: number, b: number, t: number) {
-  return a + t * (b - a);
+  return [ratio, totalScrollLength] as const;
 }
+
+// const barAnimation = useAnimation();
+// const childAnimation = useAnimation();
+
+// React.useEffect(() => {
+//   const controller = new AbortController();
+
+//   document.addEventListener(
+//     "mousemove",
+//     (event) => {
+//       const topOffset = window.innerHeight * 0.7;
+//       const bottomOffset = window.innerHeight * 0.1;
+//       const windowHeight = window.innerHeight - topOffset - bottomOffset;
+
+//       if (event.clientY < topOffset) {
+//         barAnimation.set({ height: 8 });
+
+//         return;
+//       }
+
+//       if (event.clientY > window.innerHeight - bottomOffset) {
+//         return;
+//       }
+
+//       const mouseY = event.clientY - topOffset;
+//       const ratio = mouseY / windowHeight;
+
+//       barAnimation.set({
+//         height: lerp(8, 16, ratio),
+//       });
+//     },
+//     { signal: controller.signal },
+//   );
+
+//   return () => {
+//     controller.abort();
+//   };
+// }, []);
+
+// React.useEffect(() => {
+//   const controller = new AbortController();
+
+//   document.addEventListener(
+//     "mousemove",
+//     (event) => {
+//       const topOffset = window.innerHeight * 0.8;
+//       const bottomOffset = window.innerHeight * 0.1;
+//       const windowHeight = window.innerHeight - topOffset - bottomOffset;
+
+//       if (event.clientY < topOffset) {
+//         childAnimation.set({ opacity: 0 });
+
+//         return;
+//       }
+
+//       if (event.clientY > window.innerHeight - bottomOffset) {
+//         return;
+//       }
+
+//       const mouseY = event.clientY - topOffset;
+//       const ratio = mouseY / windowHeight;
+
+//       childAnimation.set({ opacity: lerp(0, 1, ratio) });
+//     },
+//     {
+//       signal: controller.signal,
+//     },
+//   );
+
+//   return () => {
+//     controller.abort();
+//   };
+// }, []);

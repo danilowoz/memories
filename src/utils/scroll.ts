@@ -8,11 +8,6 @@ export interface ScrollMetadata {
   landscapeLength: number;
 }
 
-export interface ScrollCalculation {
-  horizontalScrollLength: number;
-  ratio: number;
-}
-
 export function getPhotoPadding(): number {
   const imageWrapper = document.querySelector(".image-wrapper");
   if (!imageWrapper) {
@@ -27,43 +22,38 @@ export function getPhotoPadding(): number {
   );
 }
 
-export function calculateScrollView(
+export function calculateScrollViewLength(
   metadata: ScrollMetadata,
   photoPadding: number,
   totalScrollLength?: number,
-): ScrollCalculation {
+) {
   const screenWidth = window.innerWidth;
   const screenHeight = window.innerHeight;
   const heightWithRatio = (screenHeight + photoPadding * 2) * PHOTO_SIZE_RATIO;
 
-  let horizontalScrollLength = 0;
+  let length = 0;
 
   // cover
-  horizontalScrollLength += metadata.albumLength * screenWidth;
+  length += metadata.albumLength * screenWidth;
 
   // portrait
-  horizontalScrollLength +=
-    metadata.portraitLength * (heightWithRatio * PORTRAIT_RATIO);
+  length += metadata.portraitLength * (heightWithRatio * PORTRAIT_RATIO);
 
   // landscape
-  horizontalScrollLength +=
-    metadata.landscapeLength * (heightWithRatio * LANDSCAPE_RATIO);
+  length += metadata.landscapeLength * (heightWithRatio * LANDSCAPE_RATIO);
 
   // extra padding between photos
-  horizontalScrollLength +=
+  length +=
     photoPadding * metadata.portraitLength +
     photoPadding * metadata.landscapeLength;
 
   // extra padding at the end of the last photo
-  horizontalScrollLength += photoPadding * metadata.albumLength;
+  length += photoPadding * metadata.albumLength;
 
   // Calculate ratio based on whether we're calculating for timeline or scroller
   const ratio = totalScrollLength
-    ? (horizontalScrollLength / totalScrollLength) * 100
-    : horizontalScrollLength / screenWidth;
+    ? (length / totalScrollLength) * 100
+    : length / screenWidth;
 
-  return {
-    horizontalScrollLength,
-    ratio,
-  };
+  return [length, ratio];
 }
