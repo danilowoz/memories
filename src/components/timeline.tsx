@@ -94,7 +94,8 @@ const TimelineItem = ({
   startOffset: number;
   albumWidth: number;
 }) => {
-  const progressOffset = windowProgress - startOffset + window.innerWidth;
+  const albumOffset = typeof window !== "undefined" ? window.innerWidth : 0;
+  const progressOffset = windowProgress - startOffset + albumOffset;
   const progressPercentage = Math.max(
     0,
     Math.min(100, (progressOffset / albumWidth) * 100),
@@ -107,12 +108,9 @@ const TimelineItem = ({
         flexGrow: flexRatio,
       }}
     >
-      {/* Progress */}
       <motion.div
         className="absolute w-full h-full rounded-full bg-gray-400/50"
-        style={{
-          right: `${100 - progressPercentage}%`,
-        }}
+        style={{ right: `${100 - progressPercentage}%` }}
       />
     </motion.div>
   );
