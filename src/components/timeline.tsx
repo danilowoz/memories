@@ -4,6 +4,7 @@ import React from "react";
 import type { Memories, Photo } from "@/utils/types";
 import { calculateScrollViewLength, getPhotoPadding } from "@/utils/scroll";
 import { motion } from "motion/react";
+import { MAP_COLORS } from "@/utils/colors";
 
 export const Timeline = ({
   payload,
@@ -17,6 +18,11 @@ export const Timeline = ({
   const [albumSizes, setAlbumSizes] = React.useState<Array<[number, number]>>(
     new Array(payload.length).fill([0, 0]),
   );
+  const [windowWidth, setWindowWidth] = React.useState<number>(0);
+
+  React.useEffect(() => {
+    setWindowWidth(window.innerWidth);
+  }, []);
 
   const handleAlbumSizeCalculated = React.useCallback(
     (albumIndex: number, flexRatio: number, albumWidth: number) => {
@@ -55,6 +61,8 @@ export const Timeline = ({
             windowProgress={windowProgress}
             startOffset={albumPositions[index].startOffset}
             albumWidth={albumPositions[index].albumWidth}
+            windowWidth={windowWidth}
+            id={album.id}
           />
         </React.Fragment>
       ))}
@@ -88,29 +96,32 @@ const TimelineItem = ({
   windowProgress,
   startOffset,
   albumWidth,
+  windowWidth,
+  id,
 }: {
   flexRatio: number;
   windowProgress: number;
   startOffset: number;
   albumWidth: number;
+  windowWidth: number;
+  id: number;
 }) => {
-  const albumOffset = typeof window !== "undefined" ? window.innerWidth : 0;
-  const progressOffset = windowProgress - startOffset + albumOffset;
-  const progressPercentage = Math.max(
-    0,
-    Math.min(100, (progressOffset / albumWidth) * 100),
-  );
+  const indicatorWidth = windowWidth / 20;
+  const progressOffset = windowProgress - startOffset + windowWidth;
+  const progressPercentage = (progressOffset / albumWidth) * 100;
 
   return (
     <motion.div
-      className="h-2 rounded-full bg-gray-400/10 relative overflow-hidden"
-      style={{
-        flexGrow: flexRatio,
-      }}
+      className="h-1 rounded-full bg-gray-400/10 relative overflow-hidden"
+      style={{ flexGrow: flexRatio }}
     >
       <motion.div
-        className="absolute w-full h-full rounded-full bg-gray-400/50"
-        style={{ right: `${100 - progressPercentage}%` }}
+        className="absolute h-full rounded-full bg-gray-400/50"
+        style={{
+          left: `${progressPercentage}%`,
+          width: `${indicatorWidth}px`,
+          backgroundColor: MAP_COLORS[id as keyof typeof MAP_COLORS],
+        }}
       />
     </motion.div>
   );
