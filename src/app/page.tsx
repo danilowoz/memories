@@ -67,7 +67,7 @@ const Album = async ({
       >
         <div
           style={{
-            backgroundImage: `url(/media/${coverPhoto?.filename})`,
+            backgroundImage: `url(/images/${coverPhoto?.filename})`,
           }}
           className="absolute inset-0 bg-center saturate-20 bg-cover"
         />
