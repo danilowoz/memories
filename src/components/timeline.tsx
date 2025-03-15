@@ -57,12 +57,15 @@ export const Timeline = ({
           />
 
           <TimelineItem
+            albumWidth={albumSizes[index][1]}
             flexRatio={albumSizes[index][0]}
-            windowProgress={windowProgress}
-            startOffset={albumPositions[index].startOffset}
-            albumWidth={albumPositions[index].albumWidth}
-            windowWidth={windowWidth}
             id={album.id}
+            isFirst={index === 0}
+            isLast={index === payload.length - 1}
+            startOffset={albumPositions[index].startOffset}
+            windowLength={windowLength}
+            windowProgress={windowProgress}
+            windowWidth={windowWidth}
           />
         </React.Fragment>
       ))}
@@ -84,6 +87,7 @@ const SizeCalculator = ({
     photos,
   );
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: callback prop doesn't need to trigger effect
   React.useEffect(() => {
     onSizeCalculated(flexRatio, albumWidth);
   }, [flexRatio, albumWidth]);
@@ -92,23 +96,45 @@ const SizeCalculator = ({
 };
 
 const TimelineItem = ({
-  flexRatio,
-  windowProgress,
-  startOffset,
   albumWidth,
-  windowWidth,
+  flexRatio,
   id,
+  isFirst,
+  isLast,
+  startOffset,
+  windowLength,
+  windowProgress,
+  windowWidth,
 }: {
-  flexRatio: number;
-  windowProgress: number;
-  startOffset: number;
   albumWidth: number;
-  windowWidth: number;
+  flexRatio: number;
   id: number;
+  isFirst: boolean;
+  isLast: boolean;
+  startOffset: number;
+  windowLength: number;
+  windowProgress: number;
+  windowWidth: number;
 }) => {
+  const paddingX = 24;
+  const paddingXPercentage = (paddingX / windowLength) * 100;
   const indicatorWidth = windowWidth / 20;
-  const progressOffset = windowProgress - startOffset + windowWidth;
-  const progressPercentage = (progressOffset / albumWidth) * 100;
+  const indicatorWidthPercentage = (indicatorWidth / windowLength) * 100;
+  const progressOffset = windowProgress - startOffset;
+  let progressPercentage = (progressOffset / albumWidth) * 100;
+
+  // Handle first item starting position
+  if (isFirst) {
+    progressPercentage = Math.max(0, progressPercentage);
+  }
+
+  // Handle last item end position
+  if (isLast) {
+    progressPercentage = Math.min(
+      100 - (indicatorWidthPercentage - paddingXPercentage) * 100,
+      progressPercentage,
+    );
+  }
 
   return (
     <motion.div

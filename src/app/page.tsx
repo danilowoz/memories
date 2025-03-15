@@ -1,4 +1,3 @@
-import React from "react";
 import { Scroller } from "../components/scroller";
 import { Timeline } from "../components/timeline";
 import payload from "@/data.json";
@@ -58,7 +57,14 @@ const Album = async ({
 
   return (
     <>
-      <div className="item min-w-screen min-h-screen flex relative">
+      <div
+        className="item min-w-screen min-h-screen flex relative"
+        style={
+          {
+            "--color": MAP_COLORS[id as keyof typeof MAP_COLORS],
+          } as React.CSSProperties
+        }
+      >
         <div
           style={{
             backgroundImage: `url(/media/${coverPhoto?.filename})`,
@@ -66,7 +72,7 @@ const Album = async ({
           className="absolute inset-0 bg-center saturate-20 bg-cover"
         />
         <div
-          style={{ backgroundColor: MAP_COLORS[id as keyof typeof MAP_COLORS] }}
+          style={{ backgroundColor: "var(--color)" }}
           className="absolute inset-0 opacity-70 "
         />
         <h2 className="m-auto font-serif text-[60px] text-gray-50 mix-blend-plus-lighter">
