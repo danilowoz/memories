@@ -93,7 +93,7 @@ const Album = async ({
             {item.filename && (
               <img
                 className="h-[80vh] max-w-none"
-                src={`/media/${item.filename}`}
+                src={`/images/${item.filename}`}
                 alt={item.location}
               />
             )}
