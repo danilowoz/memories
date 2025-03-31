@@ -1,20 +1,29 @@
 "use client";
 
-import React from "react";
-import type { Memories, Photo } from "@/utils/types";
 import { calculateScrollViewLength, getPhotoPadding } from "@/utils/scroll";
-import { motion } from "motion/react";
-import { MAP_COLORS } from "@/utils/colors";
+import type { Memories, Photo } from "@/utils/types";
+import { type AnimationControls, motion, useAnimation } from "motion/react";
+import * as React from "react";
 
 export const Timeline = ({
   payload,
   windowLength,
   windowProgress,
+  onMove,
 }: {
   payload: Memories;
   windowLength: number;
   windowProgress: number;
+  onMove: (
+    event: React.MouseEvent<HTMLDivElement>,
+    behavior?: ScrollBehavior,
+  ) => void;
 }) => {
+  const barAnimation = useAnimation();
+  const handlerAnimation = useAnimation();
+  const [isMouseOver, setIsMouseOver] = React.useState(false);
+  const [isDragging, setIsDragging] = React.useState(false);
+
   const [albumSizes, setAlbumSizes] = React.useState<Array<[number, number]>>(
     new Array(payload.length).fill([0, 0]),
   );
@@ -44,8 +53,77 @@ export const Timeline = ({
     });
   }, [albumSizes]);
 
+  const initialState = React.useCallback(() => {
+    barAnimation.set({
+      opacity: 1,
+    });
+
+    handlerAnimation.set({
+      filter: "saturate(100%)",
+      opacity: 1,
+    });
+  }, [barAnimation, handlerAnimation]);
+
+  const finalState = React.useCallback(() => {
+    barAnimation.start({
+      opacity: 0,
+      transition: {
+        duration: 1,
+      },
+    });
+
+    handlerAnimation.start({
+      filter: "saturate(0%)",
+      opacity: 0.5,
+      transition: {
+        duration: 0.5,
+      },
+    });
+  }, [barAnimation, handlerAnimation]);
+
+  React.useEffect(() => {
+    initialState();
+
+    const timer = setTimeout(() => {
+      if (isMouseOver) {
+        return;
+      }
+
+      finalState();
+    }, 2_000);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [windowProgress, isMouseOver, finalState, initialState]);
+
   return (
-    <div className="fixed left-0 right-0 bottom-0 mx-6 flex flex-row gap-6 items-center h-[60px]">
+    <div
+      className="fixed left-0 right-0 bottom-0 mx-6 flex flex-row gap-6 items-center h-[60px]"
+      onMouseEnter={() => {
+        initialState();
+        setIsMouseOver(true);
+      }}
+      onMouseLeave={() => {
+        setIsMouseOver(false);
+      }}
+      onClick={(event) => onMove(event, "smooth")}
+      onMouseDown={() => {
+        setIsDragging(true);
+        document.body.classList.add("cursor-ew-resize");
+        document.body.classList.add("select-none");
+      }}
+      onMouseUp={() => {
+        setIsDragging(false);
+        document.body.classList.remove("cursor-ew-resize");
+        document.body.classList.remove("select-none");
+      }}
+      onMouseMove={(event) => {
+        if (isDragging) {
+          onMove(event);
+        }
+      }}
+    >
       {payload.map((album, index) => (
         <React.Fragment key={album.id}>
           <SizeCalculator
@@ -66,6 +144,8 @@ export const Timeline = ({
             windowLength={windowLength}
             windowProgress={windowProgress}
             windowWidth={windowWidth}
+            barAnimation={barAnimation}
+            handlerAnimation={handlerAnimation}
           />
         </React.Fragment>
       ))}
@@ -105,6 +185,8 @@ const TimelineItem = ({
   windowLength,
   windowProgress,
   windowWidth,
+  barAnimation,
+  handlerAnimation,
 }: {
   albumWidth: number;
   flexRatio: number;
@@ -115,6 +197,8 @@ const TimelineItem = ({
   windowLength: number;
   windowProgress: number;
   windowWidth: number;
+  barAnimation: AnimationControls;
+  handlerAnimation: AnimationControls;
 }) => {
   const paddingX = 24;
   const paddingXPercentage = (paddingX / windowLength) * 100;
@@ -138,15 +222,21 @@ const TimelineItem = ({
 
   return (
     <motion.div
-      className="h-1 rounded-full bg-gray-400/10 relative overflow-hidden"
+      className="h-1.5 rounded-full relative overflow-hidden"
       style={{ flexGrow: flexRatio }}
     >
       <motion.div
-        className="absolute h-full rounded-full bg-gray-400/50"
+        animate={barAnimation}
+        className="absolute inset-0 bg-gray-400/10"
+      />
+
+      <motion.div
+        className="absolute h-full rounded-full bg-gray-400/50 cursor-ew-resize"
+        animate={handlerAnimation}
         style={{
           left: `${progressPercentage}%`,
           width: `${indicatorWidth}px`,
-          backgroundColor: MAP_COLORS[id as keyof typeof MAP_COLORS],
+          backgroundColor: `var(--color-${id})`,
         }}
       />
     </motion.div>

@@ -1,9 +1,7 @@
-import { Scroller } from "../components/scroller";
-import { Timeline } from "../components/timeline";
 import payload from "@/data.json";
-import type { Memories, Photo } from "@/utils/types";
-import { MAP_COLORS } from "@/utils/colors";
 import { cn } from "@/utils/classname";
+import type { Memories, Photo } from "@/utils/types";
+import { Scroller } from "../components/scroller";
 
 export default async function Home() {
   return (
@@ -61,7 +59,7 @@ const Album = async ({
         className="item min-w-screen min-h-screen flex relative"
         style={
           {
-            "--color": MAP_COLORS[id as keyof typeof MAP_COLORS],
+            "--color": `var(--color-${id})`,
           } as React.CSSProperties
         }
       >

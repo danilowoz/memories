@@ -1,1 +1,17 @@
 @import "tailwindcss";
+
+:root {
+  --color-1: hsl(126, 37%, 69%);
+  --color-2: hsl(0, 37%, 69%);
+  --color-3: #666;
+}
+
+*::selection {
+  background-color: #000;
+  color: #fff;
+}
+
+.bg-black *::selection {
+  background-color: #fff;
+  color: #000;
+}

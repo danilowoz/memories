@@ -1,10 +1,10 @@
 "use client";
 
-import React from "react";
 import { cn } from "@/utils/classname";
-import { Timeline } from "./timeline";
-import type { Memories } from "@/utils/types";
 import { calculateScrollViewLength, getPhotoPadding } from "@/utils/scroll";
+import type { Memories } from "@/utils/types";
+import React from "react";
+import { Timeline } from "./timeline";
 
 export const Scroller = ({
   children,
@@ -45,8 +45,8 @@ export const Scroller = ({
 
       const [length, ratio] = calculateScrollViewLength(metadata, photoPadding);
 
-      const screenHeight = window.innerHeight;
-      const verticalScrollLength = screenHeight * ratio;
+      const windowHeight = window.innerHeight;
+      const verticalScrollLength = windowHeight * ratio;
       document.body.style.height = `${verticalScrollLength}px`;
 
       setLength(length);
@@ -62,9 +62,9 @@ export const Scroller = ({
       "scroll",
       (event) => {
         if (ref.current) {
-          const screenWidth = window.innerWidth;
-          const screenHeight = window.innerHeight;
-          const ratio = screenWidth / screenHeight;
+          const windowWidth = window.innerWidth;
+          const windowHeight = window.innerHeight;
+          const ratio = windowWidth / windowHeight;
 
           setProgress(window.scrollY * ratio);
 
@@ -78,6 +78,29 @@ export const Scroller = ({
       controller.abort();
     };
   }, [payload]);
+
+  function onMove(
+    event: React.MouseEvent<HTMLDivElement>,
+    behavior?: ScrollBehavior,
+  ) {
+    if (!ref.current) {
+      return;
+    }
+
+    const windowWidth = window.innerWidth;
+    const windowHeight = window.innerHeight;
+    const ratio = windowWidth / windowHeight;
+    const indicatorWidth = windowWidth / 20;
+
+    const { clientX } = event;
+    const { left, width } = event.currentTarget.getBoundingClientRect();
+    const progress = (clientX - left - indicatorWidth / 4) / width;
+
+    window.scrollTo({
+      top: (length * progress) / ratio,
+      behavior,
+    });
+  }
 
   return (
     <div
@@ -93,6 +116,7 @@ export const Scroller = ({
         payload={payload}
         windowLength={length}
         windowProgress={progress}
+        onMove={onMove}
       />
     </div>
   );
