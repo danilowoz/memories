@@ -81,22 +81,22 @@ const Album = async ({
       {photos.map((item, index) => (
         <figure
           key={item.id}
-          className={cn("flex", {
-            "pl-40": index === 0,
-            "pr-40": index === photos.length - 1,
+          className={cn("md:flex", {
+            "md:pl-40": index === 0,
+            "md:pr-40": index === photos.length - 1,
             "bg-black": dark,
           })}
         >
-          <div className="image-wrapper m-auto px-40">
+          <div className="image-wrapper m-auto md:px-40">
             {item.filename && (
               <img
-                className="h-[80vh] max-w-none"
+                className="w-full md:w-auto md:h-[80vh] max-w-none"
                 src={`/images/${item.filename}`}
                 alt={item.location}
               />
             )}
 
-            <figcaption className="pt-4">
+            <figcaption className="p-4 pb-10 md:p-0 md:pt-4">
               <p
                 className={cn("text-gray-900 font-semibold", {
                   "text-white": dark,

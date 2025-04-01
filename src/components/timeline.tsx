@@ -99,7 +99,7 @@ export const Timeline = ({
 
   return (
     <div
-      className="fixed left-0 right-0 bottom-0 mx-6 flex flex-row gap-6 items-center h-[60px]"
+      className="hidden md:flex fixed left-0 right-0 bottom-0 mx-6 flex-row gap-6 items-center h-[60px]"
       onMouseEnter={() => {
         initialState();
         setIsMouseOver(true);

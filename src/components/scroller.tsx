@@ -35,6 +35,12 @@ export const Scroller = ({
       );
 
     function handleResize() {
+      const smallScreen = window.innerWidth < 768;
+
+      if (smallScreen) {
+        return;
+      }
+
       const photoPadding = getPhotoPadding();
 
       const metadata = {
@@ -106,8 +112,8 @@ export const Scroller = ({
     <div
       ref={ref}
       className={cn(
-        "h-screen w-screen fixed inset-0",
-        "flex flex-row flex-nowrap overflow-hidden",
+        "h-screen w-screen md:fixed md:inset-0",
+        "flex flex-col md:flex-row md:flex-nowrap md:overflow-hidden",
       )}
     >
       {children}
