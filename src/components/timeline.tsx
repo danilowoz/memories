@@ -1,17 +1,18 @@
 "use client";
 
+import data from "@/data.json";
 import { calculateScrollViewLength, getPhotoPadding } from "@/utils/scroll";
 import type { Memories, Photo } from "@/utils/types";
 import { type AnimationControls, motion, useAnimation } from "motion/react";
 import * as React from "react";
 
+const payload = data as Memories;
+
 export const Timeline = ({
-  payload,
   windowLength,
   windowProgress,
   onMove,
 }: {
-  payload: Memories;
   windowLength: number;
   windowProgress: number;
   onMove: (
@@ -140,6 +141,7 @@ export const Timeline = ({
             id={album.id}
             isFirst={index === 0}
             isLast={index === payload.length - 1}
+            isDragging={isDragging}
             startOffset={albumPositions[index].startOffset}
             windowLength={windowLength}
             windowProgress={windowProgress}
@@ -151,28 +153,6 @@ export const Timeline = ({
       ))}
     </div>
   );
-};
-
-const SizeCalculator = ({
-  photos,
-  windowLength,
-  onSizeCalculated,
-}: {
-  photos: Photo[];
-  windowLength: number;
-  onSizeCalculated: (flexRatio: number, albumWidth: number) => void;
-}) => {
-  const [flexRatio, albumWidth] = useCalculateSectionLength(
-    windowLength,
-    photos,
-  );
-
-  // biome-ignore lint/correctness/useExhaustiveDependencies: callback prop doesn't need to trigger effect
-  React.useEffect(() => {
-    onSizeCalculated(flexRatio, albumWidth);
-  }, [flexRatio, albumWidth]);
-
-  return null;
 };
 
 const TimelineItem = ({
@@ -187,6 +167,7 @@ const TimelineItem = ({
   windowWidth,
   barAnimation,
   handlerAnimation,
+  isDragging,
 }: {
   albumWidth: number;
   flexRatio: number;
@@ -199,12 +180,13 @@ const TimelineItem = ({
   windowWidth: number;
   barAnimation: AnimationControls;
   handlerAnimation: AnimationControls;
+  isDragging: boolean;
 }) => {
   const paddingX = 24;
   const paddingXPercentage = (paddingX / windowLength) * 100;
   const indicatorWidth = windowWidth / 20;
   const indicatorWidthPercentage = (indicatorWidth / windowLength) * 100;
-  const progressOffset = windowProgress - startOffset;
+  const progressOffset = windowProgress - startOffset + windowWidth / 2;
   let progressPercentage = (progressOffset / albumWidth) * 100;
 
   // Handle first item starting position
@@ -224,10 +206,21 @@ const TimelineItem = ({
     <motion.div
       className="h-1.5 rounded-full relative overflow-hidden"
       style={{ flexGrow: flexRatio }}
+      whileHover={{
+        height: 12,
+        transition: {
+          type: "spring",
+          duration: 0.2,
+          bounce: 0.3,
+        },
+      }}
+      animate={{
+        height: isDragging ? 12 : undefined,
+      }}
     >
       <motion.div
         animate={barAnimation}
-        className="absolute inset-0 bg-gray-400/10"
+        className="h-1.5 absolute left-0 right-0 top-[calc(50%-3px)] bg-gray-400/10"
       />
 
       <motion.div
@@ -284,75 +277,24 @@ function useCalculateSectionLength(windowLength: number, photos: Photo[]) {
   return [flexRatio, albumWidth] as const;
 }
 
-// const barAnimation = useAnimation();
-// const childAnimation = useAnimation();
+const SizeCalculator = ({
+  photos,
+  windowLength,
+  onSizeCalculated,
+}: {
+  photos: Photo[];
+  windowLength: number;
+  onSizeCalculated: (flexRatio: number, albumWidth: number) => void;
+}) => {
+  const [flexRatio, albumWidth] = useCalculateSectionLength(
+    windowLength,
+    photos,
+  );
 
-// React.useEffect(() => {
-//   const controller = new AbortController();
+  // biome-ignore lint/correctness/useExhaustiveDependencies: callback prop doesn't need to trigger effect
+  React.useEffect(() => {
+    onSizeCalculated(flexRatio, albumWidth);
+  }, [flexRatio, albumWidth]);
 
-//   document.addEventListener(
-//     "mousemove",
-//     (event) => {
-//       const topOffset = window.innerHeight * 0.7;
-//       const bottomOffset = window.innerHeight * 0.1;
-//       const windowHeight = window.innerHeight - topOffset - bottomOffset;
-
-//       if (event.clientY < topOffset) {
-//         barAnimation.set({ height: 8 });
-
-//         return;
-//       }
-
-//       if (event.clientY > window.innerHeight - bottomOffset) {
-//         return;
-//       }
-
-//       const mouseY = event.clientY - topOffset;
-//       const ratio = mouseY / windowHeight;
-
-//       barAnimation.set({
-//         height: lerp(8, 16, ratio),
-//       });
-//     },
-//     { signal: controller.signal },
-//   );
-
-//   return () => {
-//     controller.abort();
-//   };
-// }, []);
-
-// React.useEffect(() => {
-//   const controller = new AbortController();
-
-//   document.addEventListener(
-//     "mousemove",
-//     (event) => {
-//       const topOffset = window.innerHeight * 0.8;
-//       const bottomOffset = window.innerHeight * 0.1;
-//       const windowHeight = window.innerHeight - topOffset - bottomOffset;
-
-//       if (event.clientY < topOffset) {
-//         childAnimation.set({ opacity: 0 });
-
-//         return;
-//       }
-
-//       if (event.clientY > window.innerHeight - bottomOffset) {
-//         return;
-//       }
-
-//       const mouseY = event.clientY - topOffset;
-//       const ratio = mouseY / windowHeight;
-
-//       childAnimation.set({ opacity: lerp(0, 1, ratio) });
-//     },
-//     {
-//       signal: controller.signal,
-//     },
-//   );
-
-//   return () => {
-//     controller.abort();
-//   };
-// }, []);
+  return null;
+};

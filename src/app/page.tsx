@@ -5,8 +5,8 @@ import { Scroller } from "../components/scroller";
 
 export default async function Home() {
   return (
-    <Scroller payload={payload as Memories}>
-      {payload.map((item) => {
+    <Scroller>
+      {payload.map((item, index) => {
         const sortedPhotos = item.photos.sort(
           (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
         ) as Photo[];
@@ -18,6 +18,7 @@ export default async function Home() {
             photos={sortedPhotos}
             id={item.id}
             dark={item.dark}
+            isFirst={index === 0}
           />
         );
       })}
@@ -30,7 +31,14 @@ const Album = async ({
   photos,
   id,
   dark,
-}: { name: string; photos: Photo[]; id: string | number; dark: boolean }) => {
+  isFirst,
+}: {
+  name: string;
+  photos: Photo[];
+  id: string | number;
+  dark: boolean;
+  isFirst: boolean;
+}) => {
   const renderTitle = () => {
     const leftSide = name.indexOf("Memories") === 0;
 
@@ -38,14 +46,14 @@ const Album = async ({
       return (
         <>
           <span>Memories</span>
-          <span className="opacity-30">{name.replace("Memories", "")}</span>
+          <span className="opacity-20">{name.replace("Memories", "")}</span>
         </>
       );
     }
 
     return (
       <>
-        <span className="opacity-30">{name.replace("Memories", "")}</span>
+        <span className="opacity-20">{name.replace("Memories", "")}</span>
         <span>Memories</span>
       </>
     );
@@ -56,7 +64,12 @@ const Album = async ({
   return (
     <>
       <div
-        className="item min-w-screen min-h-screen flex relative"
+        className={cn(
+          "item min-w-screen min-h-screen flex relative pointer-events-none",
+          {
+            "z-20": isFirst,
+          },
+        )}
         style={
           {
             "--color": `var(--color-${id})`,
@@ -98,14 +111,14 @@ const Album = async ({
 
             <figcaption className="p-4 pb-10 md:p-0 md:pt-4">
               <p
-                className={cn("text-gray-900 font-semibold", {
+                className={cn("text-gray-900 font-semibold m-0", {
                   "text-white": dark,
                 })}
               >
                 {item.location}
               </p>
               <small
-                className={cn("text-gray-600 uppercase", {
+                className={cn("text-gray-600 uppercase m-0", {
                   "text-white opacity-50": dark,
                 })}
               >

@@ -1,16 +1,17 @@
 "use client";
 
+import data from "@/data.json";
 import { cn } from "@/utils/classname";
 import { calculateScrollViewLength, getPhotoPadding } from "@/utils/scroll";
 import type { Memories } from "@/utils/types";
 import React from "react";
 import { Timeline } from "./timeline";
 
+const payload = data as Memories;
+
 export const Scroller = ({
   children,
-  payload,
 }: {
-  payload: Memories;
   children: React.ReactNode;
 }) => {
   const ref = React.useRef<HTMLDivElement>(null);
@@ -74,7 +75,11 @@ export const Scroller = ({
 
           setProgress(window.scrollY * ratio);
 
-          ref.current.scrollLeft = window.scrollY * ratio;
+          // ref.current.scrollLeft = window.scrollY * ratio;
+
+          ref.current.scrollTo({
+            left: window.scrollY * ratio,
+          });
         }
       },
       { signal: controller.signal },
@@ -100,7 +105,8 @@ export const Scroller = ({
 
     const { clientX } = event;
     const { left, width } = event.currentTarget.getBoundingClientRect();
-    const progress = (clientX - left - indicatorWidth / 4) / width;
+    const progress =
+      (clientX - left - indicatorWidth / 4 - windowWidth / 22) / width;
 
     window.scrollTo({
       top: (length * progress) / ratio,
@@ -119,7 +125,6 @@ export const Scroller = ({
       {children}
 
       <Timeline
-        payload={payload}
         windowLength={length}
         windowProgress={progress}
         onMove={onMove}
