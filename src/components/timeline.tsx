@@ -20,9 +20,6 @@ export const Timeline = ({
     behavior?: ScrollBehavior,
   ) => void;
 }) => {
-  const barAnimation = useAnimation();
-  const handlerAnimation = useAnimation();
-  const [isMouseOver, setIsMouseOver] = React.useState(false);
   const [isDragging, setIsDragging] = React.useState(false);
 
   const [albumSizes, setAlbumSizes] = React.useState<Array<[number, number]>>(
@@ -54,60 +51,9 @@ export const Timeline = ({
     });
   }, [albumSizes]);
 
-  const initialState = React.useCallback(() => {
-    barAnimation.set({
-      opacity: 1,
-    });
-
-    handlerAnimation.set({
-      filter: "saturate(100%)",
-      opacity: 1,
-    });
-  }, [barAnimation, handlerAnimation]);
-
-  const finalState = React.useCallback(() => {
-    barAnimation.start({
-      opacity: 0,
-      transition: {
-        duration: 1,
-      },
-    });
-
-    handlerAnimation.start({
-      filter: "saturate(0%)",
-      opacity: 0.5,
-      transition: {
-        duration: 0.5,
-      },
-    });
-  }, [barAnimation, handlerAnimation]);
-
-  React.useEffect(() => {
-    initialState();
-
-    const timer = setTimeout(() => {
-      if (isMouseOver) {
-        return;
-      }
-
-      finalState();
-    }, 2_000);
-
-    return () => {
-      clearTimeout(timer);
-    };
-  }, [windowProgress, isMouseOver, finalState, initialState]);
-
   return (
     <div
-      className="hidden md:flex fixed left-0 right-0 bottom-0 mx-6 flex-row gap-6 items-center h-[60px]"
-      onMouseEnter={() => {
-        initialState();
-        setIsMouseOver(true);
-      }}
-      onMouseLeave={() => {
-        setIsMouseOver(false);
-      }}
+      className="hidden md:flex fixed left-0 right-0 bottom-0 mx-6 flex-row gap-6 items-center h-[50px]"
       onClick={(event) => onMove(event, "smooth")}
       onMouseDown={() => {
         setIsDragging(true);
@@ -146,8 +92,6 @@ export const Timeline = ({
             windowLength={windowLength}
             windowProgress={windowProgress}
             windowWidth={windowWidth}
-            barAnimation={barAnimation}
-            handlerAnimation={handlerAnimation}
           />
         </React.Fragment>
       ))}
@@ -165,8 +109,6 @@ const TimelineItem = ({
   windowLength,
   windowProgress,
   windowWidth,
-  barAnimation,
-  handlerAnimation,
   isDragging,
 }: {
   albumWidth: number;
@@ -178,8 +120,6 @@ const TimelineItem = ({
   windowLength: number;
   windowProgress: number;
   windowWidth: number;
-  barAnimation: AnimationControls;
-  handlerAnimation: AnimationControls;
   isDragging: boolean;
 }) => {
   const paddingX = 24;
@@ -189,12 +129,10 @@ const TimelineItem = ({
   const progressOffset = windowProgress - startOffset + windowWidth / 2;
   let progressPercentage = (progressOffset / albumWidth) * 100;
 
-  // Handle first item starting position
   if (isFirst) {
     progressPercentage = Math.max(0, progressPercentage);
   }
 
-  // Handle last item end position
   if (isLast) {
     progressPercentage = Math.min(
       100 - (indicatorWidthPercentage - paddingXPercentage) * 100,
@@ -218,14 +156,10 @@ const TimelineItem = ({
         height: isDragging ? 12 : undefined,
       }}
     >
-      <motion.div
-        animate={barAnimation}
-        className="h-1.5 absolute left-0 right-0 top-[calc(50%-3px)] bg-gray-400/10"
-      />
+      <motion.div className="h-1.5 absolute left-0 right-0 top-[calc(50%-3px)] bg-gray-400/20" />
 
       <motion.div
-        className="absolute h-full rounded-full bg-gray-400/50 cursor-ew-resize"
-        animate={handlerAnimation}
+        className="absolute h-full rounded-full cursor-ew-resize"
         style={{
           left: `${progressPercentage}%`,
           width: `${indicatorWidth}px`,

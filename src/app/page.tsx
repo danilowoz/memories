@@ -68,6 +68,7 @@ const Album = async ({
           "item min-w-screen min-h-screen flex relative pointer-events-none",
           {
             "z-20": isFirst,
+            "bg-black": dark,
           },
         )}
         style={
@@ -80,11 +81,17 @@ const Album = async ({
           style={{
             backgroundImage: `url(/images/${coverPhoto?.filename})`,
           }}
-          className="absolute inset-0 bg-center saturate-20 bg-cover"
+          className={cn(
+            "absolute left-6 right-6 top-6 bottom-12 rounded-lg bg-center saturate-20 bg-cover",
+            // { "inset-0 rounded-none": isFirst },
+          )}
         />
         <div
           style={{ backgroundColor: "var(--color)" }}
-          className="absolute inset-0 opacity-70 "
+          className={cn(
+            "absolute left-6 right-6 top-6 bottom-12 rounded-lg opacity-70",
+            // { "inset-0 rounded-none": isFirst },
+          )}
         />
         <h2 className="m-auto font-serif text-[60px] text-gray-50 mix-blend-plus-lighter">
           {renderTitle()}
@@ -103,7 +110,7 @@ const Album = async ({
           <div className="image-wrapper m-auto md:px-40">
             {item.filename && (
               <img
-                className="w-full md:w-auto md:h-[80vh] max-w-none"
+                className="w-full md:w-auto md:h-[80vh] max-w-none rounded"
                 src={`/images/${item.filename}`}
                 alt={item.location}
               />

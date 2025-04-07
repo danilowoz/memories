@@ -75,8 +75,6 @@ export const Scroller = ({
 
           setProgress(window.scrollY * ratio);
 
-          // ref.current.scrollLeft = window.scrollY * ratio;
-
           ref.current.scrollTo({
             left: window.scrollY * ratio,
           });
