@@ -2,10 +2,8 @@
 
 import data from "@/data.json";
 import { cn } from "@/utils/classname";
-import { calculateScrollViewLength, getPhotoPadding } from "@/utils/scroll";
 import type { Memories } from "@/utils/types";
 import React from "react";
-import { HorizontalScrollbar } from "./horizontal-scrollbar";
 import { Timeline } from "./timeline";
 
 const payload = data as Memories;
@@ -15,9 +13,7 @@ export const Scroller = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const ref = React.useRef<HTMLDivElement>(null);
-  const [length, setLength] = React.useState(0);
-  const [progress, setProgress] = React.useState(0);
+  const contentRef = React.useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
     const controller = new AbortController();
@@ -39,25 +35,15 @@ export const Scroller = ({
     function handleResize() {
       const smallScreen = window.innerWidth < 768;
 
-      if (smallScreen) {
+      if (smallScreen || contentRef.current === null) {
         return;
       }
 
-      const photoPadding = getPhotoPadding();
-
-      const metadata = {
-        albumLength: payload.length,
-        portraitLength: mediaMetaData.portrait,
-        landscapeLength: mediaMetaData.landscape,
-      };
-
-      const [length, ratio] = calculateScrollViewLength(metadata, photoPadding);
-
+      const ratio = contentRef.current.scrollWidth / window.innerWidth;
       const windowHeight = window.innerHeight;
       const verticalScrollLength = windowHeight * ratio;
-      document.body.style.height = `${verticalScrollLength}px`;
 
-      setLength(length);
+      document.body.style.height = `${verticalScrollLength}px`;
     }
 
     handleResize();
@@ -69,14 +55,12 @@ export const Scroller = ({
     window.addEventListener(
       "scroll",
       (event) => {
-        if (ref.current) {
+        if (contentRef.current) {
           const windowWidth = window.innerWidth;
           const windowHeight = window.innerHeight;
           const ratio = windowWidth / windowHeight;
 
-          setProgress(window.scrollY * ratio);
-
-          ref.current.scrollTo({
+          contentRef.current.scrollTo({
             left: window.scrollY * ratio,
           });
         }
@@ -89,33 +73,9 @@ export const Scroller = ({
     };
   }, [payload]);
 
-  function onMove(
-    event: React.MouseEvent<HTMLDivElement>,
-    behavior?: ScrollBehavior,
-  ) {
-    if (!ref.current) {
-      return;
-    }
-
-    const windowWidth = window.innerWidth;
-    const windowHeight = window.innerHeight;
-    const ratio = windowWidth / windowHeight;
-    const indicatorWidth = windowWidth / 20;
-
-    const { clientX } = event;
-    const { left, width } = event.currentTarget.getBoundingClientRect();
-    const progress =
-      (clientX - left + indicatorWidth / 4 - windowWidth / 20) / width;
-
-    window.scrollTo({
-      top: (length * progress) / ratio,
-      behavior,
-    });
-  }
-
   return (
     <div
-      ref={ref}
+      ref={contentRef}
       className={cn(
         "h-screen w-screen md:fixed md:inset-0",
         "flex flex-col md:flex-row md:flex-nowrap md:overflow-hidden",
@@ -123,7 +83,7 @@ export const Scroller = ({
     >
       {children}
 
-      <Timeline contentRef={ref} windowLength={length} />
+      <Timeline contentRef={contentRef} />
     </div>
   );
 };

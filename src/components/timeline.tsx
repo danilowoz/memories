@@ -2,7 +2,6 @@
 
 import data from "@/data.json";
 import { cn } from "@/utils/classname";
-import { calculateScrollViewLength, getPhotoPadding } from "@/utils/scroll";
 import type { Memories, Photo } from "@/utils/types";
 import { motion } from "motion/react";
 import * as React from "react";
@@ -11,7 +10,7 @@ const payload = data as Memories;
 
 export const Timeline = ({
   contentRef,
-}: { contentRef: React.RefObject<HTMLElement> }) => {
+}: { contentRef: React.RefObject<HTMLElement | null> }) => {
   const [thumbWidth, setThumbWidth] = React.useState(20);
   const [thumbPosition, setThumbPosition] = React.useState(0);
   const [scrollWidth, setScrollWidth] = React.useState(0);
@@ -44,44 +43,29 @@ export const Timeline = ({
     setThumbPosition(newThumbPosition);
   }, [contentRef]);
 
-  const handleAlbumSizeCalculated = React.useCallback(
-    (albumIndex: number, flexRatio: number, albumWidth: number) => {
-      setAlbumSizes((prev) => {
-        const next = [...prev];
-        next[albumIndex] = [flexRatio, albumWidth];
-        return next;
-      });
-    },
-    [],
-  );
-
-  const albumPositions = React.useMemo(() => {
-    let horizontalOffset = 0;
-    return albumSizes.map(([_, albumWidth]) => {
-      const startOffset = horizontalOffset;
-      horizontalOffset += albumWidth;
-      return { startOffset, albumWidth };
-    });
-  }, [albumSizes]);
-
   React.useEffect(() => {
     const content = contentRef.current;
     if (!content) {
       return;
     }
 
-    const handleScroll = () => {
-      updateThumbSizeAndPosition();
-    };
-
-    content.addEventListener("scroll", handleScroll);
-    window.addEventListener("resize", updateThumbSizeAndPosition);
+    const { signal, abort } = new AbortController();
 
     updateThumbSizeAndPosition();
 
+    let horizontalOffset = 0;
+    setAlbumSizes(
+      Array.from(content.children).map((item) => {
+        const startOffset = horizontalOffset;
+        horizontalOffset += item.scrollWidth;
+        return [item.scrollWidth / window.innerWidth, startOffset];
+      }),
+    );
+
+    content.addEventListener("scroll", updateThumbSizeAndPosition, { signal });
+
     return () => {
-      content.removeEventListener("scroll", handleScroll);
-      window.addEventListener("resize", updateThumbSizeAndPosition);
+      abort();
     };
   }, [contentRef, updateThumbSizeAndPosition]);
 
@@ -168,27 +152,18 @@ export const Timeline = ({
         onClick={handleTrackClick}
       >
         {payload.map((album, index) => (
-          <React.Fragment key={album.id}>
-            <SizeCalculator
-              photos={album.photos}
-              scrollWidth={scrollWidth}
-              onSizeCalculated={(flexRatio, albumWidth) =>
-                handleAlbumSizeCalculated(index, flexRatio, albumWidth)
-              }
-            />
-
-            <TimelineItem
-              flexRatio={albumSizes[index][0]}
-              isDragging={isDragging}
-              thumbWidth={thumbWidth}
-              thumbPosition={thumbPosition}
-              startOffset={albumPositions[index].startOffset}
-              trackWidth={trackRef.current?.clientWidth || 0}
-              scrollWidth={scrollWidth}
-              id={album.id}
-              isDark={album.dark}
-            />
-          </React.Fragment>
+          <TimelineItem
+            key={album.id}
+            flexRatio={albumSizes[index][0]}
+            isDragging={isDragging}
+            thumbWidth={thumbWidth}
+            thumbPosition={thumbPosition}
+            startOffset={albumSizes[index][1]}
+            trackWidth={trackRef.current?.clientWidth || 0}
+            scrollWidth={scrollWidth}
+            id={album.id}
+            isDark={album.dark}
+          />
         ))}
       </div>
 
@@ -273,67 +248,4 @@ const TimelineItem = ({
       />
     </motion.div>
   );
-};
-
-function useCalculateSectionLength(scrollWidth: number, photos: Photo[]) {
-  const [flexRatio, setFlexRatio] = React.useState<number>(0);
-  const [albumWidth, setAlbumWidth] = React.useState<number>(0);
-
-  React.useEffect(() => {
-    const controller = new AbortController();
-
-    function handleResize() {
-      const photoPadding = getPhotoPadding();
-      const metadata = {
-        albumLength: 1,
-        portraitLength: photos.filter((photo) => photo.format === "portrait")
-          .length,
-        landscapeLength: photos.filter((photo) => photo.format === "landscape")
-          .length,
-      };
-
-      const [totalWidth, ratio] = calculateScrollViewLength(
-        metadata,
-        photoPadding,
-        scrollWidth,
-      );
-
-      setFlexRatio(ratio);
-      setAlbumWidth(totalWidth);
-    }
-
-    handleResize();
-
-    window.addEventListener("resize", handleResize, {
-      signal: controller.signal,
-    });
-
-    return () => {
-      controller.abort();
-    };
-  }, [scrollWidth, photos]);
-
-  return [flexRatio, albumWidth] as const;
-}
-
-const SizeCalculator = ({
-  photos,
-  scrollWidth,
-  onSizeCalculated,
-}: {
-  photos: Photo[];
-  scrollWidth: number;
-  onSizeCalculated: (flexRatio: number, albumWidth: number) => void;
-}) => {
-  const [flexRatio, albumWidth] = useCalculateSectionLength(
-    scrollWidth,
-    photos,
-  );
-
-  // biome-ignore lint/correctness/useExhaustiveDependencies: callback prop doesn't need to trigger effect
-  React.useEffect(() => {
-    onSizeCalculated(flexRatio, albumWidth);
-  }, [flexRatio, albumWidth]);
-
-  return null;
 };

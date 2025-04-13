@@ -62,7 +62,7 @@ const Album = async ({
   const coverPhoto = photos.find((photo) => photo.cover);
 
   return (
-    <>
+    <div className="flex flex-col md:flex-row md:flex-nowrap ">
       <div
         className={cn(
           "item min-w-screen min-h-screen flex relative pointer-events-none",
@@ -135,7 +135,7 @@ const Album = async ({
           </div>
         </figure>
       ))}
-    </>
+    </div>
   );
 };
 
