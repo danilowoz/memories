@@ -104,7 +104,7 @@ export const Scroller = ({
     const { clientX } = event;
     const { left, width } = event.currentTarget.getBoundingClientRect();
     const progress =
-      (clientX - left - indicatorWidth / 4 - windowWidth / 22) / width;
+      (clientX - left + indicatorWidth / 4 - windowWidth / 20) / width;
 
     window.scrollTo({
       top: (length * progress) / ratio,

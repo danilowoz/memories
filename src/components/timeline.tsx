@@ -1,9 +1,10 @@
 "use client";
 
 import data from "@/data.json";
+import { cn } from "@/utils/classname";
 import { calculateScrollViewLength, getPhotoPadding } from "@/utils/scroll";
 import type { Memories, Photo } from "@/utils/types";
-import { type AnimationControls, motion, useAnimation } from "motion/react";
+import { motion } from "motion/react";
 import * as React from "react";
 
 const payload = data as Memories;
@@ -53,7 +54,7 @@ export const Timeline = ({
 
   return (
     <div
-      className="hidden md:flex fixed left-0 right-0 bottom-0 mx-6 flex-row gap-6 items-center h-[50px]"
+      className="hidden md:flex fixed left-0 right-0 bottom-0 mx-6 flex-row gap-4 items-center h-[50px]"
       onClick={(event) => onMove(event, "smooth")}
       onMouseDown={() => {
         setIsDragging(true);
@@ -71,30 +72,56 @@ export const Timeline = ({
         }
       }}
     >
-      {payload.map((album, index) => (
-        <React.Fragment key={album.id}>
-          <SizeCalculator
-            photos={album.photos}
-            windowLength={windowLength}
-            onSizeCalculated={(flexRatio, albumWidth) =>
-              handleAlbumSizeCalculated(index, flexRatio, albumWidth)
-            }
-          />
+      <div className="flex flex-row gap-6 items-center flex-1 peer">
+        {payload.map((album, index) => (
+          <React.Fragment key={album.id}>
+            <SizeCalculator
+              photos={album.photos}
+              windowLength={windowLength}
+              onSizeCalculated={(flexRatio, albumWidth) =>
+                handleAlbumSizeCalculated(index, flexRatio, albumWidth)
+              }
+            />
 
-          <TimelineItem
-            albumWidth={albumSizes[index][1]}
-            flexRatio={albumSizes[index][0]}
-            id={album.id}
-            isFirst={index === 0}
-            isLast={index === payload.length - 1}
-            isDragging={isDragging}
-            startOffset={albumPositions[index].startOffset}
-            windowLength={windowLength}
-            windowProgress={windowProgress}
-            windowWidth={windowWidth}
+            <TimelineItem
+              albumWidth={albumSizes[index][1]}
+              flexRatio={albumSizes[index][0]}
+              id={album.id}
+              isDragging={isDragging}
+              isDark={album.dark}
+              startOffset={albumPositions[index].startOffset}
+              windowLength={windowLength}
+              windowProgress={windowProgress}
+              windowWidth={windowWidth}
+            />
+          </React.Fragment>
+        ))}
+      </div>
+
+      <a
+        href="https://danilowoz.com"
+        className={cn(
+          "w-7 h-7 rounded flex order-first",
+          "transition-colors text-gray-400/70 hover:bg-gray-700/10 hover:text-gray-800",
+          "peer-has-data-dark:hover:bg-gray-200/10 peer-has-data-dark:hover:text-gray-200",
+        )}
+      >
+        <svg
+          width="15"
+          height="15"
+          viewBox="0 0 15 15"
+          fill="none"
+          className="m-auto"
+        >
+          <title>Back to danilowoz.com</title>
+          <path
+            d="M6.85355 3.14645C7.04882 3.34171 7.04882 3.65829 6.85355 3.85355L3.70711 7H12.5C12.7761 7 13 7.22386 13 7.5C13 7.77614 12.7761 8 12.5 8H3.70711L6.85355 11.1464C7.04882 11.3417 7.04882 11.6583 6.85355 11.8536C6.65829 12.0488 6.34171 12.0488 6.14645 11.8536L2.14645 7.85355C1.95118 7.65829 1.95118 7.34171 2.14645 7.14645L6.14645 3.14645C6.34171 2.95118 6.65829 2.95118 6.85355 3.14645Z"
+            fill="currentColor"
+            fillRule="evenodd"
+            clipRule="evenodd"
           />
-        </React.Fragment>
-      ))}
+        </svg>
+      </a>
     </div>
   );
 };
@@ -103,8 +130,7 @@ const TimelineItem = ({
   albumWidth,
   flexRatio,
   id,
-  isFirst,
-  isLast,
+  isDark,
   startOffset,
   windowLength,
   windowProgress,
@@ -114,34 +140,20 @@ const TimelineItem = ({
   albumWidth: number;
   flexRatio: number;
   id: number;
-  isFirst: boolean;
-  isLast: boolean;
+  isDark: boolean;
   startOffset: number;
   windowLength: number;
   windowProgress: number;
   windowWidth: number;
   isDragging: boolean;
 }) => {
-  const paddingX = 24;
-  const paddingXPercentage = (paddingX / windowLength) * 100;
   const indicatorWidth = windowWidth / 20;
-  const indicatorWidthPercentage = (indicatorWidth / windowLength) * 100;
-  const progressOffset = windowProgress - startOffset + windowWidth / 2;
-  let progressPercentage = (progressOffset / albumWidth) * 100;
-
-  if (isFirst) {
-    progressPercentage = Math.max(0, progressPercentage);
-  }
-
-  if (isLast) {
-    progressPercentage = Math.min(
-      100 - (indicatorWidthPercentage - paddingXPercentage) * 100,
-      progressPercentage,
-    );
-  }
+  const progressOffset = windowProgress - startOffset;
+  const progressPercentage = (progressOffset / albumWidth) * 100;
 
   return (
     <motion.div
+      data-dark={isDark && progressPercentage > 0 ? true : undefined}
       className="h-1.5 rounded-full relative overflow-hidden"
       style={{ flexGrow: flexRatio }}
       whileHover={{
