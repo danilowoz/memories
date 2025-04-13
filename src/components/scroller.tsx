@@ -28,7 +28,9 @@ export const Scroller = ({
   );
 
   const updateThumbSizeAndPosition = React.useCallback(() => {
-    if (!contentRef.current || !trackRef.current) return;
+    if (!contentRef.current || !trackRef.current) {
+      return;
+    }
 
     const { scrollWidth, clientWidth, scrollLeft } = contentRef.current;
     const trackWidth = trackRef.current.clientWidth;
@@ -45,15 +47,15 @@ export const Scroller = ({
       : 0;
 
     setThumbPosition(newThumbPosition);
-  }, [contentRef]);
+  }, []);
 
-  const handleTrackClick = (e: React.MouseEvent<HTMLDivElement>) => {
+  const handleTrackClick = (event: React.MouseEvent<HTMLDivElement>) => {
     if (!trackRef.current || !contentRef.current) {
       return;
     }
 
     const trackRect = trackRef.current.getBoundingClientRect();
-    const clickPosition = e.clientX - trackRect.left;
+    const clickPosition = event.clientX - trackRect.left;
     const trackWidth = trackRef.current.clientWidth;
     const thumbHalfWidth = thumbWidth / 2;
 
@@ -81,15 +83,12 @@ export const Scroller = ({
     e.preventDefault(); // Prevent text selection during drag
   };
 
-  React.useEffect(() => {
+  const getAlbumScrollWidthAndOffset = React.useCallback(() => {
     const content = contentRef.current;
+
     if (!content) {
       return;
     }
-
-    const controller = new AbortController();
-
-    updateThumbSizeAndPosition();
 
     let horizontalOffset = 0;
     setAlbumSizes(
@@ -99,79 +98,41 @@ export const Scroller = ({
         return [item.scrollWidth / window.innerWidth, startOffset];
       }),
     );
+  }, []);
 
-    content.addEventListener("scroll", updateThumbSizeAndPosition, {
-      signal: controller.signal,
-    });
+  const updateBodyHeight = React.useCallback(() => {
+    const smallScreen = window.innerWidth < 768;
 
-    return () => {
-      controller.abort();
-    };
-  }, [contentRef, updateThumbSizeAndPosition]);
+    if (smallScreen || contentRef.current === null) {
+      return;
+    }
 
-  React.useEffect(() => {
-    const controller = new AbortController();
+    const ratio = contentRef.current.scrollWidth / window.innerWidth;
+    const windowHeight = window.innerHeight;
+    const verticalScrollLength = windowHeight * ratio;
 
-    const mediaMetaData = payload
-      .flatMap((item) => item.photos)
-      .reduce(
-        (acc, item) => {
-          if (item.format === "landscape") {
-            acc.landscape += 1;
-          } else {
-            acc.portrait += 1;
-          }
-          return acc;
-        },
-        { portrait: 0, landscape: 0 },
-      );
+    document.body.style.height = `${verticalScrollLength}px`;
+  }, []);
 
-    function handleResize() {
-      const smallScreen = window.innerWidth < 768;
+  const handleOnWidownScroll = React.useCallback(() => {
+    if (contentRef.current) {
+      const windowWidth = window.innerWidth;
+      const windowHeight = window.innerHeight;
+      const ratio = windowWidth / windowHeight;
 
-      if (smallScreen || contentRef.current === null) {
+      contentRef.current.scrollTo({
+        left: window.scrollY * ratio,
+      });
+    }
+  }, []);
+
+  const handleOnDrag = React.useCallback(
+    (event: MouseEvent) => {
+      if (!isDragging || !trackRef.current || !contentRef.current) {
         return;
       }
 
-      const ratio = contentRef.current.scrollWidth / window.innerWidth;
-      const windowHeight = window.innerHeight;
-      const verticalScrollLength = windowHeight * ratio;
-
-      document.body.style.height = `${verticalScrollLength}px`;
-    }
-
-    handleResize();
-
-    window.addEventListener("resize", handleResize, {
-      signal: controller.signal,
-    });
-
-    window.addEventListener(
-      "scroll",
-      (event) => {
-        if (contentRef.current) {
-          const windowWidth = window.innerWidth;
-          const windowHeight = window.innerHeight;
-          const ratio = windowWidth / windowHeight;
-
-          contentRef.current.scrollTo({
-            left: window.scrollY * ratio,
-          });
-        }
-      },
-      { signal: controller.signal },
-    );
-
-    return () => {
-      controller.abort();
-    };
-  }, [payload]);
-
-  React.useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      if (!isDragging || !trackRef.current || !contentRef.current) return;
-
-      const deltaX = e.clientX - startX;
+      const deltaX = event.clientX - startX;
       const trackWidth = trackRef.current.clientWidth;
 
       // Calculate new thumb position
@@ -190,22 +151,60 @@ export const Scroller = ({
       const newScrollLeft = scrollRatio * (scrollWidth - clientWidth);
 
       contentRef.current.scrollLeft = newScrollLeft;
-    };
+    },
+    [startThumbPosition, startX, thumbWidth, isDragging],
+  );
 
-    const handleMouseUp = () => {
-      setIsDragging(false);
-    };
+  React.useEffect(() => {
+    const content = contentRef.current;
+
+    if (!content) {
+      return;
+    }
+
+    const controller = new AbortController();
+
+    getAlbumScrollWidthAndOffset();
+    updateThumbSizeAndPosition();
+    updateBodyHeight();
+
+    content.addEventListener("scroll", updateThumbSizeAndPosition, {
+      signal: controller.signal,
+    });
+
+    window.addEventListener("resize", updateBodyHeight, {
+      signal: controller.signal,
+    });
+
+    window.addEventListener("scroll", handleOnWidownScroll, {
+      signal: controller.signal,
+    });
 
     if (isDragging) {
-      window.addEventListener("mousemove", handleMouseMove);
-      window.addEventListener("mouseup", handleMouseUp);
+      window.addEventListener("mousemove", (event) => handleOnDrag(event), {
+        signal: controller.signal,
+      });
+
+      window.addEventListener(
+        "mouseup",
+        () => {
+          setIsDragging(false);
+        },
+        { signal: controller.signal },
+      );
     }
 
     return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
-      window.removeEventListener("mouseup", handleMouseUp);
+      controller.abort();
     };
-  }, [isDragging, startX, startThumbPosition, thumbWidth, contentRef]);
+  }, [
+    isDragging,
+    updateThumbSizeAndPosition,
+    getAlbumScrollWidthAndOffset,
+    updateBodyHeight,
+    handleOnWidownScroll,
+    handleOnDrag,
+  ]);
 
   return (
     <div
