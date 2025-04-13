@@ -10,27 +10,39 @@ import * as React from "react";
 const payload = data as Memories;
 
 export const Timeline = ({
-  windowLength,
-  windowProgress,
-  onMove,
-}: {
-  windowLength: number;
-  windowProgress: number;
-  onMove: (
-    event: React.MouseEvent<HTMLDivElement>,
-    behavior?: ScrollBehavior,
-  ) => void;
-}) => {
+  contentRef,
+}: { contentRef: React.RefObject<HTMLElement> }) => {
+  const [thumbWidth, setThumbWidth] = React.useState(20);
+  const [thumbPosition, setThumbPosition] = React.useState(0);
+  const [scrollWidth, setScrollWidth] = React.useState(0);
   const [isDragging, setIsDragging] = React.useState(false);
+  const [startX, setStartX] = React.useState(0);
+  const [startThumbPosition, setStartThumbPosition] = React.useState(0);
+  const trackRef = React.useRef<HTMLDivElement>(null);
 
   const [albumSizes, setAlbumSizes] = React.useState<Array<[number, number]>>(
     new Array(payload.length).fill([0, 0]),
   );
-  const [windowWidth, setWindowWidth] = React.useState<number>(0);
 
-  React.useEffect(() => {
-    setWindowWidth(window.innerWidth);
-  }, []);
+  const updateThumbSizeAndPosition = React.useCallback(() => {
+    if (!contentRef.current || !trackRef.current) return;
+
+    const { scrollWidth, clientWidth, scrollLeft } = contentRef.current;
+    const trackWidth = trackRef.current.clientWidth;
+
+    const ratio = clientWidth / scrollWidth;
+    const calculatedThumbWidth = Math.max(20, Math.floor(trackWidth * ratio));
+    setThumbWidth(calculatedThumbWidth);
+    setScrollWidth(scrollWidth);
+
+    const maxScrollDistance = scrollWidth - clientWidth;
+    const maxThumbPosition = trackWidth - calculatedThumbWidth;
+    const newThumbPosition = maxScrollDistance
+      ? (scrollLeft / maxScrollDistance) * maxThumbPosition
+      : 0;
+
+    setThumbPosition(newThumbPosition);
+  }, [contentRef]);
 
   const handleAlbumSizeCalculated = React.useCallback(
     (albumIndex: number, flexRatio: number, albumWidth: number) => {
@@ -52,47 +64,129 @@ export const Timeline = ({
     });
   }, [albumSizes]);
 
+  React.useEffect(() => {
+    const content = contentRef.current;
+    if (!content) {
+      return;
+    }
+
+    const handleScroll = () => {
+      updateThumbSizeAndPosition();
+    };
+
+    content.addEventListener("scroll", handleScroll);
+    window.addEventListener("resize", updateThumbSizeAndPosition);
+
+    updateThumbSizeAndPosition();
+
+    return () => {
+      content.removeEventListener("scroll", handleScroll);
+      window.addEventListener("resize", updateThumbSizeAndPosition);
+    };
+  }, [contentRef, updateThumbSizeAndPosition]);
+
+  const handleTrackClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!trackRef.current || !contentRef.current) {
+      return;
+    }
+
+    const trackRect = trackRef.current.getBoundingClientRect();
+    const clickPosition = e.clientX - trackRect.left;
+    const trackWidth = trackRef.current.clientWidth;
+    const thumbHalfWidth = thumbWidth / 2;
+
+    // Calculate new thumb position centered on click
+    let newThumbPosition = clickPosition - thumbHalfWidth;
+
+    // Constrain thumb position within track
+    newThumbPosition = Math.max(
+      0,
+      Math.min(newThumbPosition, trackWidth - thumbWidth),
+    );
+
+    // Update content scroll position
+    const { scrollWidth, clientWidth } = contentRef.current;
+    const scrollRatio = newThumbPosition / (trackWidth - thumbWidth);
+    const newScrollLeft = scrollRatio * (scrollWidth - clientWidth);
+
+    contentRef.current.scroll({ left: newScrollLeft, behavior: "smooth" });
+  };
+
+  const handleThumbMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+    setIsDragging(true);
+    setStartX(e.clientX);
+    setStartThumbPosition(thumbPosition);
+    e.preventDefault(); // Prevent text selection during drag
+  };
+
+  React.useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!isDragging || !trackRef.current || !contentRef.current) return;
+
+      const deltaX = e.clientX - startX;
+      const trackWidth = trackRef.current.clientWidth;
+
+      // Calculate new thumb position
+      let newThumbPosition = startThumbPosition + deltaX;
+
+      // Constrain thumb position within track
+      newThumbPosition = Math.max(
+        0,
+        Math.min(newThumbPosition, trackWidth - thumbWidth),
+      );
+      setThumbPosition(newThumbPosition);
+
+      // Update content scroll position
+      const { scrollWidth, clientWidth } = contentRef.current;
+      const scrollRatio = newThumbPosition / (trackWidth - thumbWidth);
+      const newScrollLeft = scrollRatio * (scrollWidth - clientWidth);
+
+      contentRef.current.scrollLeft = newScrollLeft;
+    };
+
+    const handleMouseUp = () => {
+      setIsDragging(false);
+    };
+
+    if (isDragging) {
+      window.addEventListener("mousemove", handleMouseMove);
+      window.addEventListener("mouseup", handleMouseUp);
+    }
+
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseup", handleMouseUp);
+    };
+  }, [isDragging, startX, startThumbPosition, thumbWidth, contentRef]);
+
   return (
-    <div
-      className="hidden md:flex fixed left-0 right-0 bottom-0 mx-6 flex-row gap-4 items-center h-[50px]"
-      onClick={(event) => onMove(event, "smooth")}
-      onMouseDown={() => {
-        setIsDragging(true);
-        document.body.classList.add("cursor-ew-resize");
-        document.body.classList.add("select-none");
-      }}
-      onMouseUp={() => {
-        setIsDragging(false);
-        document.body.classList.remove("cursor-ew-resize");
-        document.body.classList.remove("select-none");
-      }}
-      onMouseMove={(event) => {
-        if (isDragging) {
-          onMove(event);
-        }
-      }}
-    >
-      <div className="flex flex-row gap-6 items-center flex-1 peer">
+    <div className="hidden md:flex fixed left-0 right-0 bottom-0 mx-6 flex-row gap-4 items-center h-[50px]">
+      <div
+        ref={trackRef}
+        className="flex flex-row gap-6 items-center flex-1 peer"
+        onMouseDown={handleThumbMouseDown}
+        onClick={handleTrackClick}
+      >
         {payload.map((album, index) => (
           <React.Fragment key={album.id}>
             <SizeCalculator
               photos={album.photos}
-              windowLength={windowLength}
+              scrollWidth={scrollWidth}
               onSizeCalculated={(flexRatio, albumWidth) =>
                 handleAlbumSizeCalculated(index, flexRatio, albumWidth)
               }
             />
 
             <TimelineItem
-              albumWidth={albumSizes[index][1]}
               flexRatio={albumSizes[index][0]}
-              id={album.id}
               isDragging={isDragging}
-              isDark={album.dark}
+              thumbWidth={thumbWidth}
+              thumbPosition={thumbPosition}
               startOffset={albumPositions[index].startOffset}
-              windowLength={windowLength}
-              windowProgress={windowProgress}
-              windowWidth={windowWidth}
+              trackWidth={trackRef.current?.clientWidth || 0}
+              scrollWidth={scrollWidth}
+              id={album.id}
+              isDark={album.dark}
             />
           </React.Fragment>
         ))}
@@ -127,33 +221,32 @@ export const Timeline = ({
 };
 
 const TimelineItem = ({
-  albumWidth,
   flexRatio,
+  isDragging,
+  thumbWidth,
+  thumbPosition,
+  startOffset,
+  trackWidth,
+  scrollWidth,
   id,
   isDark,
-  startOffset,
-  windowLength,
-  windowProgress,
-  windowWidth,
-  isDragging,
 }: {
-  albumWidth: number;
   flexRatio: number;
+  isDragging: boolean;
+  thumbWidth: number;
+  thumbPosition: number;
+  startOffset: number;
+  trackWidth: number;
+  scrollWidth: number;
   id: number;
   isDark: boolean;
-  startOffset: number;
-  windowLength: number;
-  windowProgress: number;
-  windowWidth: number;
-  isDragging: boolean;
 }) => {
-  const indicatorWidth = windowWidth / 20;
-  const progressOffset = windowProgress - startOffset;
-  const progressPercentage = (progressOffset / albumWidth) * 100;
+  const relativePosition =
+    thumbPosition - (startOffset / scrollWidth) * trackWidth;
 
   return (
     <motion.div
-      data-dark={isDark && progressPercentage > 0 ? true : undefined}
+      data-dark={isDark && relativePosition > 0 ? true : undefined}
       className="h-1.5 rounded-full relative overflow-hidden"
       style={{ flexGrow: flexRatio }}
       whileHover={{
@@ -173,8 +266,8 @@ const TimelineItem = ({
       <motion.div
         className="absolute h-full rounded-full cursor-ew-resize"
         style={{
-          left: `${progressPercentage}%`,
-          width: `${indicatorWidth}px`,
+          width: `${thumbWidth}px`,
+          left: `${relativePosition}px`,
           backgroundColor: `var(--color-${id})`,
         }}
       />
@@ -182,7 +275,7 @@ const TimelineItem = ({
   );
 };
 
-function useCalculateSectionLength(windowLength: number, photos: Photo[]) {
+function useCalculateSectionLength(scrollWidth: number, photos: Photo[]) {
   const [flexRatio, setFlexRatio] = React.useState<number>(0);
   const [albumWidth, setAlbumWidth] = React.useState<number>(0);
 
@@ -202,7 +295,7 @@ function useCalculateSectionLength(windowLength: number, photos: Photo[]) {
       const [totalWidth, ratio] = calculateScrollViewLength(
         metadata,
         photoPadding,
-        windowLength,
+        scrollWidth,
       );
 
       setFlexRatio(ratio);
@@ -218,22 +311,22 @@ function useCalculateSectionLength(windowLength: number, photos: Photo[]) {
     return () => {
       controller.abort();
     };
-  }, [windowLength, photos]);
+  }, [scrollWidth, photos]);
 
   return [flexRatio, albumWidth] as const;
 }
 
 const SizeCalculator = ({
   photos,
-  windowLength,
+  scrollWidth,
   onSizeCalculated,
 }: {
   photos: Photo[];
-  windowLength: number;
+  scrollWidth: number;
   onSizeCalculated: (flexRatio: number, albumWidth: number) => void;
 }) => {
   const [flexRatio, albumWidth] = useCalculateSectionLength(
-    windowLength,
+    scrollWidth,
     photos,
   );
 

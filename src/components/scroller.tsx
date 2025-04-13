@@ -5,6 +5,7 @@ import { cn } from "@/utils/classname";
 import { calculateScrollViewLength, getPhotoPadding } from "@/utils/scroll";
 import type { Memories } from "@/utils/types";
 import React from "react";
+import { HorizontalScrollbar } from "./horizontal-scrollbar";
 import { Timeline } from "./timeline";
 
 const payload = data as Memories;
@@ -122,11 +123,7 @@ export const Scroller = ({
     >
       {children}
 
-      <Timeline
-        windowLength={length}
-        windowProgress={progress}
-        onMove={onMove}
-      />
+      <Timeline contentRef={ref} windowLength={length} />
     </div>
   );
 };
