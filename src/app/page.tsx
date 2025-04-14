@@ -65,7 +65,7 @@ const Album = async ({
     <div className="flex flex-col md:flex-row md:flex-nowrap ">
       <div
         className={cn(
-          "item min-w-screen min-h-screen flex relative pointer-events-none",
+          "item min-h-[40vh] min-w-screen md:min-h-screen flex relative pointer-events-none",
           {
             "z-20": isFirst,
             "bg-black": dark,
@@ -82,18 +82,16 @@ const Album = async ({
             backgroundImage: `url(/images/${coverPhoto?.filename})`,
           }}
           className={cn(
-            "absolute left-6 right-6 top-6 bottom-12 rounded-lg bg-center saturate-20 bg-cover",
-            // { "inset-0 rounded-none": isFirst },
+            "absolute inset-0 md:inset-6 md:bottom-12 md:rounded-lg bg-center saturate-20 bg-cover",
           )}
         />
         <div
           style={{ backgroundColor: "var(--color)" }}
           className={cn(
-            "absolute left-6 right-6 top-6 bottom-12 rounded-lg opacity-70",
-            // { "inset-0 rounded-none": isFirst },
+            "absolute inset-0 top-0 md:inset-6 md:bottom-12 md:rounded-lg opacity-70",
           )}
         />
-        <h2 className="m-auto font-serif text-[60px] text-gray-50 mix-blend-plus-lighter">
+        <h2 className="text-[30px] m-auto font-serif md:text-[60px] text-gray-50 mix-blend-plus-lighter">
           {renderTitle()}
         </h2>
       </div>
@@ -110,7 +108,7 @@ const Album = async ({
           <div className="image-wrapper m-auto md:px-40">
             {item.filename && (
               <img
-                className="w-full md:w-auto md:h-[80vh] max-w-none rounded"
+                className="w-full md:w-auto md:h-[80vh] max-w-none md:rounded"
                 src={`/images/${item.filename}`}
                 alt={item.location}
               />

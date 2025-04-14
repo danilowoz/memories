@@ -73,7 +73,13 @@ export const Scroller = ({
     const scrollRatio = newThumbPosition / (trackWidth - thumbWidth);
     const newScrollLeft = scrollRatio * (scrollWidth - clientWidth);
 
-    contentRef.current.scroll({ left: newScrollLeft, behavior: "smooth" });
+    // Calculate the window scroll position based on the width ratio
+    const windowWidth = window.innerWidth;
+    const windowHeight = window.innerHeight;
+    const ratio = windowWidth / windowHeight;
+    const newScrollTop = newScrollLeft / ratio;
+
+    window.scrollTo({ top: newScrollTop, behavior: "smooth" });
   };
 
   const handleThumbMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -81,6 +87,8 @@ export const Scroller = ({
     setStartX(e.clientX);
     setStartThumbPosition(thumbPosition);
     e.preventDefault(); // Prevent text selection during drag
+
+    document.body.classList.add("cursor-ew-resize");
   };
 
   const getAlbumScrollWidthAndOffset = React.useCallback(() => {
@@ -114,7 +122,7 @@ export const Scroller = ({
     document.body.style.height = `${verticalScrollLength}px`;
   }, []);
 
-  const handleOnWidownScroll = React.useCallback(() => {
+  const handleOnWindowScroll = React.useCallback(() => {
     if (contentRef.current) {
       const windowWidth = window.innerWidth;
       const windowHeight = window.innerHeight;
@@ -150,7 +158,13 @@ export const Scroller = ({
       const scrollRatio = newThumbPosition / (trackWidth - thumbWidth);
       const newScrollLeft = scrollRatio * (scrollWidth - clientWidth);
 
-      contentRef.current.scrollLeft = newScrollLeft;
+      // Calculate the window scroll position based on the width ratio
+      const windowWidth = window.innerWidth;
+      const windowHeight = window.innerHeight;
+      const ratio = windowWidth / windowHeight;
+      const newScrollTop = newScrollLeft / ratio;
+
+      window.scrollTo({ top: newScrollTop });
     },
     [startThumbPosition, startX, thumbWidth, isDragging],
   );
@@ -176,7 +190,7 @@ export const Scroller = ({
       signal: controller.signal,
     });
 
-    window.addEventListener("scroll", handleOnWidownScroll, {
+    window.addEventListener("scroll", handleOnWindowScroll, {
       signal: controller.signal,
     });
 
@@ -189,6 +203,7 @@ export const Scroller = ({
         "mouseup",
         () => {
           setIsDragging(false);
+          document.body.classList.remove("cursor-ew-resize");
         },
         { signal: controller.signal },
       );
@@ -202,7 +217,7 @@ export const Scroller = ({
     updateThumbSizeAndPosition,
     getAlbumScrollWidthAndOffset,
     updateBodyHeight,
-    handleOnWidownScroll,
+    handleOnWindowScroll,
     handleOnDrag,
   ]);
 
@@ -309,9 +324,9 @@ const TimelineItem = ({
         height: isDragging ? 12 : undefined,
       }}
     >
-      <motion.div className="h-1.5 absolute left-0 right-0 top-[calc(50%-3px)] bg-gray-400/20" />
+      <div className="h-1.5 absolute left-0 right-0 top-[calc(50%-3px)] bg-gray-400/20" />
 
-      <motion.div
+      <div
         className="absolute h-full rounded-full cursor-ew-resize"
         style={{
           width: `${thumbWidth}px`,
