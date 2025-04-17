@@ -7,9 +7,16 @@ export default async function Home() {
   return (
     <Scroller>
       {payload.map((item, index) => {
-        const sortedPhotos = item.photos.sort(
-          (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
-        ) as Photo[];
+        const sortedPhotos = item.photos.sort((a, b) => {
+          if ("date" in a && "date" in b) {
+            return (
+              new Date(a.date as string).getTime() -
+              new Date(b.date as string).getTime()
+            );
+          }
+
+          return 0;
+        }) as Photo[];
 
         return (
           <Album
