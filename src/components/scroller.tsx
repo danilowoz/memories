@@ -258,7 +258,7 @@ export const Scroller = ({
           href="https://danilowoz.com"
           className={cn(
             "w-7 h-7 rounded flex order-first",
-            "transition-colors text-gray-400/70 hover:bg-gray-700/10 hover:text-gray-800",
+            "transition-colors text-gray-500 hover:bg-gray-700/10 hover:text-gray-800",
             "peer-has-data-dark:hover:bg-gray-200/10 peer-has-data-dark:hover:text-gray-200",
           )}
         >

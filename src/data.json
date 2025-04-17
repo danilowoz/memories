@@ -8,86 +8,104 @@
         "id": 0,
         "date": "02/01/2025",
         "location": "Guaramirim, Brazil",
-        "filename": "DSCF1762.jpg",
-        "format": "portrait"
+        "filename": "/travel/DSCF1762.jpg"
       },
       {
         "id": 2,
         "date": "02/01/2025",
         "location": "Barra Velha, Brazil",
-        "filename": "DSCF1778.jpg",
-        "format": "portrait"
+        "filename": "/travel/DSCF1792.jpg"
       },
       {
         "id": 3,
         "date": "02/01/2025",
         "location": "Barcelona, Spain",
-        "filename": "DSCF1859.jpg",
-        "format": "portrait"
+        "filename": "/travel/DSCF1859.jpg"
       },
       {
         "id": 4,
         "date": "02/01/2025",
         "location": "Barcelona, Spain",
-        "filename": "DSCF1948.jpg",
-        "format": "portrait"
+        "filename": "/travel/DSCF1948.jpg"
       },
       {
         "id": 5,
         "date": "05/25/2024",
         "location": "Agra, India",
-        "filename": "000064.jpg",
-        "format": "landscape",
+        "filename": "/travel/000064.jpg",
         "cover": true
       },
       {
         "id": 6,
         "date": "04/26/2024",
         "location": "Annapurna Base Camp, Nepal",
-        "filename": "000055.jpg",
-        "format": "portrait"
+        "filename": "/travel/000055.jpg"
       },
       {
         "id": 7,
-        "date": "10/11/2024",
+        "date": "09/09/2023",
         "location": "Porto, Portugal",
-        "filename": "000045_1.jpg",
-        "format": "portrait"
+        "filename": "/travel/000042_1.jpg"
       },
       {
         "id": 8,
         "date": "07/30/2023",
         "location": "Porto, Portugal",
-        "filename": "IMG_4209.jpg",
-        "format": "portrait"
+        "filename": "/travel/IMG_4209.jpg"
       },
       {
         "id": 9,
         "date": "06/29/2023",
         "location": "Florianópolis, Brazil",
-        "filename": "000059.jpg",
-        "format": "portrait"
+        "filename": "/travel/000059.jpg"
       },
       {
         "id": 10,
         "date": "03/22/2023",
         "location": "Havana, Cuba",
-        "filename": "IMG_6590.jpg",
-        "format": "portrait"
+        "filename": "/travel/IMG_6590.jpg"
       },
       {
         "id": 11,
         "date": "10/01/2022",
         "location": "Istanbul, Türkiye",
-        "filename": "IMG_5791.jpg",
-        "format": "portrait"
+        "filename": "/travel/IMG_5791.jpg"
       },
       {
         "id": 12,
         "date": "09/10/2022",
         "location": "Kotor, Montenegro",
-        "filename": "IMG_4987.jpg",
-        "format": "portrait"
+        "filename": "/travel/IMG_4987.jpg"
+      },
+      {
+        "id": 13,
+        "date": "09/09/2019",
+        "location": "Sahara Desert, Morocco",
+        "filename": "/travel/18FBFA0F-BCE4-4C3F-B5AA-4AB7BDBBCED1.jpg"
+      },
+      {
+        "id": 14,
+        "date": "03/03/2025",
+        "location": "Bahia, Brazil",
+        "filename": "/travel/DSCF2367.jpg"
+      },
+      {
+        "id": 15,
+        "date": "03/03/2025",
+        "location": "Rio de Janeiro, Brazil",
+        "filename": "/travel/DSCF2718.jpg"
+      },
+      {
+        "id": 16,
+        "date": "03/03/2023",
+        "location": "Bogotá, Colombia",
+        "filename": "/travel/IMG_6759.jpg"
+      },
+      {
+        "id": 17,
+        "date": "05/25/2024",
+        "location": "Agra, India",
+        "filename": "/travel/IMG_7790.jpg"
       }
     ]
   },
@@ -99,18 +117,46 @@
     "photos": [
       {
         "id": 1,
-        "date": "08/02/2025",
-        "location": "Campinas, Brazil",
-        "filename": "DSCF1685.jpg",
-        "format": "landscape",
+        "date": "12/12/2024",
+        "location": "Praha, Czech Republic",
+        "filename": "/her/000006_1.jpg",
         "cover": true
       },
       {
         "id": 2,
-        "date": "02/03/2025",
+        "date": "04/26/2024",
+        "location": "Annapurna Base Camp, Nepal",
+        "filename": "/her/000039.jpg"
+      },
+      {
+        "id": 3,
+        "date": "05/05/2023",
+        "location": "Ericeira, Portgal",
+        "filename": "/her/000040_1.jpg"
+      },
+      {
+        "id": 4,
+        "date": "12/12/2024",
+        "location": "Porto, Portgal",
+        "filename": "/her/000046.jpg"
+      },
+      {
+        "id": 5,
+        "date": "05/25/2024",
+        "location": "Varanasi, India",
+        "filename": "/her/000049.jpg"
+      },
+      {
+        "id": 6,
+        "date": "03/03/2025",
+        "location": "Campinas, Brazil",
+        "filename": "/her/DSCF1685.jpg"
+      },
+      {
+        "id": 7,
+        "date": "02/02/2023",
         "location": "Porto, Portugal",
-        "filename": "IMG_6407.jpg",
-        "format": "portrait"
+        "filename": "/her/IMG_6407.jpg"
       }
     ]
   },
@@ -122,18 +168,32 @@
     "photos": [
       {
         "id": 1,
-        "date": "05/12/2024",
-        "location": "Prague, Czech Republic",
-        "filename": "IMG_2258.jpg",
-        "format": "portrait",
-        "cover": true
+        "filename": "/layers/DSCF1494.jpeg"
       },
       {
         "id": 2,
-        "date": "05/12/2024",
-        "location": "Prague, Czech Republic",
-        "filename": "IMG_2258.jpg",
-        "format": "portrait"
+        "filename": "/layers/DSCF1495.jpeg"
+      },
+      {
+        "id": 3,
+        "filename": "/layers/DSCF1535.jpeg"
+      },
+      {
+        "id": 4,
+        "filename": "/layers/DSCF1648.jpeg"
+      },
+      {
+        "id": 5,
+        "filename": "/layers/DSCF1660.jpeg"
+      },
+      {
+        "id": 6,
+        "filename": "/layers/DSCF1838.jpeg"
+      },
+      {
+        "id": 7,
+        "filename": "/layers/IMG_2258.jpeg",
+        "cover": true
       }
     ]
   }

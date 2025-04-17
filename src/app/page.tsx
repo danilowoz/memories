@@ -79,7 +79,7 @@ const Album = async ({
       >
         <div
           style={{
-            backgroundImage: `url(/images/${coverPhoto?.filename})`,
+            backgroundImage: `url(${coverPhoto?.filename})`,
           }}
           className={cn(
             "absolute inset-0 md:inset-6 md:bottom-12 md:rounded-lg bg-center saturate-20 bg-cover",
@@ -109,27 +109,29 @@ const Album = async ({
             {item.filename && (
               <img
                 className="w-full md:w-auto md:h-[80vh] max-w-none md:rounded"
-                src={`/images/${item.filename}`}
+                src={item.filename}
                 alt={item.location}
               />
             )}
 
-            <figcaption className="p-4 pb-10 md:p-0 md:pt-4">
-              <p
-                className={cn("text-gray-900 font-semibold m-0", {
-                  "text-white": dark,
-                })}
-              >
-                {item.location}
-              </p>
-              <small
-                className={cn("text-gray-600 uppercase m-0", {
-                  "text-white opacity-50": dark,
-                })}
-              >
-                {formatDate(item.date)}
-              </small>
-            </figcaption>
+            {item.location && item.date && (
+              <figcaption className="p-4 pb-10 md:p-0 md:pt-4">
+                <p
+                  className={cn("text-gray-900 font-semibold m-0", {
+                    "text-white": dark,
+                  })}
+                >
+                  {item.location}
+                </p>
+                <small
+                  className={cn("text-gray-600 uppercase m-0", {
+                    "text-white opacity-50": dark,
+                  })}
+                >
+                  {formatDate(item.date)}
+                </small>
+              </figcaption>
+            )}
           </div>
         </figure>
       ))}
