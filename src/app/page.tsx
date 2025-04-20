@@ -25,7 +25,7 @@ export default async function Home() {
             photos={sortedPhotos}
             id={item.id}
             dark={item.dark}
-            isFirst={index === 0}
+            isLast={index === payload.length - 1}
           />
         );
       })}
@@ -38,13 +38,13 @@ const Album = async ({
   photos,
   id,
   dark,
-  isFirst,
+  isLast,
 }: {
   name: string;
   photos: Photo[];
   id: string | number;
   dark: boolean;
-  isFirst: boolean;
+  isLast: boolean;
 }) => {
   const renderTitle = () => {
     const leftSide = name.indexOf("Memories") === 0;
@@ -53,14 +53,14 @@ const Album = async ({
       return (
         <>
           <span>Memories</span>
-          <span className="opacity-20">{name.replace("Memories", "")}</span>
+          <span className="opacity-30">{name.replace("Memories", "")}</span>
         </>
       );
     }
 
     return (
       <>
-        <span className="opacity-20">{name.replace("Memories", "")}</span>
+        <span className="opacity-30">{name.replace("Memories", "")}</span>
         <span>Memories</span>
       </>
     );
@@ -69,15 +69,16 @@ const Album = async ({
   const coverPhoto = photos.find((photo) => photo.cover);
 
   return (
-    <div className="flex flex-col md:flex-row md:flex-nowrap ">
+    <div
+      className={cn(
+        "flex flex-col md:flex-row md:flex-nowrap gap-12 md:gap-0",
+        {
+          "bg-black": dark,
+        },
+      )}
+    >
       <div
-        className={cn(
-          "item min-h-[40vh] min-w-screen md:min-h-screen flex relative pointer-events-none",
-          {
-            "z-20": isFirst,
-            "bg-black": dark,
-          },
-        )}
+        className="item min-h-[6em] min-w-screen md:min-h-screen flex relative pointer-events-none leading-0"
         style={
           {
             "--color": `var(--color-${id})`,
@@ -108,7 +109,7 @@ const Album = async ({
           key={item.id}
           className={cn("md:flex", {
             "md:pl-40": index === 0,
-            "md:pr-40": index === photos.length - 1,
+            "md:pr-40": index === photos.length - 1 && !isLast,
             "bg-black": dark,
           })}
         >
@@ -122,7 +123,7 @@ const Album = async ({
             )}
 
             {item.location && item.date && (
-              <figcaption className="p-4 pb-10 md:p-0 md:pt-4">
+              <figcaption className="p-4 md:pt-4">
                 <p
                   className={cn("text-gray-900 font-semibold m-0", {
                     "text-white": dark,
