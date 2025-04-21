@@ -17,8 +17,7 @@ export const Scroller = ({
   const trackRef = React.useRef<HTMLDivElement>(null);
   const scrollX = useMotionValue(0);
 
-  const springScrollX = useSpring(scrollX, {
-    type: "spring",
+  const springScrollX = useSpring(scrollX as unknown as number, {
     duration: 0.3,
     bounce: 0.1,
   });
