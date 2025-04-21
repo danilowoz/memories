@@ -3,7 +3,7 @@
 import data from "@/data.json";
 import { cn } from "@/utils/classname";
 import type { Memories } from "@/utils/types";
-import { motion } from "motion/react";
+import { motion, useMotionValue, useSpring } from "motion/react";
 import * as React from "react";
 
 const payload = data as Memories;
@@ -15,6 +15,21 @@ export const Scroller = ({
 }) => {
   const contentRef = React.useRef<HTMLDivElement>(null);
   const trackRef = React.useRef<HTMLDivElement>(null);
+  const scrollX = useMotionValue(0);
+
+  const springScrollX = useSpring(scrollX, {
+    type: "spring",
+    duration: 0.3,
+    bounce: 0.1,
+  });
+
+  React.useEffect(() => {
+    return springScrollX.onChange((latest) => {
+      if (contentRef.current) {
+        contentRef.current.scrollLeft = latest;
+      }
+    });
+  }, [springScrollX]);
 
   const [thumbWidth, setThumbWidth] = React.useState(20);
   const [thumbPosition, setThumbPosition] = React.useState(0);
@@ -128,11 +143,9 @@ export const Scroller = ({
       const windowHeight = window.innerHeight;
       const ratio = windowWidth / windowHeight;
 
-      contentRef.current.scrollTo({
-        left: window.scrollY * ratio,
-      });
+      scrollX.set(window.scrollY * ratio);
     }
-  }, []);
+  }, [scrollX]);
 
   const handleOnDrag = React.useCallback(
     (event: MouseEvent) => {
@@ -227,6 +240,7 @@ export const Scroller = ({
       className={cn(
         "h-screen w-screen md:fixed md:inset-0",
         "flex flex-col md:flex-row md:flex-nowrap md:overflow-hidden gap-12 md:gap-0",
+        "bg-white has-data-dark:bg-black transition-colors duration-500",
       )}
     >
       {children}
@@ -309,7 +323,7 @@ const TimelineItem = ({
 
   return (
     <motion.div
-      data-dark={isDark && relativePosition > 0 ? true : undefined}
+      data-dark={isDark && relativePosition > -5 ? true : undefined}
       className="h-1.5 rounded-full relative overflow-hidden"
       style={{ flexGrow: flexRatio }}
       whileHover={{
@@ -324,7 +338,7 @@ const TimelineItem = ({
         height: isDragging ? 12 : undefined,
       }}
     >
-      <div className="h-1.5 absolute left-0 right-0 top-[calc(50%-3px)] bg-gray-400/20" />
+      <div className="h-1.5 absolute left-0 right-0 top-[calc(50%-3px)] bg-gray-400/20 rounded-full" />
 
       <div
         className="absolute h-full rounded-full cursor-ew-resize"

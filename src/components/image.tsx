@@ -1,0 +1,69 @@
+"use client";
+
+import { cn } from "@/utils/classname";
+import { motion } from "framer-motion";
+
+export const Image = ({
+  src,
+  alt,
+  className,
+  location,
+  date,
+  dark,
+}: {
+  src: string;
+  alt: string;
+  className?: string;
+  location: string;
+  date: string;
+  dark: boolean;
+}) => {
+  return (
+    <motion.div
+      className="image-wrapper m-auto md:px-40"
+      initial={{ opacity: 0, filter: "blur(5px)" }}
+      whileInView={{ opacity: 1, filter: "blur(0)" }}
+      transition={{ type: "spring", duration: 0.3, bounce: 0 }}
+      viewport={{ amount: 0.05 }}
+    >
+      <img
+        className={`w-full md:w-auto md:h-[80vh] max-w-none md:rounded transform-gpu ${className}`}
+        src={src}
+        alt={alt}
+      />
+
+      {location && date && (
+        <figcaption className="p-4 md:pt-4 md:p-0">
+          <p
+            className={cn("text-gray-600 font-semibold m-0", {
+              "text-white": dark,
+            })}
+          >
+            {location}
+          </p>
+          <p
+            className={cn("text-gray-400 uppercase m-0 text-xs", {
+              "text-white opacity-50": dark,
+            })}
+          >
+            {formatDate(date)}
+          </p>
+        </figcaption>
+      )}
+    </motion.div>
+  );
+};
+
+function formatDate(date: string) {
+  const fullDate = new Date(date);
+
+  const month = fullDate.toLocaleDateString("en-US", {
+    month: "long",
+  });
+
+  const year = fullDate.toLocaleDateString("en-US", {
+    year: "numeric",
+  });
+
+  return `${month}, ${year}`;
+}
