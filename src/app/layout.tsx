@@ -15,7 +15,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <meta name="theme-color" content="#fff" />
       <body className={`antialiased ${serif.variable}`}>{children}</body>
     </html>
   );

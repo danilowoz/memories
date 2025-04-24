@@ -263,6 +263,7 @@ export const Scroller = ({
               scrollWidth={scrollWidth}
               id={album.id}
               isDark={album.dark}
+              isLast={index === payload.length - 1}
             />
           ))}
         </div>
@@ -306,6 +307,7 @@ const TimelineItem = ({
   scrollWidth,
   id,
   isDark,
+  isLast,
 }: {
   flexRatio: number;
   isDragging: boolean;
@@ -316,37 +318,45 @@ const TimelineItem = ({
   scrollWidth: number;
   id: number;
   isDark: boolean;
+  isLast: boolean;
 }) => {
   const relativePosition =
     thumbPosition - (startOffset / scrollWidth) * trackWidth;
 
-  return (
-    <motion.div
-      data-dark={isDark && relativePosition > -5 ? true : undefined}
-      className="h-1.5 rounded-full relative overflow-hidden"
-      style={{ flexGrow: flexRatio }}
-      whileHover={{
-        height: 12,
-        transition: {
-          type: "spring",
-          duration: 0.2,
-          bounce: 0.3,
-        },
-      }}
-      animate={{
-        height: isDragging ? 12 : undefined,
-      }}
-    >
-      <div className="h-1.5 absolute left-0 right-0 top-[calc(50%-3px)] bg-gray-400/20 rounded-full" />
+  const darkModeEnabled = isDark && relativePosition > -5;
 
-      <div
-        className="absolute h-full rounded-full cursor-ew-resize"
-        style={{
-          width: `${thumbWidth}px`,
-          left: `${relativePosition}px`,
-          backgroundColor: `var(--color-${id})`,
+  return (
+    <>
+      {isLast && (
+        <meta name="theme-color" content={darkModeEnabled ? "#000" : "#fff"} />
+      )}
+      <motion.div
+        data-dark={darkModeEnabled ? true : undefined}
+        className="h-1.5 rounded-full relative overflow-hidden"
+        style={{ flexGrow: flexRatio }}
+        whileHover={{
+          height: 12,
+          transition: {
+            type: "spring",
+            duration: 0.2,
+            bounce: 0.3,
+          },
         }}
-      />
-    </motion.div>
+        animate={{
+          height: isDragging ? 12 : undefined,
+        }}
+      >
+        <div className="h-1.5 absolute left-0 right-0 top-[calc(50%-3px)] bg-gray-400/20 rounded-full" />
+
+        <div
+          className="absolute h-full rounded-full cursor-ew-resize"
+          style={{
+            width: `${thumbWidth}px`,
+            left: `${relativePosition}px`,
+            backgroundColor: `var(--color-${id})`,
+          }}
+        />
+      </motion.div>
+    </>
   );
 };
