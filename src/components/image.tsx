@@ -21,7 +21,7 @@ export const Image = ({
   return (
     <motion.div
       className="image-wrapper m-auto md:px-40"
-      initial={{ opacity: 0, filter: "blur(5px)" }}
+      initial={{ opacity: 0.2, filter: "blur(5px)" }}
       whileInView={{ opacity: 1, filter: "blur(0)" }}
       transition={{ type: "spring", duration: 0.3, bounce: 0 }}
       viewport={{ amount: 0.05 }}
