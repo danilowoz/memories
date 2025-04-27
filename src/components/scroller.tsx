@@ -267,7 +267,7 @@ export const Scroller = ({
       className={cn(
         "h-screen w-screen md:fixed md:inset-0",
         "flex flex-col md:flex-row md:flex-nowrap md:overflow-hidden gap-12 md:gap-0",
-        "bg-white has-data-dark:bg-black transition-colors duration-500",
+        "bg-white md:has-data-dark:bg-black transition-colors duration-500",
       )}
     >
       {children}
@@ -306,6 +306,7 @@ export const Scroller = ({
               trackWidth={trackRef.current?.clientWidth || 0}
               scrollWidth={scrollWidth}
               id={album.id}
+              isDragging={isDragging}
               isDark={album.dark}
               isLast={index === payload.length - 1}
               moveTop={moveTop}
@@ -352,6 +353,7 @@ const TimelineItem = ({
   trackWidth,
   scrollWidth,
   id,
+  isDragging,
   isDark,
   isLast,
   moveTop,
@@ -365,6 +367,7 @@ const TimelineItem = ({
   trackWidth: number;
   scrollWidth: number;
   id: number;
+  isDragging: boolean;
   isDark: boolean;
   isLast: boolean;
   moveTop: MotionValue<number>;
@@ -406,7 +409,7 @@ const TimelineItem = ({
             backgroundColor: `var(--color-${id})`,
             y: moveTop,
             x: moveLeft,
-            scaleX,
+            scaleX: isDragging ? undefined : scaleX,
           }}
         />
       </motion.div>
