@@ -3,6 +3,20 @@
 import { cn } from "@/utils/classname";
 import { motion } from "framer-motion";
 
+const THEME_ANIMATION = {
+  initial: { opacity: 0, filter: "blur(5px)", x: -20 },
+  whileInView: { opacity: 0.4, filter: "blur(.5px)", x: 0 },
+  transition: { type: "spring", duration: 1, bounce: 0 },
+  viewport: { amount: 1, margin: "-100px" },
+};
+
+const TITLE_ANIMATION = {
+  initial: { opacity: 0.1 },
+  whileInView: { opacity: 0.45 },
+  transition: { type: "spring", duration: 1.4, bounce: 0 },
+  viewport: { amount: 1, margin: "-50px" },
+};
+
 export const Cover = ({
   src,
   name,
@@ -13,51 +27,47 @@ export const Cover = ({
   const renderTitle = () => {
     const leftSide = name.indexOf("Memories") === 0;
 
-    if (leftSide) {
-      return (
-        <>
-          <span>Memories</span>
-          <span className="opacity-30">{name.replace("Memories", "")}</span>
-        </>
-      );
-    }
-
     return (
       <>
-        <span className="opacity-30">{name.replace("Memories", "")}</span>
-        <span>Memories</span>
+        {leftSide && <motion.div {...TITLE_ANIMATION}>Memories</motion.div>}
+        <motion.div
+          {...THEME_ANIMATION}
+          initial={{ ...THEME_ANIMATION.initial, x: leftSide ? -20 : 20 }}
+          className={cn(
+            "bg-clip-text text-transparent from-[#ffffff50] to-[#ffffff90]",
+            {
+              "bg-gradient-to-bl": !leftSide,
+              "bg-gradient-to-r": leftSide,
+            },
+          )}
+        >
+          {name.replace("Memories", "")}
+        </motion.div>
+        {!leftSide && <motion.div {...TITLE_ANIMATION}>Memories</motion.div>}
       </>
     );
   };
 
   return (
     <>
-      <motion.div
+      <div
         style={{
           backgroundImage: `url(${src})`,
         }}
         className={cn(
           "absolute inset-0 md:inset-6 md:bottom-12 md:rounded-lg bg-center saturate-20 bg-cover",
         )}
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        transition={{ type: "spring", duration: 0.3, bounce: 0 }}
-        viewport={{ amount: 0.2 }}
       />
-      <motion.div
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 0.7 }}
-        transition={{ type: "spring", duration: 0.3, bounce: 0 }}
-        viewport={{ amount: 0.2 }}
+      <div
         style={{ backgroundColor: "var(--color)" }}
         className={cn(
           "absolute inset-0 top-0 md:inset-6 md:bottom-12 md:rounded-lg opacity-70",
         )}
       />
 
-      <motion.h2 className="text-[30px] m-auto font-serif md:text-[60px] text-gray-50 mix-blend-plus-lighter">
+      <h2 className="text-[30px] m-auto font-serif md:text-[60px] text-gray-50 mix-blend-plus-lighter flex gap-3 relative">
         {renderTitle()}
-      </motion.h2>
+      </h2>
     </>
   );
 };

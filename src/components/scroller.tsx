@@ -3,7 +3,15 @@
 import data from "@/data.json";
 import { cn } from "@/utils/classname";
 import type { Memories } from "@/utils/types";
-import { motion, useMotionValue, useSpring } from "motion/react";
+import {
+  type MotionValue,
+  motion,
+  useMotionValue,
+  useMotionValueEvent,
+  useSpring,
+  useTransform,
+  useVelocity,
+} from "motion/react";
 import * as React from "react";
 
 const payload = data as Memories;
@@ -32,6 +40,7 @@ export const Scroller = ({
 
   const [thumbWidth, setThumbWidth] = React.useState(20);
   const [thumbPosition, setThumbPosition] = React.useState(0);
+  const [stableWindowWidth, setStableWindowWidth] = React.useState(0);
 
   const [scrollWidth, setScrollWidth] = React.useState(0);
   const [isDragging, setIsDragging] = React.useState(false);
@@ -188,6 +197,8 @@ export const Scroller = ({
       return;
     }
 
+    setStableWindowWidth(window.innerWidth);
+
     const controller = new AbortController();
 
     getAlbumScrollWidthAndOffset();
@@ -216,6 +227,7 @@ export const Scroller = ({
         () => {
           setIsDragging(false);
           document.body.classList.remove("cursor-ew-resize");
+          handlerHeight.set(6);
         },
         { signal: controller.signal },
       );
@@ -233,6 +245,22 @@ export const Scroller = ({
     handleOnDrag,
   ]);
 
+  const HEIGHT = 50;
+
+  const handlerHeight = useSpring(6, {
+    bounce: 0.2,
+    duration: 500,
+  });
+  const mx = useSpring(stableWindowWidth / 2);
+  const my = useSpring(HEIGHT / 2);
+
+  const moveTop = useTransform(my, [0, HEIGHT / 2, HEIGHT], [-1, 0, 1]);
+  const moveLeft = useTransform(
+    mx,
+    [0, stableWindowWidth / 2, stableWindowWidth],
+    [-4, 0, 4],
+  );
+
   return (
     <div
       ref={contentRef}
@@ -247,15 +275,31 @@ export const Scroller = ({
       <div className="hidden md:flex fixed left-0 right-0 bottom-0 mx-6 flex-row gap-4 items-center h-[50px]">
         <div
           ref={trackRef}
-          className="flex flex-row gap-6 items-center flex-1 peer"
+          className="flex flex-row gap-6 items-center flex-1 peer h-[50px]"
           onMouseDown={handleThumbMouseDown}
           onClick={handleTrackClick}
+          onMouseMove={(e) => {
+            const { left, top } = e.currentTarget.getBoundingClientRect();
+
+            mx.set(e.clientX - left);
+            my.set(e.clientY - top);
+          }}
+          onMouseLeave={() => {
+            mx.set(stableWindowWidth / 2);
+            my.set(HEIGHT / 2);
+
+            if (!isDragging) {
+              handlerHeight.set(6);
+            }
+          }}
+          onMouseEnter={() => {
+            handlerHeight.set(12);
+          }}
         >
           {payload.map((album, index) => (
             <TimelineItem
               key={album.id}
               flexRatio={albumSizes[index][0]}
-              isDragging={isDragging}
               thumbWidth={thumbWidth}
               thumbPosition={thumbPosition}
               startOffset={albumSizes[index][1]}
@@ -264,6 +308,9 @@ export const Scroller = ({
               id={album.id}
               isDark={album.dark}
               isLast={index === payload.length - 1}
+              moveTop={moveTop}
+              moveLeft={moveLeft}
+              height={handlerHeight}
             />
           ))}
         </div>
@@ -299,7 +346,6 @@ export const Scroller = ({
 
 const TimelineItem = ({
   flexRatio,
-  isDragging,
   thumbWidth,
   thumbPosition,
   startOffset,
@@ -308,9 +354,11 @@ const TimelineItem = ({
   id,
   isDark,
   isLast,
+  moveTop,
+  moveLeft,
+  height,
 }: {
   flexRatio: number;
-  isDragging: boolean;
   thumbWidth: number;
   thumbPosition: number;
   startOffset: number;
@@ -319,11 +367,23 @@ const TimelineItem = ({
   id: number;
   isDark: boolean;
   isLast: boolean;
+  moveTop: MotionValue<number>;
+  moveLeft: MotionValue<number>;
+  height: MotionValue<number>;
 }) => {
   const relativePosition =
     thumbPosition - (startOffset / scrollWidth) * trackWidth;
+  const relativePositionAnimated = useMotionValue(0);
+  const darkModeEnabled = isDark && relativePosition > -40;
 
-  const darkModeEnabled = isDark && relativePosition > -5;
+  React.useEffect(() => {
+    relativePositionAnimated.set(relativePosition);
+  }, [relativePosition, relativePositionAnimated]);
+
+  const xVelocity = useVelocity(relativePositionAnimated);
+  const scaleX = useTransform(xVelocity, [-500, 0, 500], [1.2, 1, 1.2], {
+    clamp: false,
+  });
 
   return (
     <>
@@ -332,28 +392,21 @@ const TimelineItem = ({
       )}
       <motion.div
         data-dark={darkModeEnabled ? true : undefined}
-        className="h-1.5 rounded-full relative overflow-hidden"
-        style={{ flexGrow: flexRatio }}
-        whileHover={{
-          height: 12,
-          transition: {
-            type: "spring",
-            duration: 0.2,
-            bounce: 0.3,
-          },
-        }}
-        animate={{
-          height: isDragging ? 12 : undefined,
-        }}
+        className="h-[12px] rounded-full relative overflow-hidden"
+        style={{ flexGrow: flexRatio, height }}
       >
         <div className="h-1.5 absolute left-0 right-0 top-[calc(50%-3px)] bg-gray-400/20 rounded-full" />
 
-        <div
-          className="absolute h-full rounded-full cursor-ew-resize"
+        <motion.div
+          className="absolute h-full rounded-full cursor-ew-resize m-auto"
           style={{
+            height,
             width: `${thumbWidth}px`,
-            left: `${relativePosition}px`,
+            left: relativePositionAnimated,
             backgroundColor: `var(--color-${id})`,
+            y: moveTop,
+            x: moveLeft,
+            scaleX,
           }}
         />
       </motion.div>

@@ -21,8 +21,8 @@ export const Image = ({
   return (
     <motion.div
       className="image-wrapper m-auto md:px-40"
-      initial={{ opacity: 0.2, filter: "blur(5px)" }}
-      whileInView={{ opacity: 1, filter: "blur(0)" }}
+      initial={{ filter: "blur(5px)" }}
+      whileInView={{ filter: "blur(0)" }}
       transition={{ type: "spring", duration: 0.3, bounce: 0 }}
       viewport={{ amount: 0.05 }}
     >
@@ -34,20 +34,28 @@ export const Image = ({
 
       {location && date && (
         <figcaption className="p-4 md:pt-4 md:p-0">
-          <p
+          <motion.p
+            initial={{ opacity: 0, y: -2 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ type: "spring", duration: 0.5, bounce: 0 }}
+            viewport={{ amount: 0.5 }}
             className={cn("text-gray-600 font-semibold m-0", {
               "text-white": dark,
             })}
           >
             {location}
-          </p>
-          <p
+          </motion.p>
+          <motion.p
+            initial={{ opacity: 0, y: -4 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ type: "spring", duration: 0.5, bounce: 0 }}
+            viewport={{ amount: 0.5 }}
             className={cn("text-gray-400 uppercase m-0 text-xs", {
               "text-white opacity-50": dark,
             })}
           >
             {formatDate(date)}
-          </p>
+          </motion.p>
         </figcaption>
       )}
     </motion.div>

@@ -129,12 +129,6 @@
         "filename": "/her/000039.jpg"
       },
       {
-        "id": 3,
-        "date": "05/05/2023",
-        "location": "Ericeira, Portugal",
-        "filename": "/her/000040_1.jpg"
-      },
-      {
         "id": 4,
         "date": "12/12/2024",
         "location": "Porto, Portugal",
@@ -192,6 +186,10 @@
       },
       {
         "id": 7,
+        "filename": "/her/000040_1.jpg"
+      },
+      {
+        "id": 8,
         "filename": "/layers/IMG_2258.jpeg",
         "cover": true
       }
