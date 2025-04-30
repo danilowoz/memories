@@ -63,7 +63,7 @@ export const Scroller = ({
         });
 
         if (
-          latest >= lastValue &&
+          latest > lastValue &&
           latest >= childrenWidth[currentSection] - window.innerWidth / 1.5 &&
           latest <= childrenWidth[currentSection]
         ) {
