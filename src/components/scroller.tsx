@@ -7,7 +7,6 @@ import {
   type MotionValue,
   motion,
   useMotionValue,
-  useMotionValueEvent,
   useSpring,
   useTransform,
   useVelocity,
@@ -34,6 +33,55 @@ export const Scroller = ({
     return springScrollX.onChange((latest) => {
       if (contentRef.current) {
         contentRef.current.scrollLeft = latest;
+      }
+    });
+  }, [springScrollX]);
+
+  React.useEffect(() => {
+    if (!contentRef.current) {
+      return;
+    }
+
+    const childrenWidth = Array.from(contentRef.current.children)
+      .map((child) => child.clientWidth)
+      .map((item, index, arr) => item + (arr[index - 1] || 0));
+    childrenWidth.pop();
+
+    let timer: NodeJS.Timeout;
+    let lastValue = 0;
+
+    return springScrollX.onChange((latest) => {
+      if (contentRef.current) {
+        clearTimeout(timer);
+
+        const currentSection = childrenWidth.findIndex((width, index) => {
+          const start =
+            index === 0
+              ? 0
+              : childrenWidth.slice(0, index).reduce((a, b) => a + b, 0);
+          const end = width;
+
+          return (
+            latest >= start - window.innerWidth / 1.5 && latest <= start + end
+          );
+        });
+
+        if (
+          latest >= lastValue &&
+          latest >= childrenWidth[currentSection] - window.innerWidth / 1.5 &&
+          latest <= childrenWidth[currentSection]
+        ) {
+          timer = setTimeout(() => {
+            const windowWidth = window.innerWidth;
+            const windowHeight = window.innerHeight;
+            const ratio = windowWidth / windowHeight;
+            const newScrollTop = childrenWidth[currentSection] / ratio;
+
+            window.scrollTo({ top: newScrollTop, behavior: "smooth" });
+          }, 200);
+        }
+
+        lastValue = latest;
       }
     });
   }, [springScrollX]);
@@ -384,7 +432,7 @@ const TimelineItem = ({
   }, [relativePosition, relativePositionAnimated]);
 
   const xVelocity = useVelocity(relativePositionAnimated);
-  const scaleX = useTransform(xVelocity, [-700, 0, 700], [1.3, 1, 1.3], {
+  const scaleX = useTransform(xVelocity, [-700, 0, 700], [1.4, 1, 1.4], {
     clamp: false,
   });
 

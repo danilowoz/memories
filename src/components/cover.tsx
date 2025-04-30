@@ -7,14 +7,14 @@ const THEME_ANIMATION = {
   initial: { opacity: 0, filter: "blur(5px)", x: -20 },
   whileInView: { opacity: 0.4, filter: "blur(.5px)", x: 0 },
   transition: { type: "spring", duration: 1, bounce: 0 },
-  viewport: { amount: 1, margin: "-100px" },
+  viewport: { amount: 1 },
 };
 
 const TITLE_ANIMATION = {
   initial: { opacity: 0.1 },
   whileInView: { opacity: 0.45 },
   transition: { type: "spring", duration: 1.4, bounce: 0 },
-  viewport: { amount: 1, margin: "-50px" },
+  viewport: { amount: 1 },
 };
 
 export const Cover = ({

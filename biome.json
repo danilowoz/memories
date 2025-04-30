@@ -23,6 +23,9 @@
       "recommended": true,
       "a11y": {
         "useKeyWithClickEvents": "off"
+      },
+      "correctness": {
+        "noUnusedVariables": "error"
       }
     }
   },
