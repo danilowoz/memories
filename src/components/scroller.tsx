@@ -38,19 +38,15 @@ export const Scroller = ({
   }, [springScrollX]);
 
   React.useEffect(() => {
-    if (!contentRef.current) {
-      return;
-    }
-
-    const childrenWidth = Array.from(contentRef.current.children)
-      .map((child) => child.clientWidth)
-      .map((item, index, arr) => item + (arr[index - 1] || 0));
-    childrenWidth.pop();
-
     let timer: NodeJS.Timeout;
     let lastValue = 0;
 
     return springScrollX.onChange((latest) => {
+      const childrenWidth = Array.from(contentRef.current?.children ?? [])
+        .map((child) => child.clientWidth)
+        .map((item, index, arr) => item + (arr[index - 1] || 0));
+      childrenWidth.pop();
+
       if (contentRef.current) {
         clearTimeout(timer);
 
