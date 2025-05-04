@@ -20,10 +20,10 @@ export const Image = ({
   return (
     <motion.div
       className="image-wrapper m-auto md:px-40"
-      initial={{ filter: "blur(5px)" }}
-      whileInView={{ filter: "blur(0px)" }}
+      initial={{ filter: "blur(10px)", opacity: 0.2 }}
+      whileInView={{ filter: "blur(0px)", opacity: 1 }}
       transition={{ type: "spring", duration: 0.3, bounce: 0 }}
-      viewport={{ amount: 0.05 }}
+      viewport={{ amount: 0.1 }}
     >
       <motion.img
         className="w-full md:w-auto md:h-[80vh] max-w-none md:rounded transform-gpu"

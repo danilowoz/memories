@@ -5,7 +5,7 @@ import { cn } from "@/utils/classname";
 import type { Photo } from "@/utils/types";
 import { Scroller } from "../components/scroller";
 
-export default async function Home() {
+export default function Home() {
   return (
     <Scroller>
       {payload.map((item, index) => {
@@ -35,7 +35,7 @@ export default async function Home() {
   );
 }
 
-const Album = async ({
+const Album = ({
   name,
   photos,
   id,

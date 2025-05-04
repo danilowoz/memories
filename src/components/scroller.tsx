@@ -48,7 +48,9 @@ export const Scroller = ({
       childrenWidth.pop();
 
       if (contentRef.current) {
-        clearTimeout(timer);
+        if (Math.floor(latest) !== lastValue) {
+          clearTimeout(timer);
+        }
 
         const currentSection = childrenWidth.findIndex((width, index) => {
           const start =
@@ -63,7 +65,7 @@ export const Scroller = ({
         });
 
         if (
-          latest > lastValue &&
+          Math.floor(latest) > lastValue &&
           latest >= childrenWidth[currentSection] - window.innerWidth / 1.5 &&
           latest <= childrenWidth[currentSection]
         ) {
@@ -77,7 +79,7 @@ export const Scroller = ({
           }, 200);
         }
 
-        lastValue = latest;
+        lastValue = Math.floor(latest);
       }
     });
   }, [springScrollX]);
