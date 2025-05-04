@@ -7,10 +7,7 @@
     "build": "next build --turbopack",
     "start": "next start",
     "lint": "biome lint --write <files>",
-    "format": "biome format --write",
-    "pages:build": "npx @cloudflare/next-on-pages",
-    "preview": "npm run pages:build && wrangler pages dev",
-    "deploy": "npm run pages:build && wrangler pages deploy"
+    "format": "biome format --write"
   },
   "dependencies": {
     "@tailwindcss/postcss": "^4.0.9",
