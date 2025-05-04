@@ -23,6 +23,9 @@ importers:
       next:
         specifier: 15.3.0
         version: 15.3.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(sass@1.77.4)
+      next-dev:
+        specifier: link:@cloudflare/next-on-pages/next-dev
+        version: link:@cloudflare/next-on-pages/next-dev
       postcss:
         specifier: ^8.5.3
         version: 8.5.3
