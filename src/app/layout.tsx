@@ -15,6 +15,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <title>Memoires - Danilo Woznica</title>
       <body className={`antialiased ${serif.variable}`}>{children}</body>
     </html>
   );

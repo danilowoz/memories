@@ -6,7 +6,6 @@ import { motion } from "framer-motion";
 export const Image = ({
   src,
   alt,
-  className,
   location,
   date,
   dark,
@@ -26,10 +25,11 @@ export const Image = ({
       transition={{ type: "spring", duration: 0.3, bounce: 0 }}
       viewport={{ amount: 0.05 }}
     >
-      <img
-        className={`w-full md:w-auto md:h-[80vh] max-w-none md:rounded transform-gpu ${className}`}
+      <motion.img
+        className="w-full md:w-auto md:h-[80vh] max-w-none md:rounded transform-gpu"
         src={src}
         alt={alt}
+        transition={{ type: "spring", duration: 0.3, bounce: 0 }}
       />
 
       {location && date && (
