@@ -13,12 +13,12 @@
     "deploy": "npm run pages:build && wrangler pages deploy"
   },
   "dependencies": {
+    "@cloudflare/next-on-pages": "^1.13.12",
     "@tailwindcss/postcss": "^4.0.9",
     "clsx": "^2.1.1",
     "framer-motion": "^12.7.4",
     "motion": "^12.4.11",
     "next": "15.3.0",
-    "next-dev": "link:@cloudflare/next-on-pages/next-dev",
     "postcss": "^8.5.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
