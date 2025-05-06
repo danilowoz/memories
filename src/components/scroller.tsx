@@ -94,7 +94,7 @@ export const Scroller = ({
 
   const [scrollWidth, setScrollWidth] = React.useState(0);
   const [isDragging, setIsDragging] = React.useState(false);
-  const [hovering, setHovering] = React.useState(false);
+  const [isHovering, setIsHovering] = React.useState(false);
   const [startX, setStartX] = React.useState(0);
   const [startThumbPosition, setStartThumbPosition] = React.useState(0);
   const [albumSizes, setAlbumSizes] = React.useState<Array<[number, number]>>(
@@ -281,7 +281,7 @@ export const Scroller = ({
           setIsDragging(false);
           document.body.classList.remove("cursor-ew-resize");
 
-          if (!hovering) {
+          if (!isHovering) {
             handlerHeight.set(THUMB_SIZE_STATE.IDLE);
           }
         },
@@ -294,7 +294,7 @@ export const Scroller = ({
     };
   }, [
     isDragging,
-    hovering,
+    isHovering,
     updateThumbSizeAndPosition,
     getAlbumScrollWidthAndOffset,
     updateBodyHeight,
@@ -345,7 +345,7 @@ export const Scroller = ({
             mx.set(e.clientX - left);
             my.set(e.clientY - top);
 
-            setHovering(true);
+            setIsHovering(true);
           }}
           onMouseLeave={() => {
             mx.set(thumbPosition);
@@ -355,7 +355,7 @@ export const Scroller = ({
               handlerHeight.set(THUMB_SIZE_STATE.IDLE);
             }
 
-            setHovering(false);
+            setIsHovering(false);
           }}
           onMouseEnter={() => {
             if (!isDragging) {
