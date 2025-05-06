@@ -121,6 +121,7 @@ export const Scroller = ({
       : 0;
 
     setThumbPosition(newThumbPosition);
+    mx.set(newThumbPosition);
   }, []);
 
   const handleTrackClick = (event: React.MouseEvent<HTMLDivElement>) => {
@@ -226,6 +227,7 @@ export const Scroller = ({
         Math.min(newThumbPosition, trackWidth - thumbWidth),
       );
       setThumbPosition(newThumbPosition);
+      mx.set(newThumbPosition);
 
       // Update content scroll position
       const { scrollWidth, clientWidth } = contentRef.current;
@@ -304,9 +306,9 @@ export const Scroller = ({
 
   const HEIGHT = 50;
 
-  const handlerHeight = useSpring(6, {
+  const handlerHeight = useSpring(THUMB_SIZE_STATE.IDLE, {
     bounce: 0.2,
-    duration: 500,
+    duration: 300,
   });
   const mx = useSpring(stableWindowWidth / 2, {
     bounce: 0,
@@ -321,6 +323,8 @@ export const Scroller = ({
     [0, thumbPosition, stableWindowWidth],
     [-20, 0, 20],
   );
+
+  const isHoveringTimer = React.useRef<NodeJS.Timeout | null>(null);
 
   return (
     <div
@@ -355,7 +359,13 @@ export const Scroller = ({
               handlerHeight.set(THUMB_SIZE_STATE.IDLE);
             }
 
-            setIsHovering(false);
+            if (isHoveringTimer.current) {
+              clearTimeout(isHoveringTimer.current);
+            }
+
+            isHoveringTimer.current = setTimeout(() => {
+              setIsHovering(false);
+            }, 300);
           }}
           onMouseEnter={() => {
             if (!isDragging) {
@@ -374,6 +384,7 @@ export const Scroller = ({
               scrollWidth={scrollWidth}
               id={album.id}
               isDragging={isDragging}
+              isHovering={isHovering}
               isDark={album.dark}
               isLast={index === payload.length - 1}
               moveTop={moveTop}
@@ -429,6 +440,7 @@ const TimelineItem = ({
   scrollWidth,
   id,
   isDragging,
+  isHovering,
   isDark,
   isLast,
   moveTop,
@@ -445,6 +457,7 @@ const TimelineItem = ({
   scrollWidth: number;
   id: number;
   isDragging: boolean;
+  isHovering: boolean;
   isDark: boolean;
   isLast: boolean;
   moveTop: MotionValue<number>;
@@ -486,12 +499,15 @@ const TimelineItem = ({
             width: `${thumbWidth}px`,
             left: relativePositionAnimated,
             backgroundColor: `var(--color-${id})`,
-            y: moveTop,
-            x: moveLeft,
+            y: isHovering ? moveTop : undefined,
+            x: isHovering ? moveLeft : undefined,
             scaleX: isDragging ? undefined : scaleX,
           }}
           onMouseEnter={onThumbMouseEnter}
           onMouseLeave={onThumbMouseLeave}
+          whileHover={{
+            filter: "saturate(130%)",
+          }}
         />
       </motion.div>
     </>
