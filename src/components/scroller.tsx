@@ -5,6 +5,10 @@ import { cn } from "@/utils/classname";
 import type { Memories } from "@/utils/types";
 import {
   type MotionValue,
+  easeIn,
+  easeInOut,
+  hover,
+  mirrorEasing,
   motion,
   useMotionValue,
   useSpring,
@@ -90,6 +94,7 @@ export const Scroller = ({
 
   const [scrollWidth, setScrollWidth] = React.useState(0);
   const [isDragging, setIsDragging] = React.useState(false);
+  const [hovering, setHovering] = React.useState(false);
   const [startX, setStartX] = React.useState(0);
   const [startThumbPosition, setStartThumbPosition] = React.useState(0);
   const [albumSizes, setAlbumSizes] = React.useState<Array<[number, number]>>(
@@ -156,6 +161,8 @@ export const Scroller = ({
     setStartX(e.clientX);
     setStartThumbPosition(thumbPosition);
     e.preventDefault(); // Prevent text selection during drag
+
+    handlerHeight.set(THUMB_SIZE_STATE.DRAG);
 
     document.body.classList.add("cursor-ew-resize");
   };
@@ -273,7 +280,10 @@ export const Scroller = ({
         () => {
           setIsDragging(false);
           document.body.classList.remove("cursor-ew-resize");
-          handlerHeight.set(6);
+
+          if (!hovering) {
+            handlerHeight.set(THUMB_SIZE_STATE.IDLE);
+          }
         },
         { signal: controller.signal },
       );
@@ -284,6 +294,7 @@ export const Scroller = ({
     };
   }, [
     isDragging,
+    hovering,
     updateThumbSizeAndPosition,
     getAlbumScrollWidthAndOffset,
     updateBodyHeight,
@@ -297,14 +308,18 @@ export const Scroller = ({
     bounce: 0.2,
     duration: 500,
   });
-  const mx = useSpring(stableWindowWidth / 2);
-  const my = useSpring(HEIGHT / 2);
+  const mx = useSpring(stableWindowWidth / 2, {
+    bounce: 0,
+  });
+  const my = useSpring(HEIGHT / 2, {
+    bounce: 0,
+  });
 
   const moveTop = useTransform(my, [0, HEIGHT / 2, HEIGHT], [-1, 0, 1]);
   const moveLeft = useTransform(
     mx,
-    [0, stableWindowWidth / 2, stableWindowWidth],
-    [-4, 0, 4],
+    [0, thumbPosition, stableWindowWidth],
+    [-20, 0, 20],
   );
 
   return (
@@ -329,17 +344,23 @@ export const Scroller = ({
 
             mx.set(e.clientX - left);
             my.set(e.clientY - top);
+
+            setHovering(true);
           }}
           onMouseLeave={() => {
-            mx.set(stableWindowWidth / 2);
+            mx.set(thumbPosition);
             my.set(HEIGHT / 2);
 
             if (!isDragging) {
-              handlerHeight.set(6);
+              handlerHeight.set(THUMB_SIZE_STATE.IDLE);
             }
+
+            setHovering(false);
           }}
           onMouseEnter={() => {
-            handlerHeight.set(12);
+            if (!isDragging) {
+              handlerHeight.set(THUMB_SIZE_STATE.ACTIVE);
+            }
           }}
         >
           {payload.map((album, index) => (
@@ -358,6 +379,14 @@ export const Scroller = ({
               moveTop={moveTop}
               moveLeft={moveLeft}
               height={handlerHeight}
+              onThumbMouseEnter={() => {
+                handlerHeight.set(THUMB_SIZE_STATE.DRAG);
+              }}
+              onThumbMouseLeave={() => {
+                if (!isDragging) {
+                  handlerHeight.set(THUMB_SIZE_STATE.ACTIVE);
+                }
+              }}
             />
           ))}
         </div>
@@ -405,6 +434,8 @@ const TimelineItem = ({
   moveTop,
   moveLeft,
   height,
+  onThumbMouseEnter,
+  onThumbMouseLeave,
 }: {
   flexRatio: number;
   thumbWidth: number;
@@ -419,6 +450,8 @@ const TimelineItem = ({
   moveTop: MotionValue<number>;
   moveLeft: MotionValue<number>;
   height: MotionValue<number>;
+  onThumbMouseEnter: () => void;
+  onThumbMouseLeave: () => void;
 }) => {
   const relativePosition =
     thumbPosition - (startOffset / scrollWidth) * trackWidth;
@@ -441,7 +474,7 @@ const TimelineItem = ({
       )}
       <motion.div
         data-dark={darkModeEnabled ? true : undefined}
-        className="h-[12px] rounded-full relative overflow-hidden"
+        className="h-[20px] rounded-full relative overflow-hidden"
         style={{ flexGrow: flexRatio, height }}
       >
         <div className="h-1.5 absolute left-0 right-0 top-[calc(50%-3px)] bg-gray-400/20 rounded-full" />
@@ -457,8 +490,16 @@ const TimelineItem = ({
             x: moveLeft,
             scaleX: isDragging ? undefined : scaleX,
           }}
+          onMouseEnter={onThumbMouseEnter}
+          onMouseLeave={onThumbMouseLeave}
         />
       </motion.div>
     </>
   );
+};
+
+const THUMB_SIZE_STATE = {
+  IDLE: 6,
+  ACTIVE: 10,
+  DRAG: 14,
 };
