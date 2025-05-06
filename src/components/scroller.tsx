@@ -264,6 +264,16 @@ export const Scroller = ({
       signal: controller.signal,
     });
 
+    window.addEventListener(
+      "wheel",
+      (event) => {
+        window.scroll(0, window.scrollY + event.deltaX);
+      },
+      {
+        signal: controller.signal,
+      },
+    );
+
     window.addEventListener("resize", updateBodyHeight, {
       signal: controller.signal,
     });
