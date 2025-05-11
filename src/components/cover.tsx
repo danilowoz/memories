@@ -50,24 +50,51 @@ export const Cover = ({
 
   return (
     <>
-      <div
+      <motion.div
         style={{
           backgroundImage: `url(${src})`,
         }}
         className={cn(
           "absolute inset-0 md:inset-6 md:bottom-12 md:rounded-lg bg-center saturate-20 bg-cover",
         )}
+        initial={{ opacity: 0, filter: "blur(10px) saturate(20%)" }}
+        animate={{ opacity: 1, filter: "blur(0px) saturate(20%)" }}
+        transition={{
+          ease: "easeInOut",
+          delay: 0.6,
+          duration: 0.6,
+        }}
       />
-      <div
+      <motion.div
         style={{ backgroundColor: "var(--color)" }}
         className={cn(
           "absolute inset-0 top-0 md:inset-6 md:bottom-12 md:rounded-lg opacity-70",
         )}
+        initial={{
+          margin: "-26px -26px -50px -26px",
+          opacity: 1,
+          borderRadius: 0,
+        }}
+        animate={{ margin: 0, opacity: 0.7, borderRadius: 8 }}
+        transition={{
+          ease: "easeInOut",
+          delay: 0.5,
+          duration: 0.6,
+        }}
       />
 
-      <h2 className="text-[30px] m-auto font-serif md:text-[60px] text-gray-50 mix-blend-plus-lighter flex gap-3 relative">
+      <motion.h1
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{
+          ease: "easeInOut",
+          delay: 1,
+          duration: 0.6,
+        }}
+        className="text-[30px] m-auto font-serif md:text-[60px] text-gray-50 mix-blend-plus-lighter flex gap-3 relative"
+      >
         {renderTitle()}
-      </h2>
+      </motion.h1>
     </>
   );
 };

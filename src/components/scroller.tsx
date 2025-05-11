@@ -5,10 +5,6 @@ import { cn } from "@/utils/classname";
 import type { Memories } from "@/utils/types";
 import {
   type MotionValue,
-  easeIn,
-  easeInOut,
-  hover,
-  mirrorEasing,
   motion,
   useMotionValue,
   useSpring,
@@ -264,6 +260,10 @@ export const Scroller = ({
       signal: controller.signal,
     });
 
+    window.addEventListener("load", updateThumbSizeAndPosition, {
+      signal: controller.signal,
+    });
+
     window.addEventListener(
       "wheel",
       (event) => {
@@ -347,7 +347,16 @@ export const Scroller = ({
     >
       {children}
 
-      <div className="hidden md:flex fixed left-0 right-0 bottom-0 mx-6 flex-row gap-4 items-center h-[50px]">
+      <motion.div
+        className="hidden md:flex fixed left-0 right-0 bottom-0 mx-6 flex-row gap-4 items-center h-[50px]"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{
+          delay: 1,
+          duration: 0.5,
+          ease: "easeOut",
+        }}
+      >
         <div
           ref={trackRef}
           className="flex flex-row gap-6 items-center flex-1 peer h-[50px]"
@@ -436,7 +445,7 @@ export const Scroller = ({
             />
           </svg>
         </a>
-      </div>
+      </motion.div>
     </div>
   );
 };
@@ -504,6 +513,13 @@ const TimelineItem = ({
 
         <motion.div
           className="absolute h-full rounded-full cursor-ew-resize m-auto"
+          initial={{ opacity: 0, width: thumbWidth / 2 }}
+          animate={{ opacity: 1, width: thumbWidth }}
+          transition={{
+            delay: 1.4,
+            duration: 0.5,
+            ease: "easeOut",
+          }}
           style={{
             height,
             width: `${thumbWidth}px`,
