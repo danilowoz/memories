@@ -485,6 +485,8 @@ const TimelineItem = ({
   onThumbMouseEnter: () => void;
   onThumbMouseLeave: () => void;
 }) => {
+  const [initialAnimationComplete, setInitialAnimationComplete] =
+    React.useState(false);
   const relativePosition =
     thumbPosition - (startOffset / scrollWidth) * trackWidth;
   const relativePositionAnimated = useMotionValue(0);
@@ -513,13 +515,26 @@ const TimelineItem = ({
 
         <motion.div
           className="absolute h-full rounded-full cursor-ew-resize m-auto"
-          initial={{ opacity: 0, width: thumbWidth / 2 }}
-          animate={{ opacity: 1, width: thumbWidth }}
-          transition={{
-            delay: 1.4,
-            duration: 0.5,
-            ease: "easeOut",
-          }}
+          initial={
+            initialAnimationComplete
+              ? undefined
+              : { opacity: 0, width: thumbWidth / 2 }
+          }
+          animate={
+            initialAnimationComplete
+              ? undefined
+              : { opacity: 1, width: thumbWidth }
+          }
+          transition={
+            initialAnimationComplete
+              ? undefined
+              : {
+                  delay: 1.4,
+                  duration: 0.5,
+                  ease: "easeOut",
+                }
+          }
+          onAnimationComplete={() => setInitialAnimationComplete(true)}
           style={{
             height,
             width: `${thumbWidth}px`,
