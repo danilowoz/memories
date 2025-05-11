@@ -495,9 +495,7 @@ const TimelineItem = ({
   }, [relativePosition, relativePositionAnimated]);
 
   const xVelocity = useVelocity(relativePositionAnimated);
-  const scaleX = useTransform(xVelocity, [-700, 0, 700], [1.4, 1, 1.4], {
-    clamp: false,
-  });
+  const scaleX = useTransform(xVelocity, [-700, 0, 700], [1.4, 1, 1.4]);
 
   return (
     <>
