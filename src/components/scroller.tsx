@@ -484,9 +484,22 @@ const TimelineItem = ({
     (value) => value - (startOffset / scrollWidth) * trackWidth,
   );
 
+  const xVelocity = useVelocity(thumbPosition);
+  const xVelocityScale = useTransform(xVelocity, [-700, 0, 700], [1.4, 1, 1.4]);
+  const scaleX = useSpring(xVelocityScale, {
+    bounce: 0,
+  });
+
+  React.useEffect(() => {
+    if (!isHovering) {
+      moveLeft.set(0);
+      moveTop.set(0);
+    }
+  }, [isHovering, moveLeft, moveTop]);
+
   React.useEffect(() => {
     if (isDark) {
-      const unsubscribe = relativePosition.onChange((value) => {
+      const unsubscribe = relativePosition.on("change", (value) => {
         setEnableDarkMode(value > -40);
       });
 
@@ -495,9 +508,6 @@ const TimelineItem = ({
       };
     }
   }, [isDark, relativePosition]);
-
-  const xVelocity = useVelocity(thumbPosition);
-  const scaleX = useTransform(xVelocity, [-700, 0, 700], [1.4, 1, 1.4]);
 
   return (
     <>
@@ -518,8 +528,8 @@ const TimelineItem = ({
             width: `${thumbWidth}px`,
             left: relativePosition,
             backgroundColor: `var(--color-${id})`,
-            y: isHovering ? moveTop : undefined,
-            x: isHovering ? moveLeft : undefined,
+            y: moveTop,
+            x: moveLeft,
             scaleX: isDragging ? undefined : scaleX,
           }}
           onMouseEnter={onThumbMouseEnter}

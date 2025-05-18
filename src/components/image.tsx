@@ -25,11 +25,10 @@ export const Image = ({
       transition={{ type: "spring", duration: 0.3, bounce: 0 }}
       viewport={{ amount: 0.1 }}
     >
-      <motion.img
+      <img
         className="w-full md:w-auto md:h-[80vh] max-w-none md:rounded transform-gpu"
         src={src}
         alt={alt}
-        transition={{ type: "spring", duration: 0.3, bounce: 0 }}
       />
 
       {location && date && (
