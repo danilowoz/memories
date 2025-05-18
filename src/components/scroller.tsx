@@ -23,6 +23,7 @@ export const Scroller = ({
   const contentRef = React.useRef<HTMLDivElement>(null);
   const trackRef = React.useRef<HTMLDivElement>(null);
   const scrollX = useMotionValue(0);
+  const thumbPosition = useMotionValue(0);
 
   const springScrollX = useSpring(scrollX as unknown as number, {
     duration: 0.3,
@@ -85,9 +86,7 @@ export const Scroller = ({
   }, [springScrollX]);
 
   const [thumbWidth, setThumbWidth] = React.useState(20);
-  const [thumbPosition, setThumbPosition] = React.useState(0);
   const [stableWindowWidth, setStableWindowWidth] = React.useState(0);
-
   const [scrollWidth, setScrollWidth] = React.useState(0);
   const [isDragging, setIsDragging] = React.useState(false);
   const [isHovering, setIsHovering] = React.useState(false);
@@ -116,9 +115,8 @@ export const Scroller = ({
       ? (scrollLeft / maxScrollDistance) * maxThumbPosition
       : 0;
 
-    setThumbPosition(newThumbPosition);
-    mx.set(newThumbPosition);
-  }, []);
+    thumbPosition.set(newThumbPosition);
+  }, [thumbPosition]);
 
   const handleTrackClick = (event: React.MouseEvent<HTMLDivElement>) => {
     if (!trackRef.current || !contentRef.current) {
@@ -156,7 +154,7 @@ export const Scroller = ({
   const handleThumbMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
     setIsDragging(true);
     setStartX(e.clientX);
-    setStartThumbPosition(thumbPosition);
+    setStartThumbPosition(thumbPosition.get());
     e.preventDefault(); // Prevent text selection during drag
 
     handlerHeight.set(THUMB_SIZE_STATE.DRAG);
@@ -222,8 +220,7 @@ export const Scroller = ({
         0,
         Math.min(newThumbPosition, trackWidth - thumbWidth),
       );
-      setThumbPosition(newThumbPosition);
-      mx.set(newThumbPosition);
+      thumbPosition.set(newThumbPosition);
 
       // Update content scroll position
       const { scrollWidth, clientWidth } = contentRef.current;
@@ -238,7 +235,7 @@ export const Scroller = ({
 
       window.scrollTo({ top: newScrollTop });
     },
-    [startThumbPosition, startX, thumbWidth, isDragging],
+    [startThumbPosition, startX, thumbWidth, isDragging, thumbPosition],
   );
 
   React.useEffect(() => {
@@ -320,17 +317,13 @@ export const Scroller = ({
     bounce: 0.2,
     duration: 300,
   });
-  const mx = useSpring(stableWindowWidth / 2, {
-    bounce: 0,
-  });
-  const my = useSpring(HEIGHT / 2, {
-    bounce: 0,
-  });
+  const mx = useSpring(0, { bounce: 0 });
+  const my = useSpring(HEIGHT / 2, { bounce: 0 });
 
   const moveTop = useTransform(my, [0, HEIGHT / 2, HEIGHT], [-1, 0, 1]);
   const moveLeft = useTransform(
     mx,
-    [0, thumbPosition, stableWindowWidth],
+    [0, stableWindowWidth / 2, stableWindowWidth],
     [-20, 0, 20],
   );
 
@@ -371,7 +364,7 @@ export const Scroller = ({
             setIsHovering(true);
           }}
           onMouseLeave={() => {
-            mx.set(thumbPosition);
+            mx.set(thumbPosition.get());
             my.set(HEIGHT / 2);
 
             if (!isDragging) {
@@ -470,7 +463,7 @@ const TimelineItem = ({
 }: {
   flexRatio: number;
   thumbWidth: number;
-  thumbPosition: number;
+  thumbPosition: MotionValue<number>;
   startOffset: number;
   trackWidth: number;
   scrollWidth: number;
@@ -485,25 +478,34 @@ const TimelineItem = ({
   onThumbMouseEnter: () => void;
   onThumbMouseLeave: () => void;
 }) => {
-  const relativePosition =
-    thumbPosition - (startOffset / scrollWidth) * trackWidth;
-  const relativePositionAnimated = useMotionValue(0);
-  const darkModeEnabled = isDark && relativePosition > -40;
+  const [enableDarkMode, setEnableDarkMode] = React.useState(false);
+  const relativePosition = useTransform(
+    thumbPosition,
+    (value) => value - (startOffset / scrollWidth) * trackWidth,
+  );
 
   React.useEffect(() => {
-    relativePositionAnimated.set(relativePosition);
-  }, [relativePosition, relativePositionAnimated]);
+    if (isDark) {
+      const unsubscribe = relativePosition.onChange((value) => {
+        setEnableDarkMode(value > -40);
+      });
 
-  const xVelocity = useVelocity(relativePositionAnimated);
+      return () => {
+        unsubscribe();
+      };
+    }
+  }, [isDark, relativePosition]);
+
+  const xVelocity = useVelocity(thumbPosition);
   const scaleX = useTransform(xVelocity, [-700, 0, 700], [1.4, 1, 1.4]);
 
   return (
     <>
       {isLast && (
-        <meta name="theme-color" content={darkModeEnabled ? "#000" : "#fff"} />
+        <meta name="theme-color" content={enableDarkMode ? "#000" : "#fff"} />
       )}
       <motion.div
-        data-dark={darkModeEnabled ? true : undefined}
+        data-dark={enableDarkMode ? true : undefined}
         className="h-[20px] rounded-full relative overflow-hidden"
         style={{ flexGrow: flexRatio, height }}
       >
@@ -514,7 +516,7 @@ const TimelineItem = ({
           style={{
             height,
             width: `${thumbWidth}px`,
-            left: relativePositionAnimated,
+            left: relativePosition,
             backgroundColor: `var(--color-${id})`,
             y: isHovering ? moveTop : undefined,
             x: isHovering ? moveLeft : undefined,
