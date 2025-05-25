@@ -3,6 +3,7 @@
     "id": 1,
     "name": "Travel Memories",
     "dark": false,
+    "titlePosition": "ml-auto mt-auto",
     "photos": [
       {
         "id": 0,
@@ -15,12 +16,6 @@
         "date": "02/01/2025",
         "location": "Barra Velha, Brazil",
         "filename": "/travel/DSCF1792.jpg"
-      },
-      {
-        "id": 3,
-        "date": "02/01/2025",
-        "location": "Barcelona, Spain",
-        "filename": "/travel/DSCF1859.jpg"
       },
       {
         "id": 4,
@@ -46,12 +41,6 @@
         "date": "09/09/2023",
         "location": "Porto, Portugal",
         "filename": "/travel/000042_1.jpg"
-      },
-      {
-        "id": 8,
-        "date": "07/30/2023",
-        "location": "Porto, Portugal",
-        "filename": "/travel/IMG_4209.jpg"
       },
       {
         "id": 9,
@@ -114,6 +103,7 @@
     "id": 2,
     "name": "Memories By Her",
     "dark": false,
+    "titlePosition": "m-auto",
     "photos": [
       {
         "id": 1,
@@ -159,6 +149,7 @@
     "id": 3,
     "name": "Memories in Layers",
     "dark": true,
+    "titlePosition": "mt-auto",
     "photos": [
       {
         "id": 1,

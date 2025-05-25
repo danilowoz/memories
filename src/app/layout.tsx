@@ -1,10 +1,10 @@
 import "@/styles/globals.css";
 
-import { Instrument_Serif } from "next/font/google";
+import { Caveat } from "next/font/google";
 
-const serif = Instrument_Serif({
+const heading = Caveat({
   weight: "400",
-  variable: "--font-serif",
+  variable: "--font-heading",
   subsets: ["latin"],
 });
 
@@ -16,7 +16,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <title>Memories - Danilo Woznica</title>
-      <body className={`antialiased ${serif.variable}`}>{children}</body>
+      <body className={`antialiased ${heading.variable}`}>{children}</body>
     </html>
   );
 }

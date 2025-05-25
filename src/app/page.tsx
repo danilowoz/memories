@@ -28,6 +28,7 @@ export default function Home() {
             id={item.id}
             dark={item.dark}
             isLast={index === payload.length - 1}
+            titlePosition={item.titlePosition}
           />
         );
       })}
@@ -41,12 +42,14 @@ const Album = ({
   id,
   dark,
   isLast,
+  titlePosition,
 }: {
   name: string;
   photos: Photo[];
   id: string | number;
   dark: boolean;
   isLast: boolean;
+  titlePosition: string;
 }) => {
   const coverPhoto = photos.find((photo) => photo.cover);
 
@@ -60,7 +63,11 @@ const Album = ({
           } as React.CSSProperties
         }
       >
-        <Cover name={name} src={coverPhoto?.filename ?? ""} />
+        <Cover
+          titlePosition={titlePosition}
+          name={name}
+          src={coverPhoto?.filename ?? ""}
+        />
       </div>
 
       {photos.map((item, index) => (
