@@ -20,7 +20,7 @@ export const Cover = ({
         {leftSide && <div className="opacity-60">Memories</div>}
         <div
           className={cn(
-            "bg-clip-text text-transparent from-[#ffffff50] to-[#ffffff] blur-[.5px] opacity-50 pr-2.5",
+            "bg-clip-text text-transparent from-[#ffffff20] to-[#ffffff90] blur-[.5px] opacity-50 pr-2.5",
             {
               "bg-gradient-to-bl": !leftSide,
               "bg-gradient-to-r": leftSide,
@@ -54,7 +54,7 @@ export const Cover = ({
       <motion.div
         style={{ backgroundColor: "var(--color)" }}
         className={cn(
-          "absolute inset-0 top-0 md:inset-6 md:bottom-13 md:rounded-lg opacity-70 mix-blend-color",
+          "absolute inset-0 top-0 md:inset-6 md:bottom-13 md:rounded-lg opacity-70 mix-blend-hard-light",
         )}
         initial={{
           margin: "-26px -26px -56px -26px",

@@ -12,6 +12,7 @@ export interface Memory {
   name: string;
   dark: boolean;
   photos: Photo[];
+  titlePosition: "string";
 }
 
 export type Memories = Memory[];
