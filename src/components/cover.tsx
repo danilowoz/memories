@@ -17,19 +17,11 @@ export const Cover = ({
 
     return (
       <>
-        {leftSide && <div className="opacity-60">Memories</div>}
-        <div
-          className={cn(
-            "bg-clip-text text-transparent from-[#ffffff20] to-[#ffffff90] blur-[.5px] opacity-50 pr-2.5",
-            {
-              "bg-gradient-to-bl": !leftSide,
-              "bg-gradient-to-r": leftSide,
-            },
-          )}
-        >
+        {leftSide && <div className="opacity-40">Memories</div>}
+        <div className="text-white opacity-20 pr-2.5">
           {name.replace("Memories", "")}
         </div>
-        {!leftSide && <div className="opacity-60">Memories</div>}
+        {!leftSide && <div className="opacity-40">Memories</div>}
       </>
     );
   };
@@ -54,7 +46,7 @@ export const Cover = ({
       <motion.div
         style={{ backgroundColor: "var(--color)" }}
         className={cn(
-          "absolute inset-0 top-0 md:inset-6 md:bottom-13 md:rounded-lg opacity-70 mix-blend-hard-light",
+          "absolute inset-0 top-0 md:inset-6 md:bottom-13 md:rounded-lg opacity-70 mix-blend-plus-lighter",
         )}
         initial={{
           margin: "-26px -26px -56px -26px",

@@ -40,9 +40,12 @@ export const Image = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className={cn("fixed inset-0 bg-white opacity-80 z-40 ", {
-              "bg-black": dark,
-            })}
+            className={cn(
+              "fixed inset-0 bg-white opacity-80 z-40 cursor-pointer",
+              {
+                "bg-black": dark,
+              },
+            )}
             onClick={() => setShow(false)}
           />
         ) : null}
