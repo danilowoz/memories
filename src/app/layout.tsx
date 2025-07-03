@@ -1,8 +1,8 @@
 import "@/styles/globals.css";
 
-import { Caveat } from "next/font/google";
+import { Instrument_Serif } from "next/font/google";
 
-const heading = Caveat({
+const heading = Instrument_Serif({
   weight: "400",
   variable: "--font-heading",
   subsets: ["latin"],

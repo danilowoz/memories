@@ -40,12 +40,9 @@ export const Image = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className={cn(
-              "fixed inset-0 bg-white opacity-80 z-40 cursor-pointer",
-              {
-                "bg-black": dark,
-              },
-            )}
+            className={cn("fixed inset-0 bg-white z-40 cursor-pointer", {
+              "bg-black": dark,
+            })}
             onClick={() => setShow(false)}
           />
         ) : null}
@@ -100,7 +97,7 @@ export const Image = ({
       >
         <motion.img
           layoutId={src}
-          className="w-full md:w-auto md:h-[80vh] max-w-none md:rounded transform-gpu cursor-pointer"
+          className="w-full md:w-auto md:h-[80vh] max-w-none transform-gpu cursor-pointer"
           src={src}
           alt={alt}
           onClick={(event: React.MouseEvent<HTMLImageElement>) => {
@@ -113,13 +110,13 @@ export const Image = ({
         />
 
         {location && date && (
-          <figcaption className="p-4 md:pt-4 md:p-0">
+          <figcaption className="p-4 md:pt-2 md:p-0 flex gap-2">
             <motion.p
               initial={{ opacity: 0, y: -2 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ type: "spring", duration: 0.5, bounce: 0 }}
               viewport={{ amount: 0.5 }}
-              className={cn("text-zinc-800 m-0 text-sm", {
+              className={cn("text-gray-900 m-0 text-sm font-display", {
                 "text-white": dark,
               })}
             >
@@ -130,7 +127,7 @@ export const Image = ({
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ type: "spring", duration: 0.5, bounce: 0 }}
               viewport={{ amount: 0.5 }}
-              className={cn("text-zinc-400 m-0 text-sm", {
+              className={cn("text-gray-900/50 m-0 text-sm", {
                 "text-white opacity-50": dark,
               })}
             >

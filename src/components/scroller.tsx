@@ -418,7 +418,7 @@ export const Scroller = ({
           href="https://danilowoz.com"
           className={cn(
             "w-7 h-7 rounded flex order-first",
-            "transition-colors text-gray-500 hover:bg-gray-700/10 hover:text-gray-800",
+            "transition-colors text-gray-400 hover:bg-gray-700/10 hover:text-gray-800",
             "peer-has-data-dark:hover:bg-gray-200/10 peer-has-data-dark:hover:text-gray-200",
           )}
         >
@@ -519,10 +519,10 @@ const TimelineItem = ({
         className="h-[20px] rounded-full relative overflow-hidden"
         style={{ flexGrow: flexRatio, height }}
       >
-        <div className="h-1.5 absolute left-0 right-0 top-[calc(50%-3px)] bg-gray-400/20 rounded-full" />
+        <div className="h-[2px] absolute left-0 right-0 top-[calc(50%-1px)] bg-gray-400/20 rounded-full" />
 
         <motion.div
-          className="absolute h-full rounded-full cursor-ew-resize m-auto"
+          className={cn("absolute h-full rounded-full cursor-ew-resize m-auto")}
           style={{
             height,
             width: `${thumbWidth}px`,
@@ -534,9 +534,6 @@ const TimelineItem = ({
           }}
           onMouseEnter={onThumbMouseEnter}
           onMouseLeave={onThumbMouseLeave}
-          whileHover={{
-            filter: "saturate(130%)",
-          }}
         />
       </motion.div>
     </>
@@ -544,7 +541,7 @@ const TimelineItem = ({
 };
 
 const THUMB_SIZE_STATE = {
-  IDLE: 6,
-  ACTIVE: 10,
+  IDLE: 2,
+  ACTIVE: 6,
   DRAG: 14,
 };

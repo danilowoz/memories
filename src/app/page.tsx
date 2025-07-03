@@ -9,26 +9,25 @@ export default function Home() {
   return (
     <Scroller>
       {payload.map((item, index) => {
-        const sortedPhotos = item.photos.sort((a, b) => {
-          if ("date" in a && "date" in b) {
-            return (
-              new Date(a.date as string).getTime() -
-              new Date(b.date as string).getTime()
-            );
-          }
+        // const sortedPhotos = item.photos.sort((a, b) => {
+        //   if ("date" in a && "date" in b) {
+        //     return (
+        //       new Date(a.date as string).getTime() -
+        //       new Date(b.date as string).getTime()
+        //     );
+        //   }
 
-          return 0;
-        }) as Photo[];
+        //   return 0;
+        // }) as Photo[];
 
         return (
           <Album
             key={item.id}
             name={item.name}
-            photos={sortedPhotos}
+            photos={item.photos as Photo[]}
             id={item.id}
             dark={item.dark}
             isLast={index === payload.length - 1}
-            titlePosition={item.titlePosition}
           />
         );
       })}
@@ -42,14 +41,12 @@ const Album = ({
   id,
   dark,
   isLast,
-  titlePosition,
 }: {
   name: string;
   photos: Photo[];
   id: string | number;
   dark: boolean;
   isLast: boolean;
-  titlePosition: string;
 }) => {
   const coverPhoto = photos.find((photo) => photo.cover);
 
@@ -63,11 +60,7 @@ const Album = ({
           } as React.CSSProperties
         }
       >
-        <Cover
-          titlePosition={titlePosition}
-          name={name}
-          src={coverPhoto?.filename ?? ""}
-        />
+        <Cover name={name} src={coverPhoto?.filename ?? ""} />
       </div>
 
       {photos.map((item, index) => (

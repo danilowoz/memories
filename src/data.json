@@ -3,8 +3,13 @@
     "id": 1,
     "name": "Travel Memories",
     "dark": false,
-    "titlePosition": "ml-auto mt-auto",
     "photos": [
+      {
+        "id": 11,
+        "date": "10/01/2022",
+        "location": "Istanbul, Türkiye",
+        "filename": "/travel/IMG_5791.jpg"
+      },
       {
         "id": 0,
         "date": "02/01/2025",
@@ -55,16 +60,16 @@
         "filename": "/travel/IMG_6590.jpg"
       },
       {
-        "id": 11,
-        "date": "10/01/2022",
-        "location": "Istanbul, Türkiye",
-        "filename": "/travel/IMG_5791.jpg"
-      },
-      {
         "id": 12,
         "date": "09/10/2022",
         "location": "Kotor, Montenegro",
         "filename": "/travel/IMG_4987.jpg"
+      },
+      {
+        "id": 16,
+        "date": "03/03/2023",
+        "location": "Bogotá, Colombia",
+        "filename": "/travel/IMG_6759.jpg"
       },
       {
         "id": 13,
@@ -84,12 +89,7 @@
         "location": "Rio de Janeiro, Brazil",
         "filename": "/travel/DSCF2718.jpg"
       },
-      {
-        "id": 16,
-        "date": "03/03/2023",
-        "location": "Bogotá, Colombia",
-        "filename": "/travel/IMG_6759.jpg"
-      },
+
       {
         "id": 17,
         "date": "05/25/2024",
@@ -103,7 +103,6 @@
     "id": 2,
     "name": "Memories By Her",
     "dark": false,
-    "titlePosition": "m-auto",
     "photos": [
       {
         "id": 1,
@@ -125,6 +124,12 @@
         "filename": "/her/000046.jpg"
       },
       {
+        "id": 7,
+        "date": "02/02/2023",
+        "location": "Porto, Portugal",
+        "filename": "/her/IMG_6407.jpg"
+      },
+      {
         "id": 5,
         "date": "05/25/2024",
         "location": "Varanasi, India",
@@ -135,12 +140,6 @@
         "date": "03/03/2025",
         "location": "Campinas, Brazil",
         "filename": "/her/DSCF1685.jpg"
-      },
-      {
-        "id": 7,
-        "date": "02/02/2023",
-        "location": "Porto, Portugal",
-        "filename": "/her/IMG_6407.jpg"
       }
     ]
   },
@@ -149,7 +148,6 @@
     "id": 3,
     "name": "Memories in Layers",
     "dark": true,
-    "titlePosition": "mt-auto",
     "photos": [
       {
         "id": 1,
