@@ -26,6 +26,9 @@
       },
       "correctness": {
         "noUnusedVariables": "error"
+      },
+      "suspicious": {
+        "noArrayIndexKey": "off"
       }
     }
   },

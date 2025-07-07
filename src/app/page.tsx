@@ -1,3 +1,4 @@
+import { Provider } from "@/components/context";
 import { Cover } from "@/components/cover";
 import { Image } from "@/components/image";
 import payload from "@/data.json";
@@ -7,31 +8,22 @@ import { Scroller } from "../components/scroller";
 
 export default function Home() {
   return (
-    <Scroller>
-      {payload.map((item, index) => {
-        // const sortedPhotos = item.photos.sort((a, b) => {
-        //   if ("date" in a && "date" in b) {
-        //     return (
-        //       new Date(a.date as string).getTime() -
-        //       new Date(b.date as string).getTime()
-        //     );
-        //   }
-
-        //   return 0;
-        // }) as Photo[];
-
-        return (
-          <Album
-            key={item.id}
-            name={item.name}
-            photos={item.photos as Photo[]}
-            id={item.id}
-            dark={item.dark}
-            isLast={index === payload.length - 1}
-          />
-        );
-      })}
-    </Scroller>
+    <Provider>
+      <Scroller>
+        {payload.map((item, index) => {
+          return (
+            <Album
+              key={item.id}
+              name={item.name}
+              photos={item.photos as Photo[]}
+              id={item.id}
+              dark={item.dark}
+              isLast={index === payload.length - 1}
+            />
+          );
+        })}
+      </Scroller>
+    </Provider>
   );
 }
 

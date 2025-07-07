@@ -1,7 +1,9 @@
 "use client";
 
 import { cn } from "@/utils/classname";
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
+import React from "react";
+import { context } from "./context";
 
 export const Cover = ({
   src,
@@ -10,15 +12,65 @@ export const Cover = ({
   src: string;
   name: string;
 }) => {
+  const [offsetLeft, setOffsetLeft] = React.useState(0);
+  const { scrollX, windowWidth } = React.useContext(context);
+  const x = useTransform(
+    scrollX,
+    [offsetLeft, offsetLeft + windowWidth],
+    [100, -100],
+  );
+  const [scrollDirection, setScrollDirection] = React.useState<
+    "left" | "right"
+  >("right");
+
+  console.log(offsetLeft);
+
+  scrollX.onChange((value) => {
+    if (value > (scrollX.getPrevious() ?? 0)) {
+      setScrollDirection("right");
+    } else {
+      setScrollDirection("left");
+    }
+  });
+
   const renderTitle = () => {
     const leftSide = name.indexOf("Memories") === 0;
 
     return (
       <>
         {leftSide && <div className="opacity-40">Memories</div>}
-        <div className="text-white opacity-20">
-          {name.replace("Memories", "")}
-        </div>
+        <motion.div
+          className="text-white opacity-20 whitespace-pre"
+          initial="initial"
+          whileInView="whileInView"
+          viewport={{ amount: 0.8, margin: `-${windowWidth / 4}px` }}
+        >
+          {name
+            .replace("Memories", "")
+            .split("")
+            .map((char, index, arr) => (
+              <motion.span
+                transition={{
+                  type: "spring",
+                  duration: 1,
+                  bounce: 0,
+                  delay:
+                    scrollDirection === "right"
+                      ? index * 0.05
+                      : arr.length * 0.05 - index * 0.05,
+                }}
+                variants={{
+                  initial: { opacity: 0, scale: 1.1, filter: "blur(10px)" },
+                  whileInView: { opacity: 1, scale: 1, filter: "blur(0px)" },
+                  exit: { opacity: 0, scale: 1.1, filter: "blur(10px)" },
+                }}
+                key={char + index}
+                className="inline-block"
+              >
+                {char}
+              </motion.span>
+            ))}
+        </motion.div>
         {!leftSide && <div className="opacity-40">Memories</div>}
       </>
     );
@@ -39,6 +91,11 @@ export const Cover = ({
           ease: "easeInOut",
           delay: 0.6,
           duration: 0.6,
+        }}
+        ref={(ref) => {
+          if (ref) {
+            setOffsetLeft(ref.parentNode?.offsetLeft ?? 0);
+          }
         }}
       />
       <motion.div
@@ -68,6 +125,7 @@ export const Cover = ({
       <motion.h1
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
+        style={{ left: x }}
         transition={{
           ease: "easeInOut",
           delay: 1,

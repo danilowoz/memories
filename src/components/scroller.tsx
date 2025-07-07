@@ -12,6 +12,7 @@ import {
   useVelocity,
 } from "motion/react";
 import * as React from "react";
+import { context } from "./context";
 
 const payload = data as Memories;
 
@@ -22,7 +23,7 @@ export const Scroller = ({
 }) => {
   const contentRef = React.useRef<HTMLDivElement>(null);
   const trackRef = React.useRef<HTMLDivElement>(null);
-  const scrollX = useMotionValue(0);
+  const { scrollX, windowWidth } = React.useContext(context);
   const thumbPosition = useMotionValue(0);
 
   const springScrollX = useSpring(scrollX as unknown as number, {
@@ -86,7 +87,6 @@ export const Scroller = ({
   }, [springScrollX]);
 
   const [thumbWidth, setThumbWidth] = React.useState(20);
-  const [stableWindowWidth, setStableWindowWidth] = React.useState(0);
   const [scrollWidth, setScrollWidth] = React.useState(0);
   const [isDragging, setIsDragging] = React.useState(false);
   const [isHovering, setIsHovering] = React.useState(false);
@@ -245,8 +245,6 @@ export const Scroller = ({
       return;
     }
 
-    setStableWindowWidth(window.innerWidth);
-
     const controller = new AbortController();
 
     getAlbumScrollWidthAndOffset();
@@ -323,7 +321,7 @@ export const Scroller = ({
   const moveTop = useTransform(my, [0, HEIGHT / 2, HEIGHT], [-1, 0, 1]);
   const moveLeft = useTransform(
     mx,
-    [0, stableWindowWidth / 2, stableWindowWidth],
+    [0, windowWidth / 2, windowWidth],
     [-20, 0, 20],
   );
 
@@ -542,6 +540,6 @@ const TimelineItem = ({
 
 const THUMB_SIZE_STATE = {
   IDLE: 2,
-  ACTIVE: 6,
-  DRAG: 14,
+  ACTIVE: 4,
+  DRAG: 6,
 };
