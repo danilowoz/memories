@@ -51,9 +51,7 @@ export const Image = ({
       <AnimatePresence>
         {show && (
           <motion.div
-            className={cn("fixed inset-0 z-50 flex p-7-", {
-              "justify-around": window.innerHeight * ratio < window.innerHeight,
-            })}
+            className={cn("fixed inset-0 z-50 flex p-7- justify-around")}
           >
             <motion.img
               className="cursor-pointer"
