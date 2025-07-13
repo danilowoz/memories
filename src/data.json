@@ -122,6 +122,12 @@
     "dark": false,
     "photos": [
       {
+        "id": 6,
+        "date": "03/03/2025",
+        "location": "Campinas, Brazil",
+        "filename": "/her/DSCF1685.jpg"
+      },
+      {
         "id": 1,
         "date": "12/12/2024",
         "location": "Praha, Czech Republic",
@@ -151,12 +157,6 @@
         "date": "05/25/2024",
         "location": "Varanasi, India",
         "filename": "/her/000049.jpg"
-      },
-      {
-        "id": 6,
-        "date": "03/03/2025",
-        "location": "Campinas, Brazil",
-        "filename": "/her/DSCF1685.jpg"
       }
     ]
   },

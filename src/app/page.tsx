@@ -43,7 +43,14 @@ const Album = ({
   const coverPhoto = photos.find((photo) => photo.cover);
 
   return (
-    <div className="flex flex-col md:flex-row md:flex-nowrap gap-12 md:gap-0">
+    <div
+      className={cn(
+        "flex flex-col md:flex-row md:flex-nowrap gap-12 md:gap-0",
+        {
+          "bg-black sm:bg-transparent": dark,
+        },
+      )}
+    >
       <div
         className="item min-h-[6em] min-w-screen md:min-h-screen flex relative"
         style={

@@ -65,23 +65,6 @@ export const Image = ({
               }}
               transition={{ type: "spring", duration: 1, bounce: 0.1 }}
             />
-
-            {/* <div>
-              <p
-                className={cn("text-gray-600 font-semibold m-0", {
-                  "text-white": dark,
-                })}
-              >
-                {location}
-              </p>
-              <p
-                className={cn("text-gray-400 uppercase m-0 text-xs", {
-                  "text-white opacity-50": dark,
-                })}
-              >
-                {formatDate(date)}
-              </p>
-            </div> */}
           </motion.div>
         )}
       </AnimatePresence>

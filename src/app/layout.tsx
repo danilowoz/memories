@@ -17,6 +17,7 @@ export default function RootLayout({
     <html lang="en">
       <title>Memories - Danilo Woznica</title>
       <body className={`antialiased ${heading.variable}`}>{children}</body>
+      <link rel="icon" href="/public/favicon.png" />
     </html>
   );
 }
