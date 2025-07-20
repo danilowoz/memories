@@ -1,0 +1,204 @@
+[
+  {
+    "id": 1,
+    "name": "Travel Memories",
+    "dark": false,
+    "photos": [
+      {
+        "id": 11,
+        "date": "10/01/2022",
+        "location": "Istanbul, Türkiye",
+        "filename": "/travel/IMG_5791.jpg"
+      },
+      {
+        "id": 12,
+        "date": "09/10/2022",
+        "location": "Kotor, Montenegro",
+        "filename": "/travel/IMG_4987.jpg"
+      },
+      {
+        "id": 5,
+        "date": "05/25/2024",
+        "location": "Agra, India",
+        "filename": "/travel/000064.jpg",
+        "cover": true
+      },
+      {
+        "id": 0,
+        "date": "02/01/2025",
+        "location": "Guaramirim, Brazil",
+        "filename": "/travel/DSCF1762.jpg"
+      },
+      {
+        "id": 2,
+        "date": "02/01/2025",
+        "location": "Barra Velha, Brazil",
+        "filename": "/travel/DSCF1792.jpg"
+      },
+      {
+        "id": 6,
+        "date": "04/26/2024",
+        "location": "Annapurna Base Camp, Nepal",
+        "filename": "/travel/000055.jpg"
+      },
+      {
+        "id": 9,
+        "date": "06/29/2023",
+        "location": "Florianópolis, Brazil",
+        "filename": "/travel/000059.jpg"
+      },
+      {
+        "id": 18,
+        "date": "03/03/2025",
+        "location": "Rio de Janeiro, Brazil",
+        "filename": "/travel/000044.jpg"
+      },
+      {
+        "id": 7,
+        "date": "09/09/2023",
+        "location": "Porto, Portugal",
+        "filename": "/travel/000042_1.jpg"
+      },
+      {
+        "id": 10,
+        "date": "03/22/2023",
+        "location": "Havana, Cuba",
+        "filename": "/travel/IMG_6590.jpg"
+      },
+      {
+        "id": 16,
+        "date": "03/03/2023",
+        "location": "Bogotá, Colombia",
+        "filename": "/travel/IMG_6759.jpg"
+      },
+      {
+        "id": 13,
+        "date": "09/09/2019",
+        "location": "Sahara Desert, Morocco",
+        "filename": "/travel/18FBFA0F-BCE4-4C3F-B5AA-4AB7BDBBCED1.jpg"
+      },
+      {
+        "id": 4,
+        "date": "02/01/2025",
+        "location": "Barcelona, Spain",
+        "filename": "/travel/DSCF1948.jpg"
+      },
+      {
+        "id": 17,
+        "date": "05/25/2024",
+        "location": "Agra, India",
+        "filename": "/travel/IMG_7790.jpg"
+      },
+      {
+        "id": 14,
+        "date": "03/03/2025",
+        "location": "Bahia, Brazil",
+        "filename": "/travel/DSCF2367.jpg"
+      },
+      {
+        "id": 15,
+        "date": "03/03/2025",
+        "location": "Rio de Janeiro, Brazil",
+        "filename": "/travel/DSCF2718.jpg"
+      },
+      {
+        "id": 19,
+        "date": "06/06/2025",
+        "location": "London, England",
+        "filename": "/travel/london.jpg"
+      },
+      {
+        "id": 20,
+        "date": "06/06/2025",
+        "location": "Copenhagen, Denmark",
+        "filename": "/travel/louisiana.jpg"
+      }
+    ]
+  },
+
+  {
+    "id": 2,
+    "name": "Memories By Her",
+    "dark": false,
+    "photos": [
+      {
+        "id": 6,
+        "date": "03/03/2025",
+        "location": "Campinas, Brazil",
+        "filename": "/her/DSCF1685.jpg"
+      },
+      {
+        "id": 1,
+        "date": "12/12/2024",
+        "location": "Praha, Czech Republic",
+        "filename": "/her/000006_1.jpg",
+        "cover": true
+      },
+      {
+        "id": 2,
+        "date": "04/26/2024",
+        "location": "Annapurna Base Camp, Nepal",
+        "filename": "/her/000039.jpg"
+      },
+      {
+        "id": 4,
+        "date": "12/12/2024",
+        "location": "Porto, Portugal",
+        "filename": "/her/000046.jpg"
+      },
+      {
+        "id": 7,
+        "date": "02/02/2023",
+        "location": "Porto, Portugal",
+        "filename": "/her/IMG_6407.jpg"
+      },
+      {
+        "id": 5,
+        "date": "05/25/2024",
+        "location": "Varanasi, India",
+        "filename": "/her/000049.jpg"
+      }
+    ]
+  },
+
+  {
+    "id": 3,
+    "name": "Memories in Layers",
+    "dark": true,
+    "photos": [
+      {
+        "id": 1,
+        "filename": "/layers/DSCF1494.jpeg"
+      },
+      {
+        "id": 2,
+        "filename": "/layers/DSCF1495.jpeg"
+      },
+      {
+        "id": 3,
+        "filename": "/layers/DSCF1535.jpeg"
+      },
+      {
+        "id": 5,
+        "filename": "/layers/DSCF1660.jpeg"
+      },
+      {
+        "id": 6,
+        "filename": "/layers/DSCF1838.jpeg"
+      },
+      {
+        "id": 7,
+        "filename": "/layers/000040_1.jpg"
+      },
+      {
+        "id": 9,
+        "filename": "/layers/copenhagen.jpg"
+      },
+      {
+        "id": 8,
+        "filename": "/layers/IMG_2258.jpeg",
+        "cover": true
+      }
+    ]
+  }
+]

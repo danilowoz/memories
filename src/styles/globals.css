@@ -1,0 +1,24 @@
+@import "tailwindcss";
+
+:root {
+  --saturation: 40%;
+  --lightness: 40%;
+
+  --color-1: hsl(126, var(--saturation), var(--lightness));
+  --color-2: hsl(0, var(--saturation), var(--lightness));
+  --color-3: #666;
+}
+
+*::selection {
+  background-color: #000;
+  color: #fff;
+}
+
+.bg-black *::selection {
+  background-color: #fff;
+  color: #000;
+}
+
+.font-heading {
+  font-family: var(--font-heading);
+}
