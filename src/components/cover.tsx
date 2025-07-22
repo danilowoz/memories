@@ -1,5 +1,6 @@
 "use client";
 
+import { useIsSafari } from "@/utils/browser";
 import { cn } from "@/utils/classname";
 import { motion, useScroll, useTransform } from "framer-motion";
 import React from "react";
@@ -12,6 +13,7 @@ export const Cover = ({
   src: string;
   name: string;
 }) => {
+  const ref = React.useRef<HTMLDivElement>(null);
   const [offsetLeft, setOffsetLeft] = React.useState(0);
   const { scrollX, windowWidth } = React.useContext(context);
   const isMobile = windowWidth < 768;
@@ -23,8 +25,17 @@ export const Cover = ({
   const [scrollDirection, setScrollDirection] = React.useState<
     "left" | "right"
   >("right");
+  const safari = useIsSafari();
+
+  React.useLayoutEffect(() => {
+    setOffsetLeft((ref.current?.parentNode as HTMLElement)?.offsetLeft ?? 0);
+  }, []);
 
   scrollX.onChange((value) => {
+    if (safari) {
+      return;
+    }
+
     if (value > (scrollX.getPrevious() ?? 0)) {
       setScrollDirection("right");
     } else {
@@ -40,11 +51,15 @@ export const Cover = ({
         {leftSide && <div className="opacity-40">Memories</div>}
         <motion.div
           className="text-white opacity-20 whitespace-pre"
-          initial="initial"
-          whileInView="whileInView"
-          viewport={{ amount: 0.8, margin: `-${windowWidth / 4}px` }}
+          initial={safari ? undefined : "initial"}
+          whileInView={safari ? undefined : "whileInView"}
+          viewport={
+            safari
+              ? undefined
+              : { amount: 0.8, margin: `-${windowWidth / 4}px` }
+          }
         >
-          {isMobile
+          {isMobile || safari
             ? name.replace("Memories", "")
             : name
                 .replace("Memories", "")
@@ -99,11 +114,7 @@ export const Cover = ({
           delay: 0.6,
           duration: 0.6,
         }}
-        ref={(ref) => {
-          if (ref) {
-            setOffsetLeft((ref.parentNode as HTMLElement)?.offsetLeft ?? 0);
-          }
-        }}
+        ref={ref}
       />
       <motion.div
         style={{ backgroundColor: "var(--color)" }}

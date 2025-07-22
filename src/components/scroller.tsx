@@ -1,6 +1,7 @@
 "use client";
 
 import data from "@/data.json";
+import { useIsSafari } from "@/utils/browser";
 import { cn } from "@/utils/classname";
 import type { Memories } from "@/utils/types";
 import {
@@ -25,6 +26,7 @@ export const Scroller = ({
   const trackRef = React.useRef<HTMLDivElement>(null);
   const { scrollX, windowWidth } = React.useContext(context);
   const thumbPosition = useMotionValue(0);
+  const safari = useIsSafari();
 
   const springScrollX = useSpring(scrollX as unknown as number, {
     duration: 0.3,
@@ -116,7 +118,7 @@ export const Scroller = ({
       : 0;
 
     thumbPosition.set(newThumbPosition);
-  }, [thumbPosition]);
+  }, []);
 
   const handleTrackClick = (event: React.MouseEvent<HTMLDivElement>) => {
     if (!trackRef.current || !contentRef.current) {
@@ -262,7 +264,9 @@ export const Scroller = ({
     window.addEventListener(
       "wheel",
       (event) => {
-        window.scroll(0, window.scrollY + event.deltaX);
+        if (!safari) {
+          window.scroll(0, window.scrollY + event.deltaX);
+        }
       },
       {
         signal: controller.signal,
@@ -307,6 +311,7 @@ export const Scroller = ({
     updateBodyHeight,
     handleOnWindowScroll,
     handleOnDrag,
+    safari,
   ]);
 
   const HEIGHT = 50;

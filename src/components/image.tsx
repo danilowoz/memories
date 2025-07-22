@@ -1,5 +1,6 @@
 "use client";
 
+import { useIsSafari } from "@/utils/browser";
 import { cn } from "@/utils/classname";
 import { AnimatePresence, motion } from "framer-motion";
 import React from "react";
@@ -20,6 +21,8 @@ export const Image = ({
 }) => {
   const [show, setShow] = React.useState(false);
   const [ratio, setRatio] = React.useState(1);
+
+  const safari = useIsSafari();
 
   React.useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
@@ -70,11 +73,14 @@ export const Image = ({
       </AnimatePresence>
 
       <motion.div
+        key={safari ? "safari" : "other"}
         className="m-auto md:px-40"
-        initial={{ filter: "blur(10px)", opacity: 0.2 }}
+        initial={safari ? undefined : { filter: "blur(10px)", opacity: 0.2 }}
         whileInView={{ filter: "blur(0px)", opacity: 1 }}
-        transition={{ type: "spring", duration: 0.3, bounce: 0 }}
-        viewport={{ amount: 0.1 }}
+        transition={
+          safari ? undefined : { type: "spring", duration: 0.3, bounce: 0 }
+        }
+        viewport={safari ? undefined : { amount: 0.1 }}
       >
         <motion.img
           layoutId={src}
@@ -93,10 +99,10 @@ export const Image = ({
         {location && date && (
           <figcaption className="p-4 md:pt-2 md:p-0 flex gap-2">
             <motion.p
-              initial={{ opacity: 0, y: -2 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={safari ? undefined : { opacity: 0, y: -2 }}
+              whileInView={safari ? undefined : { opacity: 1, y: 0 }}
               transition={{ type: "spring", duration: 0.5, bounce: 0 }}
-              viewport={{ amount: 0.5 }}
+              viewport={safari ? undefined : { amount: 0.5 }}
               className={cn("text-gray-900 m-0 text-sm font-display", {
                 "text-white": dark,
               })}
@@ -104,10 +110,10 @@ export const Image = ({
               {location}
             </motion.p>
             <motion.p
-              initial={{ opacity: 0, y: -4 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={safari ? undefined : { opacity: 0, y: -4 }}
+              whileInView={safari ? undefined : { opacity: 1, y: 0 }}
               transition={{ type: "spring", duration: 0.5, bounce: 0 }}
-              viewport={{ amount: 0.5 }}
+              viewport={safari ? undefined : { amount: 0.5 }}
               className={cn("text-gray-900/50 m-0 text-sm", {
                 "text-white opacity-50": dark,
               })}
