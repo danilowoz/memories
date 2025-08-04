@@ -1,5 +1,6 @@
 import { Provider } from "@/components/context";
 import { Cover } from "@/components/cover";
+import { Cursor } from "@/components/cursor";
 import { Image } from "@/components/image";
 import payload from "@/data.json";
 import { cn } from "@/utils/classname";

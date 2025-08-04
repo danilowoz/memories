@@ -14,6 +14,7 @@ import {
 } from "motion/react";
 import * as React from "react";
 import { context } from "./context";
+import { Cursor } from "./cursor";
 
 const payload = data as Memories;
 
@@ -24,7 +25,7 @@ export const Scroller = ({
 }) => {
   const contentRef = React.useRef<HTMLDivElement>(null);
   const trackRef = React.useRef<HTMLDivElement>(null);
-  const { scrollX, windowWidth } = React.useContext(context);
+  const { scrollX } = React.useContext(context);
   const thumbPosition = useMotionValue(0);
   const safari = useIsSafari();
 
@@ -97,8 +98,9 @@ export const Scroller = ({
   const [albumSizes, setAlbumSizes] = React.useState<Array<[number, number]>>(
     new Array(payload.length).fill([0, 0]),
   );
+  const [timelineContainerWidth, setTimelineContainerWidth] = React.useState(0);
 
-  const updateThumbSizeAndPosition = React.useCallback(() => {
+  const updateThumbSizeAndPosition = () => {
     if (!contentRef.current || !trackRef.current) {
       return;
     }
@@ -118,7 +120,7 @@ export const Scroller = ({
       : 0;
 
     thumbPosition.set(newThumbPosition);
-  }, []);
+  };
 
   const handleTrackClick = (event: React.MouseEvent<HTMLDivElement>) => {
     if (!trackRef.current || !contentRef.current) {
@@ -306,7 +308,6 @@ export const Scroller = ({
   }, [
     isDragging,
     isHovering,
-    updateThumbSizeAndPosition,
     getAlbumScrollWidthAndOffset,
     updateBodyHeight,
     handleOnWindowScroll,
@@ -314,21 +315,10 @@ export const Scroller = ({
     safari,
   ]);
 
-  const HEIGHT = 50;
-
   const handlerHeight = useSpring(THUMB_SIZE_STATE.IDLE, {
     bounce: 0.2,
     duration: 300,
   });
-  const mx = useSpring(0, { bounce: 0 });
-  const my = useSpring(HEIGHT / 2, { bounce: 0 });
-
-  const moveTop = useTransform(my, [0, HEIGHT / 2, HEIGHT], [-1, 0, 1]);
-  const moveLeft = useTransform(
-    mx,
-    [0, windowWidth / 2, windowWidth],
-    [-20, 0, 20],
-  );
 
   const isHoveringTimer = React.useRef<NodeJS.Timeout | null>(null);
 
@@ -343,6 +333,11 @@ export const Scroller = ({
     >
       {children}
 
+      <Cursor
+        albumSizes={albumSizes}
+        timelineContainerWidth={timelineContainerWidth}
+      />
+
       <motion.div
         className="hidden md:flex fixed left-0 right-0 bottom-0 mx-6 flex-row gap-4 items-center h-[50px]"
         initial={{ opacity: 0 }}
@@ -354,22 +349,17 @@ export const Scroller = ({
         }}
       >
         <div
-          ref={trackRef}
+          ref={(node) => {
+            trackRef.current = node;
+            setTimelineContainerWidth(node?.clientWidth || 0);
+          }}
           className="flex flex-row gap-6 items-center flex-1 peer h-[50px]"
           onMouseDown={handleThumbMouseDown}
           onClick={handleTrackClick}
-          onMouseMove={(e) => {
-            const { left, top } = e.currentTarget.getBoundingClientRect();
-
-            mx.set(e.clientX - left);
-            my.set(e.clientY - top);
-
+          onMouseMove={() => {
             setIsHovering(true);
           }}
           onMouseLeave={() => {
-            mx.set(thumbPosition.get());
-            my.set(HEIGHT / 2);
-
             if (!isDragging) {
               handlerHeight.set(THUMB_SIZE_STATE.IDLE);
             }
@@ -398,12 +388,11 @@ export const Scroller = ({
               trackWidth={trackRef.current?.clientWidth || 0}
               scrollWidth={scrollWidth}
               id={album.id}
+              name={album.name}
               isDragging={isDragging}
               isHovering={isHovering}
               isDark={album.dark}
               isLast={index === payload.length - 1}
-              moveTop={moveTop}
-              moveLeft={moveLeft}
               height={handlerHeight}
               onThumbMouseEnter={() => {
                 handlerHeight.set(THUMB_SIZE_STATE.DRAG);
@@ -458,8 +447,6 @@ const TimelineItem = ({
   isHovering,
   isDark,
   isLast,
-  moveTop,
-  moveLeft,
   height,
   onThumbMouseEnter,
   onThumbMouseLeave,
@@ -471,12 +458,11 @@ const TimelineItem = ({
   trackWidth: number;
   scrollWidth: number;
   id: number;
+  name: string;
   isDragging: boolean;
   isHovering: boolean;
   isDark: boolean;
   isLast: boolean;
-  moveTop: MotionValue<number>;
-  moveLeft: MotionValue<number>;
   height: MotionValue<number>;
   onThumbMouseEnter: () => void;
   onThumbMouseLeave: () => void;
@@ -492,13 +478,6 @@ const TimelineItem = ({
   const scaleX = useSpring(xVelocityScale, {
     bounce: 0,
   });
-
-  React.useEffect(() => {
-    if (!isHovering) {
-      moveLeft.set(0);
-      moveTop.set(0);
-    }
-  }, [isHovering, moveLeft, moveTop]);
 
   React.useEffect(() => {
     if (isDark) {
@@ -517,28 +496,31 @@ const TimelineItem = ({
       {isLast && (
         <meta name="theme-color" content={enableDarkMode ? "#000" : "#fff"} />
       )}
-      <motion.div
-        data-dark={enableDarkMode ? true : undefined}
-        className="h-[20px] rounded-full relative overflow-hidden"
-        style={{ flexGrow: flexRatio, height }}
-      >
-        <div className="h-[2px] absolute left-0 right-0 top-[calc(50%-1px)] bg-gray-400/20 rounded-full" />
 
+      <div className="h-full flex" style={{ flexGrow: flexRatio }}>
         <motion.div
-          className={cn("absolute h-full rounded-full cursor-ew-resize m-auto")}
-          style={{
-            height,
-            width: `${thumbWidth}px`,
-            left: relativePosition,
-            backgroundColor: `var(--color-${id})`,
-            y: moveTop,
-            x: moveLeft,
-            scaleX: isDragging ? undefined : scaleX,
-          }}
-          onMouseEnter={onThumbMouseEnter}
-          onMouseLeave={onThumbMouseLeave}
-        />
-      </motion.div>
+          data-dark={enableDarkMode ? true : undefined}
+          className="h-[20px] rounded-full relative overflow-hidden m-auto flex-1"
+          style={{ height }}
+        >
+          <div className="h-[2px] absolute left-0 right-0 top-[calc(50%-1px)] bg-gray-400/20 rounded-full" />
+
+          <motion.div
+            className={cn(
+              "absolute h-full rounded-full cursor-ew-resize m-auto",
+            )}
+            style={{
+              height,
+              width: `${thumbWidth}px`,
+              left: relativePosition,
+              backgroundColor: `var(--color-${id})`,
+              scaleX: isDragging ? undefined : scaleX,
+            }}
+            onMouseEnter={onThumbMouseEnter}
+            onMouseLeave={onThumbMouseLeave}
+          />
+        </motion.div>
+      </div>
     </>
   );
 };

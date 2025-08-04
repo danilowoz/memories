@@ -22,3 +22,19 @@
 .font-heading {
   font-family: var(--font-heading);
 }
+
+#cursor-scroll {
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 8%,
+    black 50%,
+    transparent 70%
+  );
+  mask-mode: alpha;
+}
+
+#cursor-scroll:after {
+  mask-image: linear-gradient(to right, transparent 50%, black 70%);
+  mask-mode: alpha;
+}

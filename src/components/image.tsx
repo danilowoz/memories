@@ -4,6 +4,7 @@ import { useIsSafari } from "@/utils/browser";
 import { cn } from "@/utils/classname";
 import { AnimatePresence, motion } from "framer-motion";
 import React from "react";
+import { context } from "./context";
 
 export const Image = ({
   src,
@@ -21,6 +22,7 @@ export const Image = ({
 }) => {
   const [show, setShow] = React.useState(false);
   const [ratio, setRatio] = React.useState(1);
+  const { setOverObject } = React.useContext(context);
 
   const safari = useIsSafari();
 
@@ -43,7 +45,7 @@ export const Image = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className={cn("fixed inset-0 bg-white z-40 cursor-pointer", {
+            className={cn("fixed inset-0 bg-white z-40 ", {
               "bg-black": dark,
             })}
             onClick={() => setShow(false)}
@@ -57,7 +59,6 @@ export const Image = ({
             className={cn("fixed inset-0 z-50 flex p-7- justify-around")}
           >
             <motion.img
-              className="cursor-pointer"
               layoutId={src}
               src={src}
               alt={alt}
@@ -67,6 +68,8 @@ export const Image = ({
                 width: window.innerHeight * ratio,
               }}
               transition={{ type: "spring", duration: 1, bounce: 0.1 }}
+              onMouseEnter={() => setOverObject("image")}
+              onMouseLeave={() => setOverObject(null)}
             />
           </motion.div>
         )}
@@ -84,7 +87,7 @@ export const Image = ({
       >
         <motion.img
           layoutId={src}
-          className="w-full md:w-auto md:h-[80vh] max-w-none transform-gpu cursor-pointer"
+          className="w-full md:w-auto md:h-[80vh] max-w-none transform-gpu "
           src={src}
           alt={alt}
           onClick={(event: React.MouseEvent<HTMLImageElement>) => {
@@ -93,7 +96,10 @@ export const Image = ({
 
             setRatio(aspectRatio);
             setShow(true);
+            setOverObject(null);
           }}
+          onMouseEnter={() => setOverObject("image")}
+          onMouseLeave={() => setOverObject(null)}
         />
 
         {location && date && (
