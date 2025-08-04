@@ -15,7 +15,7 @@ export const Cursor = ({
   const cursorRef = React.useRef<HTMLDivElement>(null);
   const scrollRef = React.useRef<HTMLDivElement>(null);
   const [overTimeline, setOverTimeline] = React.useState(false);
-  const { overObject, windowWidth } = React.useContext(context);
+  const { overObject } = React.useContext(context);
 
   React.useEffect(() => {
     const handleMouseMove = (event: MouseEvent) => {
@@ -33,23 +33,24 @@ export const Cursor = ({
         setOverTimeline(limit);
 
         cursorRef.current.style.left = `${event.clientX - SIZE / 2}px`;
-        cursorRef.current.style.top = `${limit ? window.innerHeight - threshold * 1.3 : top}px`;
+        cursorRef.current.style.top = `${limit ? window.innerHeight - 34 : top}px`;
       }
     };
 
     window.addEventListener("mousemove", handleMouseMove);
 
     return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, [timelineContainerWidth, windowWidth]);
+  }, []);
 
   return (
     <motion.div
       ref={cursorRef}
+      initial={{ opacity: 0, width: 0, height: 0 }}
       animate={{
-        width: overTimeline ? 2 : SIZE,
-        height: overTimeline ? SIZE * 4 : SIZE,
+        width: overTimeline ? SIZE * 2 : SIZE,
+        height: overTimeline ? 18 : SIZE,
         opacity: overObject === "image" ? 0.3 : 1,
-        scale: overObject === "image" ? 2 : 1,
+        scale: overObject === "image" ? 1.5 : 1,
       }}
       transition={{
         width: {
@@ -60,37 +61,50 @@ export const Cursor = ({
       className={cn(
         "cursor fixed pointer-events-none z-50",
         "bg-gray-200/50 border border-gray-300 rounded-full w-full h-full backdrop-blur-sm",
-        overTimeline ? "border-black/50" : "",
+        {
+          "after:content-[''] after:absolute after:bottom-0 after:right-0 after:translate-x-2 after:translate-y-1 after:w-2 after:h-0.5 after:bg-gray-200/50 after:rotate-45 after:rounded-2xl after:border after:border-gray-300":
+            overObject === "image",
+
+          "border-white bg-gray-300 border-5": overTimeline,
+        },
       )}
     >
-      <div
-        id="cursor-scroll"
-        className="w-40 h-full relative after:content-[''] after:absolute after:inset-0 after:backdrop-blur-[4px] z-10"
-      >
-        <div
-          className={cn(
-            "overflow-auto w-40 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden relative",
-          )}
-          ref={scrollRef}
-        >
-          <div
-            className="flex text-nowrap pt-6 gap-6 "
-            style={{ width: timelineContainerWidth }}
+      <AnimatePresence>
+        {overTimeline && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{
+              opacity: 1,
+              transition: { delay: 0.2, duration: 0.2 },
+            }}
+            exit={{ opacity: 0, transition: { duration: 0.1, delay: 0 } }}
+            className="w-24 h-full relative"
           >
-            {payload.map((item, index) => (
-              <motion.div
-                key={item.id}
-                style={{ flexGrow: albumSizes[index][0] }}
-                className="h-5 flex-1"
+            <div
+              id="cursor-scroll"
+              className="overflow-auto w-full [scrollbar-width:none] [&::-webkit-scrollbar]:hidden -top-6 relative"
+              ref={scrollRef}
+            >
+              <div
+                className="flex text-nowrap gap-6"
+                style={{ width: timelineContainerWidth }}
               >
-                <span className="sticky left-2">
-                  {item.name.replace("Memories", "").trim()}
-                </span>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </div>
+                {payload.map((item, index) => (
+                  <motion.div
+                    key={item.id}
+                    style={{ flexGrow: albumSizes[index][0] }}
+                    className="h-5 flex-1"
+                  >
+                    <span className="sticky left-1 top-0 text-sm leading-0">
+                      {item.name.replace("Memories", "").trim()}
+                    </span>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 };

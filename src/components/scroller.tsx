@@ -161,8 +161,6 @@ export const Scroller = ({
     setStartThumbPosition(thumbPosition.get());
     e.preventDefault(); // Prevent text selection during drag
 
-    handlerHeight.set(THUMB_SIZE_STATE.DRAG);
-
     document.body.classList.add("cursor-ew-resize");
   };
 
@@ -293,10 +291,6 @@ export const Scroller = ({
         () => {
           setIsDragging(false);
           document.body.classList.remove("cursor-ew-resize");
-
-          if (!isHovering) {
-            handlerHeight.set(THUMB_SIZE_STATE.IDLE);
-          }
         },
         { signal: controller.signal },
       );
@@ -314,11 +308,6 @@ export const Scroller = ({
     handleOnDrag,
     safari,
   ]);
-
-  const handlerHeight = useSpring(THUMB_SIZE_STATE.IDLE, {
-    bounce: 0.2,
-    duration: 300,
-  });
 
   const isHoveringTimer = React.useRef<NodeJS.Timeout | null>(null);
 
@@ -360,10 +349,6 @@ export const Scroller = ({
             setIsHovering(true);
           }}
           onMouseLeave={() => {
-            if (!isDragging) {
-              handlerHeight.set(THUMB_SIZE_STATE.IDLE);
-            }
-
             if (isHoveringTimer.current) {
               clearTimeout(isHoveringTimer.current);
             }
@@ -371,11 +356,6 @@ export const Scroller = ({
             isHoveringTimer.current = setTimeout(() => {
               setIsHovering(false);
             }, 300);
-          }}
-          onMouseEnter={() => {
-            if (!isDragging) {
-              handlerHeight.set(THUMB_SIZE_STATE.ACTIVE);
-            }
           }}
         >
           {payload.map((album, index) => (
@@ -393,15 +373,6 @@ export const Scroller = ({
               isHovering={isHovering}
               isDark={album.dark}
               isLast={index === payload.length - 1}
-              height={handlerHeight}
-              onThumbMouseEnter={() => {
-                handlerHeight.set(THUMB_SIZE_STATE.DRAG);
-              }}
-              onThumbMouseLeave={() => {
-                if (!isDragging) {
-                  handlerHeight.set(THUMB_SIZE_STATE.ACTIVE);
-                }
-              }}
             />
           ))}
         </div>
@@ -447,9 +418,6 @@ const TimelineItem = ({
   isHovering,
   isDark,
   isLast,
-  height,
-  onThumbMouseEnter,
-  onThumbMouseLeave,
 }: {
   flexRatio: number;
   thumbWidth: number;
@@ -463,9 +431,6 @@ const TimelineItem = ({
   isHovering: boolean;
   isDark: boolean;
   isLast: boolean;
-  height: MotionValue<number>;
-  onThumbMouseEnter: () => void;
-  onThumbMouseLeave: () => void;
 }) => {
   const [enableDarkMode, setEnableDarkMode] = React.useState(false);
   const relativePosition = useTransform(
@@ -500,33 +465,21 @@ const TimelineItem = ({
       <div className="h-full flex" style={{ flexGrow: flexRatio }}>
         <motion.div
           data-dark={enableDarkMode ? true : undefined}
-          className="h-[20px] rounded-full relative overflow-hidden m-auto flex-1"
-          style={{ height }}
+          className="h-[2px] rounded-full relative overflow-hidden m-auto flex-1"
         >
           <div className="h-[2px] absolute left-0 right-0 top-[calc(50%-1px)] bg-gray-400/20 rounded-full" />
 
           <motion.div
-            className={cn(
-              "absolute h-full rounded-full cursor-ew-resize m-auto",
-            )}
+            className={cn("absolute rounded-full m-auto h-0.5")}
             style={{
-              height,
               width: `${thumbWidth}px`,
               left: relativePosition,
               backgroundColor: `var(--color-${id})`,
               scaleX: isDragging ? undefined : scaleX,
             }}
-            onMouseEnter={onThumbMouseEnter}
-            onMouseLeave={onThumbMouseLeave}
           />
         </motion.div>
       </div>
     </>
   );
-};
-
-const THUMB_SIZE_STATE = {
-  IDLE: 2,
-  ACTIVE: 4,
-  DRAG: 6,
 };
