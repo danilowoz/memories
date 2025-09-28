@@ -15,7 +15,7 @@ export const Cursor = ({
   const cursorRef = React.useRef<HTMLDivElement>(null);
   const scrollRef = React.useRef<HTMLDivElement>(null);
   const [overTimeline, setOverTimeline] = React.useState(false);
-  const { overObject } = React.useContext(context);
+  const { overObject, mouseX } = React.useContext(context);
 
   React.useEffect(() => {
     const handleMouseMove = (event: MouseEvent) => {
@@ -32,8 +32,14 @@ export const Cursor = ({
 
         setOverTimeline(limit);
 
+        if (limit) {
+          mouseX.set(event.clientX - 76);
+        } else {
+          mouseX.set(0);
+        }
+
         cursorRef.current.style.left = `${event.clientX - SIZE / 2}px`;
-        cursorRef.current.style.top = `${limit ? window.innerHeight - 34 : top}px`;
+        cursorRef.current.style.top = `${limit ? window.innerHeight - 48 : top}px`;
       }
     };
 
@@ -47,8 +53,8 @@ export const Cursor = ({
       ref={cursorRef}
       initial={{ opacity: 0, width: 0, height: 0 }}
       animate={{
-        width: overTimeline ? SIZE * 2 : SIZE,
-        height: overTimeline ? 18 : SIZE,
+        width: overTimeline ? 12 : SIZE,
+        height: overTimeline ? SIZE * 2.2 : SIZE,
         opacity: overObject === "image" ? 0.3 : 1,
         scale: overObject === "image" ? 1.5 : 1,
       }}
@@ -82,7 +88,7 @@ export const Cursor = ({
           >
             <div
               id="cursor-scroll"
-              className="overflow-auto w-full [scrollbar-width:none] [&::-webkit-scrollbar]:hidden -top-6 relative"
+              className="overflow-auto w-full [scrollbar-width:none] [&::-webkit-scrollbar]:hidden -top-1.5 relative"
               ref={scrollRef}
             >
               <div
@@ -95,7 +101,7 @@ export const Cursor = ({
                     style={{ flexGrow: albumSizes[index][0] }}
                     className="h-5 flex-1"
                   >
-                    <span className="sticky left-1 top-0 text-sm leading-0">
+                    <span className="sticky left-2 top-0 text-sm leading-0 text-gray-900/90">
                       {item.name.replace("Memories", "").trim()}
                     </span>
                   </motion.div>

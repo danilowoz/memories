@@ -26,8 +26,8 @@
 #cursor-scroll {
   mask-image: linear-gradient(
     to right,
-    transparent,
-    black 20%,
+    transparent 5%,
+    black 10%,
     black 80%,
     transparent
   );

@@ -10,17 +10,20 @@ export const context = React.createContext<{
   windowWidth: number;
   overObject: Object;
   setOverObject: React.Dispatch<React.SetStateAction<Object>>;
+  mouseX: MotionValue<number>;
 }>({
   scrollX: new MotionValue(0),
   windowWidth: 0,
   overObject: null,
   setOverObject: () => {},
+  mouseX: new MotionValue(0),
 });
 
 export const Provider = ({ children }: { children: React.ReactNode }) => {
   const scrollX = useMotionValue(0);
   const [windowWidth, setWindowWidth] = React.useState(0);
   const [overObject, setOverObject] = React.useState<"image" | null>(null);
+  const mouseX = useMotionValue(0);
 
   React.useEffect(() => {
     const handleResize = () => {
@@ -40,6 +43,7 @@ export const Provider = ({ children }: { children: React.ReactNode }) => {
         windowWidth,
         overObject,
         setOverObject,
+        mouseX,
       }}
     >
       {children}

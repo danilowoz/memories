@@ -437,11 +437,34 @@ const TimelineItem = ({
     thumbPosition,
     (value) => value - (startOffset / scrollWidth) * trackWidth,
   );
+  const { mouseX } = React.useContext(context);
 
-  const xVelocity = useVelocity(thumbPosition);
-  const xVelocityScale = useTransform(xVelocity, [-700, 0, 700], [1.4, 1, 1.4]);
-  const scaleX = useSpring(xVelocityScale, {
-    bounce: 0,
+  const dynamicThumbWidth = useTransform(thumbPosition, (value) => {
+    const sectionStart = (startOffset / scrollWidth) * trackWidth;
+    const sectionEnd =
+      ((startOffset + scrollWidth * flexRatio) / scrollWidth) * trackWidth;
+    const sectionWidth = sectionEnd - sectionStart;
+
+    const scrollProgress = Math.max(
+      0,
+      Math.min(1, (value - sectionStart) / sectionWidth),
+    );
+
+    return Math.max(2, scrollProgress * sectionWidth);
+  });
+
+  const dynamicHoverWidth = useTransform(mouseX, (value) => {
+    const sectionStart = (startOffset / scrollWidth) * trackWidth;
+    const sectionEnd =
+      ((startOffset + scrollWidth * flexRatio) / scrollWidth) * trackWidth;
+    const sectionWidth = sectionEnd - sectionStart;
+
+    const scrollProgress = Math.max(
+      0,
+      Math.min(1, (value - sectionStart) / sectionWidth),
+    );
+
+    return Math.max(2, scrollProgress * sectionWidth);
   });
 
   React.useEffect(() => {
@@ -472,10 +495,9 @@ const TimelineItem = ({
           <motion.div
             className={cn("absolute rounded-full m-auto h-0.5")}
             style={{
-              width: `${thumbWidth}px`,
-              left: relativePosition,
+              width: isHovering ? dynamicHoverWidth : dynamicThumbWidth,
+              left: -3,
               backgroundColor: `var(--color-${id})`,
-              scaleX: isDragging ? undefined : scaleX,
             }}
           />
         </motion.div>
