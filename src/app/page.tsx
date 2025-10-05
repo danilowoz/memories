@@ -57,7 +57,7 @@ const Album = ({
     >
       <div
         className={cn(
-          "item min-h-[6em] min-w-[calc(100vh*1.3)] md:min-h-screen flex relative",
+          "item min-h-[6em] min-w-[calc(100vh*1.2)] md:min-h-screen flex relative",
           {
             // "ml-[13vw]": isFirst,
           },
