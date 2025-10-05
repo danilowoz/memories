@@ -53,9 +53,7 @@ export const Image = ({
 
       <AnimatePresence>
         {show && (
-          <motion.div
-            className={cn("fixed inset-0 z-50 flex p-7- justify-around")}
-          >
+          <motion.div className={cn("fixed inset-0 z-50 flex justify-around")}>
             <motion.img
               className="cursor-pointer"
               layoutId={src}
@@ -74,8 +72,8 @@ export const Image = ({
 
       <motion.div
         key={safari ? "safari" : "other"}
-        className="m-auto md:px-40"
-        initial={safari ? undefined : { filter: "blur(10px)", opacity: 0.2 }}
+        className="m-auto md:px-22"
+        initial={safari ? undefined : { filter: "blur(20px)", opacity: 0.2 }}
         whileInView={{ filter: "blur(0px)", opacity: 1 }}
         transition={
           safari ? undefined : { type: "spring", duration: 0.3, bounce: 0 }
@@ -84,7 +82,7 @@ export const Image = ({
       >
         <motion.img
           layoutId={src}
-          className="w-full md:w-auto md:h-[80vh] max-w-none transform-gpu cursor-pointer"
+          className="w-full md:w-auto md:h-[80vh] max-w-none transform-gpu cursor-pointer rounded-sm"
           src={src}
           alt={alt}
           onClick={(event: React.MouseEvent<HTMLImageElement>) => {

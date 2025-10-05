@@ -1,9 +1,12 @@
+"use client";
+
 import { Provider } from "@/components/context";
 import { Cover } from "@/components/cover";
 import { Image } from "@/components/image";
 import payload from "@/data.json";
 import { cn } from "@/utils/classname";
 import type { Photo } from "@/utils/types";
+import { motion } from "framer-motion";
 import { Scroller } from "../components/scroller";
 
 export default function Home() {
@@ -52,7 +55,7 @@ const Album = ({
       )}
     >
       <div
-        className="item min-h-[6em] min-w-screen md:min-h-screen flex relative"
+        className="item min-h-[6em] min-w-[calc(100vh*1.4)] md:min-h-screen flex relative"
         style={
           {
             "--color": `var(--color-${id})`,
@@ -63,11 +66,18 @@ const Album = ({
       </div>
 
       {photos.map((item, index) => (
-        <figure
+        <motion.figure
+          initial={{ x: 0, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          transition={{
+            ease: "easeOut",
+            delay: 1.2,
+            duration: 0.6,
+          }}
           key={item.id}
           className={cn("md:flex", {
-            "md:pl-40": index === 0,
-            "md:pr-40": index === photos.length - 1 && !isLast,
+            "md:pl-10": index === 0,
+            "md:pr-10": index === photos.length - 1 && !isLast,
           })}
         >
           <Image
@@ -77,7 +87,7 @@ const Album = ({
             date={item.date}
             dark={dark}
           />
-        </figure>
+        </motion.figure>
       ))}
     </div>
   );

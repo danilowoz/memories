@@ -19,8 +19,8 @@ export const Cover = ({
   const isMobile = windowWidth < 768;
   const x = useTransform(
     scrollX,
-    [offsetLeft, offsetLeft + windowWidth],
-    [0, -windowWidth / 10],
+    [offsetLeft - windowWidth, offsetLeft + windowWidth * 2],
+    [windowWidth / 20, -windowWidth / 10],
   );
   const [scrollDirection, setScrollDirection] = React.useState<
     "left" | "right"
@@ -56,7 +56,7 @@ export const Cover = ({
           viewport={
             safari
               ? undefined
-              : { amount: 0.8, margin: `-${windowWidth / 4}px` }
+              : { amount: 0.8, margin: `-${windowWidth / 10}px` }
           }
         >
           {isMobile || safari
@@ -120,15 +120,11 @@ export const Cover = ({
         style={{ backgroundColor: "var(--color)" }}
         className="absolute inset-0 top-0 md:inset-6 md:bottom-13 opacity-70 md:rounded"
         initial={{
-          margin: "-26px -26px -56px -26px",
           opacity: 1,
-          borderRadius: 0,
           filter: "saturate(50%)",
         }}
         animate={{
-          margin: 0,
           opacity: 0.3,
-          borderRadius: 8,
           filter: "saturate(100%)",
         }}
         transition={{

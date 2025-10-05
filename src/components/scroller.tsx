@@ -41,53 +41,6 @@ export const Scroller = ({
     });
   }, [springScrollX]);
 
-  React.useEffect(() => {
-    let timer: NodeJS.Timeout;
-    let lastValue = 0;
-
-    return springScrollX.onChange((latest) => {
-      const childrenWidth = Array.from(contentRef.current?.children ?? [])
-        .map((child) => child.clientWidth)
-        .map((item, index, arr) => item + (arr[index - 1] || 0));
-      childrenWidth.pop();
-
-      if (contentRef.current) {
-        if (Math.floor(latest) !== lastValue) {
-          clearTimeout(timer);
-        }
-
-        const currentSection = childrenWidth.findIndex((width, index) => {
-          const start =
-            index === 0
-              ? 0
-              : childrenWidth.slice(0, index).reduce((a, b) => a + b, 0);
-          const end = width;
-
-          return (
-            latest >= start - window.innerWidth / 1.5 && latest <= start + end
-          );
-        });
-
-        if (
-          Math.floor(latest) > lastValue &&
-          latest >= childrenWidth[currentSection] - window.innerWidth / 1.5 &&
-          latest <= childrenWidth[currentSection]
-        ) {
-          timer = setTimeout(() => {
-            const windowWidth = window.innerWidth;
-            const windowHeight = window.innerHeight;
-            const ratio = windowWidth / windowHeight;
-            const newScrollTop = childrenWidth[currentSection] / ratio;
-
-            window.scrollTo({ top: newScrollTop, behavior: "smooth" });
-          }, 200);
-        }
-
-        lastValue = Math.floor(latest);
-      }
-    });
-  }, [springScrollX]);
-
   const [thumbWidth, setThumbWidth] = React.useState(20);
   const [scrollWidth, setScrollWidth] = React.useState(0);
   const [isDragging, setIsDragging] = React.useState(false);
