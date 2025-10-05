@@ -120,13 +120,11 @@ export const Cover = ({
         style={{ backgroundColor: "var(--color)" }}
         className="absolute inset-0 top-0 md:inset-6 md:bottom-13 opacity-70 md:rounded"
         initial={{
-          margin: "-26px -26px -56px -26px",
           opacity: 1,
           borderRadius: 0,
           filter: "saturate(50%)",
         }}
         animate={{
-          margin: 0,
           opacity: 0.3,
           borderRadius: 8,
           filter: "saturate(100%)",

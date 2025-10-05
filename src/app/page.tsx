@@ -20,6 +20,7 @@ export default function Home() {
               id={item.id}
               dark={item.dark}
               isLast={index === payload.length - 1}
+              isFirst={index === 0}
             />
           );
         })}
@@ -34,26 +35,33 @@ const Album = ({
   id,
   dark,
   isLast,
+  isFirst,
 }: {
   name: string;
   photos: Photo[];
   id: string | number;
   dark: boolean;
   isLast: boolean;
+  isFirst: boolean;
 }) => {
   const coverPhoto = photos.find((photo) => photo.cover);
 
   return (
     <div
       className={cn(
-        "flex flex-col md:flex-row md:flex-nowrap gap-12 md:gap-0",
+        "flex flex-col md:flex-row md:flex-nowrap gap-12 md:gap-0 mr-[30vw]-",
         {
           "bg-black sm:bg-transparent": dark,
         },
       )}
     >
       <div
-        className="item min-h-[6em] min-w-screen md:min-h-screen flex relative"
+        className={cn(
+          "item min-h-[6em] min-w-[calc(100vh*1.3)] md:min-h-screen flex relative",
+          {
+            // "ml-[13vw]": isFirst,
+          },
+        )}
         style={
           {
             "--color": `var(--color-${id})`,
