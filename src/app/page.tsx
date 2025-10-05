@@ -55,7 +55,7 @@ const Album = ({
       )}
     >
       <div
-        className="item min-h-[6em] min-w-[calc(100vh*1.4)] md:min-h-screen flex relative overflow-hidden"
+        className="item min-h-[6em] md:min-w-[calc(100vh*1.4)] md:min-h-screen flex relative overflow-hidden"
         style={
           {
             "--color": `var(--color-${id})`,
