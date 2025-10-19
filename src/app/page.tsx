@@ -3,6 +3,7 @@
 import { Provider } from "@/components/context";
 import { Cover } from "@/components/cover";
 import { Image } from "@/components/image";
+import { VerticalLayout } from "@/components/vertical-layout";
 import payload from "@/data.json";
 import { cn } from "@/utils/classname";
 import type { Photo } from "@/utils/types";
@@ -25,6 +26,8 @@ export default function Home() {
             />
           );
         })}
+
+        <VerticalLayout />
       </Scroller>
     </Provider>
   );
@@ -62,7 +65,7 @@ const Album = ({
           } as React.CSSProperties
         }
       >
-        <Cover name={name} src={coverPhoto?.filename ?? ""} />
+        <Cover coverId={id} name={name} src={coverPhoto?.filename ?? ""} />
       </div>
 
       {photos.map((item, index) => (

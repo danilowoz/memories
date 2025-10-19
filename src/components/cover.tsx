@@ -7,9 +7,11 @@ import React from "react";
 import { context } from "./context";
 
 export const Cover = ({
+  coverId,
   src,
   name,
 }: {
+  coverId: string;
   src: string;
   name: string;
 }) => {
@@ -106,6 +108,7 @@ export const Cover = ({
         style={{
           backgroundImage: `url(${src})`,
         }}
+        id={`horizontal-${coverId}`}
         className="absolute inset-0 md:inset-6 md:bottom-13 md:rounded bg-center saturate-20 bg-cover"
         initial={{ opacity: 0, filter: "blur(10px)" }}
         animate={{ opacity: 1, filter: "blur(0px) saturate(60%)" }}

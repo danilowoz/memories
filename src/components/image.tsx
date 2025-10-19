@@ -2,9 +2,10 @@
 
 import { useIsSafari } from "@/utils/browser";
 import { cn } from "@/utils/classname";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import NextjsImage from "next/image";
 import React from "react";
+import { context } from "./context";
 
 const MotionImage = motion(NextjsImage);
 
@@ -24,57 +25,11 @@ export const Image = ({
   dark: boolean;
   format: "landscape" | "portrait";
 }) => {
-  const [show, setShow] = React.useState(false);
-  const [ratio, setRatio] = React.useState(1);
-
+  const { setLayout } = React.useContext(context);
   const safari = useIsSafari();
-
-  React.useEffect(() => {
-    function onKeyDown(event: KeyboardEvent) {
-      if (event.key === "Escape") {
-        setShow(false);
-      }
-    }
-
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
-  }, []);
 
   return (
     <>
-      <AnimatePresence>
-        {show ? (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className={cn("fixed inset-0 bg-white z-40 cursor-pointer", {
-              "bg-black": dark,
-            })}
-            onClick={() => setShow(false)}
-          />
-        ) : null}
-      </AnimatePresence>
-
-      <AnimatePresence>
-        {show && (
-          <motion.div className={cn("fixed inset-0 z-50 flex justify-around")}>
-            <motion.img
-              className="cursor-pointer"
-              layoutId={src}
-              src={src}
-              alt={alt}
-              onClick={() => setShow(false)}
-              style={{
-                height: window.innerHeight,
-                width: window.innerHeight * ratio,
-              }}
-              transition={{ type: "spring", duration: 1, bounce: 0.1 }}
-            />
-          </motion.div>
-        )}
-      </AnimatePresence>
-
       <motion.div
         key={safari ? "safari" : "other"}
         className="m-auto md:px-22"
@@ -86,6 +41,7 @@ export const Image = ({
         viewport={safari ? undefined : { amount: 0.1 }}
       >
         <MotionImage
+          id={`horizontal-${src}`}
           layoutId={src}
           width={format === "landscape" ? 1024 : 1024}
           height={format === "landscape" ? 1536 : 1536}
@@ -94,12 +50,14 @@ export const Image = ({
           alt={alt ?? "Image"}
           priority
           loading="eager"
-          onClick={(event: React.MouseEvent<HTMLImageElement>) => {
-            const size = event.currentTarget.getBoundingClientRect();
-            const aspectRatio = size.width / size.height;
-
-            setRatio(aspectRatio);
-            setShow(true);
+          onClick={() => {
+            const verticalElementImage = document.getElementById(
+              `vertical-${src}`,
+            );
+            if (verticalElementImage) {
+              verticalElementImage?.scrollIntoView();
+            }
+            setLayout("vertical");
           }}
         />
 

@@ -24,7 +24,7 @@ export const Scroller = ({
 }) => {
   const contentRef = React.useRef<HTMLDivElement>(null);
   const trackRef = React.useRef<HTMLDivElement>(null);
-  const { scrollX, windowWidth } = React.useContext(context);
+  const { scrollX, windowWidth, layout } = React.useContext(context);
   const thumbPosition = useMotionValue(0);
   const safari = useIsSafari();
 
@@ -196,7 +196,7 @@ export const Scroller = ({
   React.useEffect(() => {
     const content = contentRef.current;
 
-    if (!content) {
+    if (!content || layout === "vertical") {
       return;
     }
 
@@ -206,9 +206,16 @@ export const Scroller = ({
     updateThumbSizeAndPosition();
     updateBodyHeight();
 
-    content.addEventListener("scroll", updateThumbSizeAndPosition, {
-      signal: controller.signal,
-    });
+    content.addEventListener(
+      "scroll",
+      () => {
+        console.log("scroll event");
+        updateThumbSizeAndPosition();
+      },
+      {
+        signal: controller.signal,
+      },
+    );
 
     window.addEventListener("load", updateThumbSizeAndPosition, {
       signal: controller.signal,
@@ -217,6 +224,7 @@ export const Scroller = ({
     window.addEventListener(
       "wheel",
       (event) => {
+        console.log("wheel event");
         if (!safari) {
           window.scroll(0, window.scrollY + event.deltaX);
         }
@@ -265,6 +273,7 @@ export const Scroller = ({
     handleOnWindowScroll,
     handleOnDrag,
     safari,
+    layout,
   ]);
 
   const HEIGHT = 50;
