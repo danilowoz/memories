@@ -86,6 +86,7 @@ const Album = ({
             location={item.location}
             date={item.date}
             dark={dark}
+            format={item.format}
           />
         </motion.figure>
       ))}

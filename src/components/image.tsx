@@ -3,7 +3,10 @@
 import { useIsSafari } from "@/utils/browser";
 import { cn } from "@/utils/classname";
 import { AnimatePresence, motion } from "framer-motion";
+import NextjsImage from "next/image";
 import React from "react";
+
+const MotionImage = motion(NextjsImage);
 
 export const Image = ({
   src,
@@ -11,6 +14,7 @@ export const Image = ({
   location,
   date,
   dark,
+  format,
 }: {
   src: string;
   alt: string;
@@ -18,6 +22,7 @@ export const Image = ({
   location: string;
   date: string;
   dark: boolean;
+  format: "landscape" | "portrait";
 }) => {
   const [show, setShow] = React.useState(false);
   const [ratio, setRatio] = React.useState(1);
@@ -80,11 +85,13 @@ export const Image = ({
         }
         viewport={safari ? undefined : { amount: 0.1 }}
       >
-        <motion.img
+        <MotionImage
           layoutId={src}
+          width={format === "landscape" ? 1024 : 1024}
+          height={format === "landscape" ? 1536 : 1536}
           className="w-full md:w-auto md:h-[80vh] max-w-none transform-gpu cursor-pointer rounded-sm"
           src={src}
-          alt={alt}
+          alt={alt ?? "Image"}
           onClick={(event: React.MouseEvent<HTMLImageElement>) => {
             const size = event.currentTarget.getBoundingClientRect();
             const aspectRatio = size.width / size.height;
