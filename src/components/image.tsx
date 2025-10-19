@@ -92,6 +92,8 @@ export const Image = ({
           className="w-full md:w-auto md:h-[80vh] max-w-none transform-gpu cursor-pointer rounded-sm"
           src={src}
           alt={alt ?? "Image"}
+          priority
+          loading="eager"
           onClick={(event: React.MouseEvent<HTMLImageElement>) => {
             const size = event.currentTarget.getBoundingClientRect();
             const aspectRatio = size.width / size.height;
