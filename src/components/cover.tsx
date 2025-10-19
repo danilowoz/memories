@@ -33,7 +33,7 @@ export const Cover = ({
     setOffsetLeft((ref.current?.parentNode as HTMLElement)?.offsetLeft ?? 0);
   }, []);
 
-  scrollX.onChange((value) => {
+  scrollX.on("change", (value) => {
     if (safari) {
       return;
     }

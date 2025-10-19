@@ -7,7 +7,7 @@ import NextjsImage from "next/image";
 import React from "react";
 import { context } from "./context";
 
-const MotionImage = motion(NextjsImage);
+const MotionImage = motion.create(NextjsImage);
 
 export const Image = ({
   src,
@@ -51,13 +51,19 @@ export const Image = ({
           priority
           loading="eager"
           onClick={() => {
+            setLayout("vertical");
+
             const verticalElementImage = document.getElementById(
               `vertical-${src}`,
             );
+
             if (verticalElementImage) {
-              verticalElementImage?.scrollIntoView();
+              verticalElementImage?.scrollIntoView({
+                behavior: "smooth",
+                block: "center",
+                inline: "center",
+              });
             }
-            setLayout("vertical");
           }}
         />
 

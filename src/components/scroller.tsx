@@ -34,7 +34,7 @@ export const Scroller = ({
   });
 
   React.useEffect(() => {
-    return springScrollX.onChange((latest) => {
+    return springScrollX.on("change", (latest) => {
       if (contentRef.current) {
         contentRef.current.scrollLeft = latest;
       }
@@ -206,16 +206,9 @@ export const Scroller = ({
     updateThumbSizeAndPosition();
     updateBodyHeight();
 
-    content.addEventListener(
-      "scroll",
-      () => {
-        console.log("scroll event");
-        updateThumbSizeAndPosition();
-      },
-      {
-        signal: controller.signal,
-      },
-    );
+    content.addEventListener("scroll", updateThumbSizeAndPosition, {
+      signal: controller.signal,
+    });
 
     window.addEventListener("load", updateThumbSizeAndPosition, {
       signal: controller.signal,
@@ -224,7 +217,6 @@ export const Scroller = ({
     window.addEventListener(
       "wheel",
       (event) => {
-        console.log("wheel event");
         if (!safari) {
           window.scroll(0, window.scrollY + event.deltaX);
         }
@@ -297,6 +289,7 @@ export const Scroller = ({
   return (
     <div
       ref={contentRef}
+      id="scroller-content"
       className={cn(
         "h-screen w-screen md:fixed md:inset-0",
         "flex flex-col md:flex-row md:flex-nowrap md:overflow-hidden gap-12 md:gap-0",
