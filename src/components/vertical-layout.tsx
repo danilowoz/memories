@@ -1,6 +1,7 @@
 "use client";
 
 import payload from "@/data.json";
+import { cn } from "@/utils/classname";
 import { AnimatePresence, motion } from "framer-motion";
 import NextjsImage from "next/image";
 import React from "react";
@@ -13,30 +14,70 @@ export const VerticalLayout = () => {
 
   return (
     <>
-      <AnimatePresence>
-        {layout === "vertical" && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0, transition: { duration: 0.3 } }}
-            className="fixed inset-0 bg-white z-10 cursor-pointer"
-          />
+      <motion.button
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        type="button"
+        onClick={() => {
+          setLayout("list");
+        }}
+        className={cn(
+          "fixed left-6 bottom-2.5 z-50",
+          "w-7 h-7 rounded flex cursor-pointer",
+          "transition-colors text-gray-400 hover:bg-gray-700/10 hover:text-gray-800",
+          {
+            "pointer-events-none": layout === "list",
+          },
         )}
-      </AnimatePresence>
+      >
+        <AnimatePresence>
+          {layout === "grid" && (
+            <motion.svg
+              width="15"
+              height="15"
+              viewBox="0 0 15 15"
+              fill="none"
+              className="m-auto"
+              initial={{ opacity: 0, scale: 0 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0 }}
+            >
+              <title>Grid View</title>
+              <path
+                d="M11.5 3.04999C11.7485 3.04999 11.95 3.25146 11.95 3.49999V7.49999C11.95 7.74852 11.7485 7.94999 11.5 7.94999C11.2515 7.94999 11.05 7.74852 11.05 7.49999V4.58639L4.58638 11.05H7.49999C7.74852 11.05 7.94999 11.2515 7.94999 11.5C7.94999 11.7485 7.74852 11.95 7.49999 11.95L3.49999 11.95C3.38064 11.95 3.26618 11.9026 3.18179 11.8182C3.0974 11.7338 3.04999 11.6193 3.04999 11.5L3.04999 7.49999C3.04999 7.25146 3.25146 7.04999 3.49999 7.04999C3.74852 7.04999 3.94999 7.25146 3.94999 7.49999L3.94999 10.4136L10.4136 3.94999L7.49999 3.94999C7.25146 3.94999 7.04999 3.74852 7.04999 3.49999C7.04999 3.25146 7.25146 3.04999 7.49999 3.04999L11.5 3.04999Z"
+                fill="currentColor"
+                fillRule="evenodd"
+                clipRule="evenodd"
+              />
+            </motion.svg>
+          )}
+        </AnimatePresence>
+      </motion.button>
 
-      <AnimatePresence>
-        {layout === "vertical" && (
-          <div className="fixed inset-0 overflow-auto z-20 grid grid-cols-4 gap-4 py-4">
-            {payload.map((album) => (
-              <React.Fragment key={album.id}>
-                <div
-                  style={
-                    {
-                      "--color": `var(--color-${album.id})`,
-                    } as React.CSSProperties
-                  }
-                >
-                  <h2
+      <div
+        className={cn(
+          "fixed inset-0 overflow-auto z-20 grid grid-cols-4 gap-4 py-4",
+          {
+            "pointer-events-none": layout === "list",
+          },
+        )}
+      >
+        {payload.map((album) => (
+          <React.Fragment key={album.id}>
+            <div
+              style={
+                {
+                  "--color": `var(--color-${album.id})`,
+                } as React.CSSProperties
+              }
+            >
+              <AnimatePresence>
+                {layout === "grid" && (
+                  <motion.h2
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
                     className="sticky top-0 px-6 flex gap-2 items-center hover:text-[var(--color)] transition-colors cursor-pointer text-gray-900 m-0 text-sm font-display"
                     onClick={() => {
                       const horizontalElementImage = document.getElementById(
@@ -48,14 +89,18 @@ export const VerticalLayout = () => {
                           inline: "center",
                         });
                       }
-                      setLayout("horizontal");
+                      setLayout("list");
                     }}
                   >
                     {album.name}
-                  </h2>
-                </div>
-                <div className="flex flex-wrap gap-4 col-span-3">
-                  {album.photos.map((photo) => (
+                  </motion.h2>
+                )}
+              </AnimatePresence>
+            </div>
+            <div className="flex flex-wrap gap-4 col-span-3">
+              {album.photos.map((photo) => (
+                <AnimatePresence key={photo.id}>
+                  {layout === "grid" && (
                     <MotionImage
                       id={`vertical-${photo.filename}`}
                       layoutId={photo.filename}
@@ -83,23 +128,22 @@ export const VerticalLayout = () => {
                             window.scrollTo({ top });
                           });
                         }
-                        setLayout("horizontal");
+
+                        setLayout("list");
                       }}
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      className="h-72 w-auto cursor-pointer rounded-sm"
-                      key={photo.id}
+                      className={cn("h-72 w-auto cursor-pointer rounded-sm", {
+                        "w-[432px]": photo.format === "landscape",
+                      })}
                       src={photo.filename}
                       alt={photo.filename}
                     />
-                  ))}
-                </div>
-              </React.Fragment>
-            ))}
-          </div>
-        )}
-      </AnimatePresence>
+                  )}
+                </AnimatePresence>
+              ))}
+            </div>
+          </React.Fragment>
+        ))}
+      </div>
     </>
   );
 };

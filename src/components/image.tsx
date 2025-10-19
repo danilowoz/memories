@@ -2,7 +2,7 @@
 
 import { useIsSafari } from "@/utils/browser";
 import { cn } from "@/utils/classname";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import NextjsImage from "next/image";
 import React from "react";
 import { context } from "./context";
@@ -25,7 +25,7 @@ export const Image = ({
   dark: boolean;
   format: "landscape" | "portrait";
 }) => {
-  const { setLayout } = React.useContext(context);
+  const { setLayout, layout } = React.useContext(context);
   const safari = useIsSafari();
 
   return (
@@ -51,7 +51,7 @@ export const Image = ({
           priority
           loading="eager"
           onClick={() => {
-            setLayout("vertical");
+            setLayout("grid");
 
             const verticalElementImage = document.getElementById(
               `vertical-${src}`,
@@ -59,7 +59,6 @@ export const Image = ({
 
             if (verticalElementImage) {
               verticalElementImage?.scrollIntoView({
-                behavior: "smooth",
                 block: "center",
                 inline: "center",
               });
@@ -67,32 +66,39 @@ export const Image = ({
           }}
         />
 
-        {location && date && (
-          <figcaption className="p-4 md:pt-2 md:p-0 flex gap-2">
-            <motion.p
-              initial={safari ? undefined : { opacity: 0, y: -2 }}
-              whileInView={safari ? undefined : { opacity: 1, y: 0 }}
-              transition={{ type: "spring", duration: 0.5, bounce: 0 }}
-              viewport={safari ? undefined : { amount: 0.5 }}
-              className={cn("text-gray-900 m-0 text-sm font-display", {
-                "text-white": dark,
-              })}
+        <AnimatePresence>
+          {location && date && layout === "list" && (
+            <motion.figcaption
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="p-4 md:pt-2 md:p-0 flex gap-2"
             >
-              {location}
-            </motion.p>
-            <motion.p
-              initial={safari ? undefined : { opacity: 0, y: -4 }}
-              whileInView={safari ? undefined : { opacity: 1, y: 0 }}
-              transition={{ type: "spring", duration: 0.5, bounce: 0 }}
-              viewport={safari ? undefined : { amount: 0.5 }}
-              className={cn("text-gray-900/50 m-0 text-sm", {
-                "text-white opacity-50": dark,
-              })}
-            >
-              {formatDate(date)}
-            </motion.p>
-          </figcaption>
-        )}
+              <motion.p
+                initial={safari ? undefined : { opacity: 0, y: -2 }}
+                whileInView={safari ? undefined : { opacity: 1, y: 0 }}
+                transition={{ type: "spring", duration: 0.5, bounce: 0 }}
+                viewport={safari ? undefined : { amount: 0.5 }}
+                className={cn("text-gray-900 m-0 text-sm font-display", {
+                  "text-white": dark,
+                })}
+              >
+                {location}
+              </motion.p>
+              <motion.p
+                initial={safari ? undefined : { opacity: 0, y: -4 }}
+                whileInView={safari ? undefined : { opacity: 1, y: 0 }}
+                transition={{ type: "spring", duration: 0.5, bounce: 0 }}
+                viewport={safari ? undefined : { amount: 0.5 }}
+                className={cn("text-gray-900/50 m-0 text-sm", {
+                  "text-white opacity-50": dark,
+                })}
+              >
+                {formatDate(date)}
+              </motion.p>
+            </motion.figcaption>
+          )}
+        </AnimatePresence>
       </motion.div>
     </>
   );
