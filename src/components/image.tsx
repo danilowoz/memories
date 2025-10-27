@@ -32,7 +32,7 @@ export const Image = ({
     <>
       <motion.div
         key={safari ? "safari" : "other"}
-        className="m-auto md:px-22"
+        className="mt-6 pb-18 md:px-36"
         initial={safari ? undefined : { filter: "blur(20px)", opacity: 0.2 }}
         whileInView={{ filter: "blur(0px)", opacity: 1 }}
         transition={
@@ -45,24 +45,26 @@ export const Image = ({
           layoutId={src}
           width={format === "landscape" ? 1024 : 1024}
           height={format === "landscape" ? 1536 : 1536}
-          className="w-full md:w-auto md:h-[80vh] max-w-none transform-gpu cursor-pointer rounded-sm"
+          className="w-full md:w-auto md:h-full max-w-none transform-gpu cursor-pointer rounded-sm"
           src={src}
           alt={alt ?? "Image"}
           priority
           loading="eager"
           onClick={() => {
+            const controller = new AbortController();
+            const readMessage = () => {
+              window.dispatchEvent(
+                new CustomEvent("image-clicked", { detail: src }),
+              );
+
+              controller.abort();
+            };
+
+            window.addEventListener("grid-loaded", readMessage, {
+              signal: controller.signal,
+            });
+
             setLayout("grid");
-
-            const verticalElementImage = document.getElementById(
-              `vertical-${src}`,
-            );
-
-            if (verticalElementImage) {
-              verticalElementImage?.scrollIntoView({
-                block: "center",
-                inline: "center",
-              });
-            }
           }}
         />
 

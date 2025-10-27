@@ -14,6 +14,17 @@ export const VerticalLayout = () => {
 
   return (
     <>
+      <AnimatePresence>
+        {layout === "grid" && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-white z-20"
+          />
+        )}
+      </AnimatePresence>
+
       <motion.button
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -56,6 +67,34 @@ export const VerticalLayout = () => {
       </motion.button>
 
       <div
+        ref={() => {
+          // Send message
+          const event = new Event("grid-loaded");
+          window.dispatchEvent(event);
+
+          // Wait for image click
+          const controller = new AbortController();
+          const readMessage = (e: Event) => {
+            const src = e.detail;
+
+            const verticalElementImage = document.getElementById(
+              `vertical-${src}`,
+            );
+
+            if (verticalElementImage) {
+              verticalElementImage?.scrollIntoView({
+                block: "center",
+                inline: "center",
+              });
+            }
+
+            controller.abort();
+          };
+
+          window.addEventListener("image-clicked", readMessage, {
+            signal: controller.signal,
+          });
+        }}
         className={cn(
           "fixed inset-0 overflow-auto z-20 grid grid-cols-4 gap-4 py-4",
           {
