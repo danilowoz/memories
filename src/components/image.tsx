@@ -52,21 +52,23 @@ export const Image = ({
           quality={100}
           loading="eager"
           onClick={() => {
-            const controller = new AbortController();
-            const readMessage = () => {
-              window.dispatchEvent(
-                new CustomEvent("image-clicked", { detail: src }),
-              );
+            if (window.matchMedia("(min-width: 768px)").matches) {
+              const controller = new AbortController();
+              const readMessage = () => {
+                window.dispatchEvent(
+                  new CustomEvent("image-clicked", { detail: src }),
+                );
 
-              controller.abort();
-            };
+                controller.abort();
+              };
 
-            window.addEventListener("grid-loaded", readMessage, {
-              signal: controller.signal,
-            });
+              window.addEventListener("grid-loaded", readMessage, {
+                signal: controller.signal,
+              });
 
-            setLayout("grid");
-            setEnableDarkMode(false);
+              setLayout("grid");
+              setEnableDarkMode(false);
+            }
           }}
         />
 
