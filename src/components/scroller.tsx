@@ -119,6 +119,7 @@ export const Scroller = ({
 
   const getAlbumScrollWidthAndOffset = React.useCallback(() => {
     const content = contentRef.current;
+    console.log("getAlbumScrollWidthAndOffset");
 
     if (!content) {
       return;
@@ -194,6 +195,20 @@ export const Scroller = ({
   );
 
   React.useEffect(() => {
+    getAlbumScrollWidthAndOffset();
+
+    const controller = new AbortController();
+
+    window.addEventListener("resize", getAlbumScrollWidthAndOffset, {
+      signal: controller.signal,
+    });
+
+    return () => {
+      controller.abort();
+    };
+  }, [getAlbumScrollWidthAndOffset]);
+
+  React.useEffect(() => {
     const content = contentRef.current;
 
     if (!content || layout === "grid") {
@@ -202,7 +217,6 @@ export const Scroller = ({
 
     const controller = new AbortController();
 
-    getAlbumScrollWidthAndOffset();
     updateThumbSizeAndPosition();
     updateBodyHeight();
 
@@ -260,7 +274,6 @@ export const Scroller = ({
     isDragging,
     isHovering,
     updateThumbSizeAndPosition,
-    getAlbumScrollWidthAndOffset,
     updateBodyHeight,
     handleOnWindowScroll,
     handleOnDrag,
@@ -482,10 +495,10 @@ const TimelineItem = ({
       )}
       <motion.div
         data-dark={enableDarkMode ? true : undefined}
-        className="h-[20px] rounded-full relative overflow-hidden"
+        className="h-5 rounded-full relative overflow-hidden"
         style={{ flexGrow: flexRatio, height }}
       >
-        <div className="h-[2px] absolute left-0 right-0 top-[calc(50%-1px)] bg-gray-400/20 rounded-full" />
+        <div className="h-0.5 absolute left-0 right-0 top-[calc(50%-1px)] bg-gray-400/20 rounded-full" />
 
         <motion.div
           className={cn("absolute h-full rounded-full cursor-ew-resize m-auto")}

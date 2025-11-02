@@ -9,8 +9,31 @@ import { context } from "./context";
 
 const MotionImage = motion.create(NextjsImage);
 
-export const VerticalLayout = () => {
+export const GridView = () => {
   const { layout, setLayout } = React.useContext(context);
+
+  function handleImageClick(id: string) {
+    const horizontalElementImage = document.getElementById(id);
+    const contentElementImage = document.getElementById("scroller-content");
+
+    if (horizontalElementImage && contentElementImage) {
+      horizontalElementImage.parentElement?.scrollIntoView({
+        block: "center",
+        inline: "center",
+      });
+
+      window.requestAnimationFrame(() => {
+        const { scrollLeft } = contentElementImage;
+        const ratio = scrollLeft / window.innerWidth;
+        const windowHeight = window.innerHeight;
+        const top = windowHeight * ratio;
+
+        window.scrollTo({ top });
+      });
+    }
+
+    setLayout("list");
+  }
 
   return (
     <>
@@ -20,7 +43,7 @@ export const VerticalLayout = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-white z-20"
+            className="fixed inset-0 bg-white z-20 pointer-events-none"
           />
         )}
       </AnimatePresence>
@@ -96,7 +119,7 @@ export const VerticalLayout = () => {
           });
         }}
         className={cn(
-          "fixed inset-0 overflow-auto z-20 grid grid-cols-4 gap-4 py-4",
+          "fixed inset-0 overflow-auto z-20 grid grid-cols-4 gap-24 py-4",
           {
             "pointer-events-none": layout === "list",
           },
@@ -105,6 +128,7 @@ export const VerticalLayout = () => {
         {payload.map((album) => (
           <React.Fragment key={album.id}>
             <div
+              className="text-right"
               style={
                 {
                   "--color": `var(--color-${album.id})`,
@@ -117,19 +141,11 @@ export const VerticalLayout = () => {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="sticky top-0 px-6 flex gap-2 items-center hover:text-[var(--color)] transition-colors cursor-pointer text-gray-900 m-0 text-sm font-display"
+                    className="sticky text-right top-0 px-6 flex gap-2 items-center justify-end hover:text-(--color) transition-colors cursor-pointer text-gray-900 m-0 text-md font-display"
                     onClick={() => {
-                      const horizontalElementImage = document.getElementById(
-                        `horizontal-${album.id}`,
-                      );
-                      if (horizontalElementImage) {
-                        horizontalElementImage.parentElement?.scrollIntoView({
-                          block: "center",
-                          inline: "center",
-                        });
-                      }
-                      setLayout("list");
+                      handleImageClick(`horizontal-${album.id}`);
                     }}
+                    id={`vertical-${album.id}`}
                   >
                     {album.name}
                   </motion.h2>
@@ -146,31 +162,9 @@ export const VerticalLayout = () => {
                       width={photo.format === "landscape" ? 1024 : 1024}
                       height={photo.format === "landscape" ? 1536 : 1536}
                       onClick={() => {
-                        const horizontalElementImage = document.getElementById(
-                          `horizontal-${photo.filename}`,
-                        );
-                        const contentElementImage =
-                          document.getElementById("scroller-content");
-
-                        if (horizontalElementImage && contentElementImage) {
-                          horizontalElementImage.parentElement?.scrollIntoView({
-                            block: "center",
-                            inline: "center",
-                          });
-
-                          window.requestAnimationFrame(() => {
-                            const { scrollLeft } = contentElementImage;
-                            const ratio = scrollLeft / window.innerWidth;
-                            const windowHeight = window.innerHeight;
-                            const top = windowHeight * ratio;
-
-                            window.scrollTo({ top });
-                          });
-                        }
-
-                        setLayout("list");
+                        handleImageClick(`horizontal-${photo.filename}`);
                       }}
-                      className={cn("h-72 w-auto cursor-pointer rounded-sm", {
+                      className={cn("h-72 w-auto cursor-pointer rounded-xs", {
                         "w-[432px]": photo.format === "landscape",
                       })}
                       src={photo.filename}

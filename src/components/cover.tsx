@@ -17,7 +17,7 @@ export const Cover = ({
 }) => {
   const ref = React.useRef<HTMLDivElement>(null);
   const [offsetLeft, setOffsetLeft] = React.useState(0);
-  const { scrollX, windowWidth } = React.useContext(context);
+  const { scrollX, windowWidth, setLayout } = React.useContext(context);
   const isMobile = windowWidth < 768;
   const x = useTransform(
     scrollX,
@@ -104,24 +104,17 @@ export const Cover = ({
 
   return (
     <>
-      <motion.div
+      <div
         style={{
           backgroundImage: `url(${src})`,
         }}
         id={`horizontal-${coverId}`}
-        className="absolute inset-0 md:inset-6 md:bottom-13 md:rounded bg-center saturate-20 bg-cover"
-        initial={{ opacity: 0, filter: "blur(10px)" }}
-        animate={{ opacity: 1, filter: "blur(0px) saturate(60%)" }}
-        transition={{
-          ease: "easeInOut",
-          delay: 0.6,
-          duration: 0.6,
-        }}
+        className="absolute inset-0 md:inset-6 md:bottom-13 md:rounded bg-center bg-cover saturate-60"
         ref={ref}
       />
       <motion.div
         style={{ backgroundColor: "var(--color)" }}
-        className="absolute inset-0 top-0 md:inset-6 md:bottom-13 opacity-70 md:rounded"
+        className="absolute inset-0 top-0 md:inset-6 md:bottom-13 opacity-70 md:rounded cursor-pointer"
         initial={{
           opacity: 1,
           filter: "saturate(50%)",
@@ -132,8 +125,23 @@ export const Cover = ({
         }}
         transition={{
           ease: "easeInOut",
-          delay: 0.5,
           duration: 0.6,
+        }}
+        onClick={() => {
+          const controller = new AbortController();
+          const readMessage = () => {
+            window.dispatchEvent(
+              new CustomEvent("image-clicked", { detail: coverId }),
+            );
+
+            controller.abort();
+          };
+
+          window.addEventListener("grid-loaded", readMessage, {
+            signal: controller.signal,
+          });
+
+          setLayout("grid");
         }}
       />
 
@@ -143,10 +151,10 @@ export const Cover = ({
         style={{ left: isMobile ? 0 : x }}
         transition={{
           ease: "easeInOut",
-          delay: 1,
+          delay: 0.2,
           duration: 0.6,
         }}
-        className="text-[30px] md:p-40 font-heading md:text-4xl text-gray-50 mix-blend-plus-lighter flex gap-1 relative m-auto"
+        className="text-[30px] md:p-40 font-heading md:text-4xl text-gray-50 mix-blend-plus-lighter flex gap-1 relative m-auto pointer-events-none"
       >
         {renderTitle()}
       </motion.h1>

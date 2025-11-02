@@ -2,8 +2,8 @@
 
 import { Provider } from "@/components/context";
 import { Cover } from "@/components/cover";
+import { GridView } from "@/components/grid-view";
 import { Image } from "@/components/image";
-import { VerticalLayout } from "@/components/vertical-layout";
 import payload from "@/data.json";
 import { cn } from "@/utils/classname";
 import type { Photo } from "@/utils/types";
@@ -27,7 +27,7 @@ export default function Home() {
           );
         })}
 
-        <VerticalLayout />
+        <GridView />
       </Scroller>
     </Provider>
   );
@@ -74,7 +74,7 @@ const Album = ({
           animate={{ x: 0, opacity: 1 }}
           transition={{
             ease: "easeOut",
-            delay: 1.2,
+            delay: 0.6,
             duration: 0.6,
           }}
           key={item.id}
