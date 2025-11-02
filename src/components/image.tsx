@@ -25,7 +25,7 @@ export const Image = ({
   dark: boolean;
   format: "landscape" | "portrait";
 }) => {
-  const { setLayout, layout } = React.useContext(context);
+  const { setLayout, layout, setEnableDarkMode } = React.useContext(context);
   const safari = useIsSafari();
 
   return (
@@ -66,6 +66,7 @@ export const Image = ({
             });
 
             setLayout("grid");
+            setEnableDarkMode(false);
           }}
         />
 

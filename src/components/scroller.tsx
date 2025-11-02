@@ -314,10 +314,9 @@ export const Scroller = ({
       <motion.div
         className="hidden md:flex fixed left-0 right-0 bottom-0 mx-6 flex-row gap-4 items-center h-[50px]"
         initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
+        animate={{ opacity: layout === "list" ? 1 : 0 }}
         transition={{
-          delay: 1,
-          duration: 0.5,
+          duration: 0.3,
           ease: "easeOut",
         }}
       >
@@ -457,7 +456,7 @@ const TimelineItem = ({
   onThumbMouseEnter: () => void;
   onThumbMouseLeave: () => void;
 }) => {
-  const [enableDarkMode, setEnableDarkMode] = React.useState(false);
+  const { enableDarkMode, setEnableDarkMode } = React.useContext(context);
   const relativePosition = useTransform(
     thumbPosition,
     (value) => value - (startOffset / scrollWidth) * trackWidth,

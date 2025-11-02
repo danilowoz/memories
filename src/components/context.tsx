@@ -8,17 +8,22 @@ export const context = React.createContext<{
   windowWidth: number;
   layout: "list" | "grid";
   setLayout: React.Dispatch<React.SetStateAction<"list" | "grid">>;
+  enableDarkMode: boolean;
+  setEnableDarkMode: React.Dispatch<React.SetStateAction<boolean>>;
 }>({
   scrollX: new MotionValue(0),
   windowWidth: 0,
   layout: "list",
   setLayout: () => {},
+  enableDarkMode: false,
+  setEnableDarkMode: () => {},
 });
 
 export const Provider = ({ children }: { children: React.ReactNode }) => {
   const scrollX = useMotionValue(0);
   const [windowWidth, setWindowWidth] = React.useState(0);
   const [layout, setLayout] = React.useState<"list" | "grid">("list");
+  const [enableDarkMode, setEnableDarkMode] = React.useState(false);
 
   React.useEffect(() => {
     const handleResize = () => {
@@ -40,7 +45,16 @@ export const Provider = ({ children }: { children: React.ReactNode }) => {
   }, [layout]);
 
   return (
-    <context.Provider value={{ scrollX, windowWidth, layout, setLayout }}>
+    <context.Provider
+      value={{
+        scrollX,
+        windowWidth,
+        layout,
+        setLayout,
+        enableDarkMode,
+        setEnableDarkMode,
+      }}
+    >
       {children}
     </context.Provider>
   );

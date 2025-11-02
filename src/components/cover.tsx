@@ -17,7 +17,7 @@ export const Cover = ({
 }) => {
   const ref = React.useRef<HTMLDivElement>(null);
   const [offsetLeft, setOffsetLeft] = React.useState(0);
-  const { scrollX, windowWidth, setLayout } = React.useContext(context);
+  const { scrollX, windowWidth, setLayout, layout } = React.useContext(context);
   const isMobile = windowWidth < 768;
   const x = useTransform(
     scrollX,
@@ -104,9 +104,12 @@ export const Cover = ({
 
   return (
     <>
-      <div
+      <motion.div
         style={{
           backgroundImage: `url(${src})`,
+        }}
+        animate={{
+          opacity: layout === "list" ? 1 : 0,
         }}
         id={`horizontal-${coverId}`}
         className="absolute inset-0 md:inset-6 md:bottom-13 md:rounded bg-center bg-cover saturate-60"
@@ -120,12 +123,12 @@ export const Cover = ({
           filter: "saturate(50%)",
         }}
         animate={{
-          opacity: 0.3,
+          opacity: layout === "list" ? 0.3 : 0,
           filter: "saturate(100%)",
         }}
         transition={{
           ease: "easeInOut",
-          duration: 0.6,
+          duration: 0.2,
         }}
         onClick={() => {
           const controller = new AbortController();

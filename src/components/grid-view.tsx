@@ -37,16 +37,14 @@ export const GridView = () => {
 
   return (
     <>
-      <AnimatePresence>
-        {layout === "grid" && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-white z-20 pointer-events-none"
-          />
-        )}
-      </AnimatePresence>
+      {layout === "grid" && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 z-20"
+        />
+      )}
 
       <motion.button
         initial={{ opacity: 0 }}
