@@ -22,3 +22,7 @@
 .font-heading {
   font-family: var(--font-heading);
 }
+
+body {
+  font-family: var(--font-body);
+}

@@ -2,14 +2,16 @@
 
 import { useIsSafari } from "@/utils/browser";
 import { cn } from "@/utils/classname";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useTransform } from "motion/react";
 import React from "react";
 import { context } from "./context";
 
 export const Cover = ({
+  coverId,
   src,
   name,
 }: {
+  coverId: string | number;
   src: string;
   name: string;
 }) => {
@@ -31,7 +33,7 @@ export const Cover = ({
     setOffsetLeft((ref.current?.parentNode as HTMLElement)?.offsetLeft ?? 0);
   }, []);
 
-  scrollX.onChange((value) => {
+  scrollX.on("change", (value) => {
     if (safari) {
       return;
     }
@@ -106,6 +108,7 @@ export const Cover = ({
         style={{
           backgroundImage: `url(${src})`,
         }}
+        id={`horizontal-${coverId}`}
         className="absolute inset-0 md:inset-6 md:bottom-13 md:rounded bg-center saturate-20 bg-cover"
         initial={{ opacity: 0, filter: "blur(10px)" }}
         animate={{ opacity: 1, filter: "blur(0px) saturate(60%)" }}
