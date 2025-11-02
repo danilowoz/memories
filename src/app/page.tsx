@@ -7,7 +7,7 @@ import { VerticalLayout } from "@/components/vertical-layout";
 import payload from "@/data.json";
 import { cn } from "@/utils/classname";
 import type { Photo } from "@/utils/types";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { Scroller } from "../components/scroller";
 
 export default function Home() {

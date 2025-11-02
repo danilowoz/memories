@@ -23,10 +23,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <title>Memories - Danilo Woznica</title>
+      <link rel="icon" type="image/svg+xml" href="/icon.svg" />
       <body className={`antialiased ${heading.variable} ${inter.variable}`}>
         {children}
       </body>
-      <link rel="icon" href="/public/favicon.png" />
     </html>
   );
 }

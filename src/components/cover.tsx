@@ -2,7 +2,7 @@
 
 import { useIsSafari } from "@/utils/browser";
 import { cn } from "@/utils/classname";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useTransform } from "motion/react";
 import React from "react";
 import { context } from "./context";
 
@@ -11,7 +11,7 @@ export const Cover = ({
   src,
   name,
 }: {
-  coverId: string;
+  coverId: string | number;
   src: string;
   name: string;
 }) => {

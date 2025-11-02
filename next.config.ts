@@ -1,8 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  experimental: {
-    reactCompiler: false,
+  images: {
+    qualities: [100],
   },
   devIndicators: false,
 };

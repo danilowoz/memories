@@ -1,6 +1,6 @@
 "use client";
 
-import { MotionValue, useMotionValue } from "framer-motion";
+import { MotionValue, useMotionValue } from "motion/react";
 import React from "react";
 
 export const context = React.createContext<{

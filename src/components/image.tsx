@@ -2,7 +2,7 @@
 
 import { useIsSafari } from "@/utils/browser";
 import { cn } from "@/utils/classname";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion } from "motion/react";
 import NextjsImage from "next/image";
 import React from "react";
 import { context } from "./context";
@@ -49,6 +49,7 @@ export const Image = ({
           src={src}
           alt={alt ?? "Image"}
           priority
+          quality={100}
           loading="eager"
           onClick={() => {
             const controller = new AbortController();

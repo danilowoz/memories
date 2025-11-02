@@ -2,7 +2,7 @@
 
 import payload from "@/data.json";
 import { cn } from "@/utils/classname";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion } from "motion/react";
 import NextjsImage from "next/image";
 import React from "react";
 import { context } from "./context";
@@ -75,7 +75,7 @@ export const VerticalLayout = () => {
           // Wait for image click
           const controller = new AbortController();
           const readMessage = (e: Event) => {
-            const src = e.detail;
+            const src = (e as CustomEvent).detail;
 
             const verticalElementImage = document.getElementById(
               `vertical-${src}`,
