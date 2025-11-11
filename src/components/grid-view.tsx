@@ -200,5 +200,5 @@ export const GridView = () => {
 
 function getDuration(target: number, index: number) {
   const distance = Math.abs(target - index);
-  return distance === 0 ? 0.3 : Math.max(0.1, 0.3 - distance * 0.04);
+  return distance === 0 ? 0.3 : Math.max(0.1, 0.3 - distance * 0.01);
 }
