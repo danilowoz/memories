@@ -108,6 +108,7 @@ export const Cover = ({
         style={{
           backgroundImage: `url(${src})`,
         }}
+        initial={{ opacity: 0 }}
         animate={{
           opacity: layout === "list" ? 1 : 0,
         }}
@@ -119,7 +120,7 @@ export const Cover = ({
         style={{ backgroundColor: "var(--color)" }}
         className="absolute inset-0 top-0 md:inset-6 md:bottom-13 opacity-70 md:rounded cursor-pointer"
         initial={{
-          opacity: 1,
+          opacity: layout === "list" ? 0.3 : 0,
           filter: "saturate(50%)",
         }}
         animate={{

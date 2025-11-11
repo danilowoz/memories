@@ -10,7 +10,7 @@ import { context } from "./context";
 const MotionImage = motion.create(NextjsImage);
 
 export const GridView = () => {
-  const { layout, setLayout } = React.useContext(context);
+  const { layout, setLayout, clickedId } = React.useContext(context);
 
   function handleImageClick(id: string) {
     const horizontalElementImage = document.getElementById(id);
@@ -37,14 +37,16 @@ export const GridView = () => {
 
   return (
     <>
-      {layout === "grid" && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          className="fixed inset-0 z-20"
-        />
-      )}
+      <AnimatePresence initial={false}>
+        {layout === "grid" && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-20"
+          />
+        )}
+      </AnimatePresence>
 
       <motion.button
         initial={{ opacity: 0 }}
@@ -63,7 +65,7 @@ export const GridView = () => {
           },
         )}
       >
-        <AnimatePresence>
+        <AnimatePresence initial={false}>
           {layout === "grid" && (
             <motion.svg
               width="15"
@@ -123,58 +125,80 @@ export const GridView = () => {
           },
         )}
       >
-        {payload.map((album) => (
-          <React.Fragment key={album.id}>
-            <div
-              className="text-right"
-              style={
-                {
-                  "--color": `var(--color-${album.id})`,
-                } as React.CSSProperties
-              }
-            >
-              <AnimatePresence>
-                {layout === "grid" && (
-                  <motion.h2
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    className="sticky text-right top-0 px-6 flex gap-2 items-center justify-end hover:text-(--color) transition-colors cursor-pointer text-gray-900 m-0 text-md font-display"
-                    onClick={() => {
-                      handleImageClick(`horizontal-${album.id}`);
-                    }}
-                    id={`vertical-${album.id}`}
-                  >
-                    {album.name}
-                  </motion.h2>
-                )}
-              </AnimatePresence>
-            </div>
-            <div className="flex flex-wrap gap-4 col-span-3">
-              {album.photos.map((photo) => (
-                <AnimatePresence key={photo.id}>
+        {payload.map((album) => {
+          const indexClickedId = album.photos.findIndex(
+            (p) => p.filename === clickedId,
+          );
+
+          return (
+            <React.Fragment key={album.id}>
+              <div
+                className="text-right"
+                style={
+                  {
+                    "--color": `var(--color-${album.id})`,
+                  } as React.CSSProperties
+                }
+              >
+                <AnimatePresence>
                   {layout === "grid" && (
-                    <MotionImage
-                      id={`vertical-${photo.filename}`}
-                      layoutId={photo.filename}
-                      width={photo.format === "landscape" ? 1024 : 1024}
-                      height={photo.format === "landscape" ? 1536 : 1536}
+                    <motion.h2
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      className="sticky text-right top-0 px-6 flex gap-2 items-center justify-end hover:text-(--color) transition-colors cursor-pointer text-gray-900 m-0 text-md font-display"
                       onClick={() => {
-                        handleImageClick(`horizontal-${photo.filename}`);
+                        handleImageClick(`horizontal-${album.id}`);
                       }}
-                      className={cn("h-72 w-auto cursor-pointer rounded-xs", {
-                        "w-[432px]": photo.format === "landscape",
-                      })}
-                      src={photo.filename}
-                      alt={photo.filename}
-                    />
+                      id={`vertical-${album.id}`}
+                    >
+                      {album.name}
+                    </motion.h2>
                   )}
                 </AnimatePresence>
-              ))}
-            </div>
-          </React.Fragment>
-        ))}
+              </div>
+              <div className="flex flex-wrap gap-4 col-span-3">
+                {album.photos.map((photo, index) => {
+                  return (
+                    <AnimatePresence key={photo.id}>
+                      {layout === "grid" && (
+                        <MotionImage
+                          id={`vertical-${photo.filename}`}
+                          layoutId={photo.filename}
+                          width={photo.format === "landscape" ? 1024 : 1024}
+                          height={photo.format === "landscape" ? 1536 : 1536}
+                          onClick={() => {
+                            handleImageClick(`horizontal-${photo.filename}`);
+                          }}
+                          transition={{
+                            duration: getDuration(indexClickedId, index),
+                          }}
+                          style={{
+                            zIndex: indexClickedId === index ? 10 : 1,
+                          }}
+                          className={cn(
+                            "h-72 w-auto cursor-pointer rounded-xs will-change-transform",
+                            {
+                              "w-[432px]": photo.format === "landscape",
+                            },
+                          )}
+                          src={photo.filename}
+                          alt={photo.filename}
+                        />
+                      )}
+                    </AnimatePresence>
+                  );
+                })}
+              </div>
+            </React.Fragment>
+          );
+        })}
       </div>
     </>
   );
 };
+
+function getDuration(target: number, index: number) {
+  const distance = Math.abs(target - index);
+  return distance === 0 ? 0.3 : Math.max(0.1, 0.3 - distance * 0.04);
+}

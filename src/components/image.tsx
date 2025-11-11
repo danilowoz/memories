@@ -25,7 +25,8 @@ export const Image = ({
   dark: boolean;
   format: "landscape" | "portrait";
 }) => {
-  const { setLayout, layout, setEnableDarkMode } = React.useContext(context);
+  const { setLayout, layout, setEnableDarkMode, setClickedId } =
+    React.useContext(context);
   const safari = useIsSafari();
 
   return (
@@ -45,7 +46,7 @@ export const Image = ({
           layoutId={src}
           width={format === "landscape" ? 1024 : 1024}
           height={format === "landscape" ? 1536 : 1536}
-          className="w-full md:w-auto md:h-full max-w-none transform-gpu cursor-pointer rounded-sm"
+          className="w-full md:w-auto md:h-full max-w-none transform-gpu cursor-pointer rounded-sm will-change-transform"
           src={src}
           alt={alt ?? "Image"}
           priority
@@ -67,6 +68,7 @@ export const Image = ({
               });
 
               setLayout("grid");
+              setClickedId(src);
               setEnableDarkMode(false);
             }
           }}

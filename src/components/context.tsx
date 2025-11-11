@@ -7,13 +7,17 @@ export const context = React.createContext<{
   scrollX: MotionValue<number>;
   windowWidth: number;
   layout: "list" | "grid";
+  clickedId: string;
+  setClickedId: React.Dispatch<React.SetStateAction<string>>;
   setLayout: React.Dispatch<React.SetStateAction<"list" | "grid">>;
   enableDarkMode: boolean;
   setEnableDarkMode: React.Dispatch<React.SetStateAction<boolean>>;
 }>({
   scrollX: new MotionValue(0),
   windowWidth: 0,
-  layout: "list",
+  layout: "grid",
+  clickedId: "",
+  setClickedId: () => {},
   setLayout: () => {},
   enableDarkMode: false,
   setEnableDarkMode: () => {},
@@ -22,7 +26,8 @@ export const context = React.createContext<{
 export const Provider = ({ children }: { children: React.ReactNode }) => {
   const scrollX = useMotionValue(0);
   const [windowWidth, setWindowWidth] = React.useState(0);
-  const [layout, setLayout] = React.useState<"list" | "grid">("list");
+  const [layout, setLayout] = React.useState<"list" | "grid">("grid");
+  const [clickedId, setClickedId] = React.useState<string>("");
   const [enableDarkMode, setEnableDarkMode] = React.useState(false);
 
   React.useEffect(() => {
@@ -50,6 +55,8 @@ export const Provider = ({ children }: { children: React.ReactNode }) => {
         scrollX,
         windowWidth,
         layout,
+        clickedId,
+        setClickedId,
         setLayout,
         enableDarkMode,
         setEnableDarkMode,
