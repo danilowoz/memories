@@ -33,7 +33,7 @@ export const Image = ({
     <>
       <motion.div
         key={safari ? "safari" : "other"}
-        className="mt-6 pb-18 md:px-36"
+        className="mt-6 pb-22 md:px-36"
         initial={safari ? undefined : { filter: "blur(20px)", opacity: 0.2 }}
         whileInView={{ filter: "blur(0px)", opacity: 1 }}
         transition={
@@ -74,7 +74,7 @@ export const Image = ({
           }}
         />
 
-        <AnimatePresence>
+        <AnimatePresence initial={false}>
           {location && date && layout === "list" && (
             <motion.figcaption
               initial={{ opacity: 0 }}

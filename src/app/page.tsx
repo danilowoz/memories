@@ -4,6 +4,7 @@ import { Provider } from "@/components/context";
 import { Cover } from "@/components/cover";
 import { GridView } from "@/components/grid-view";
 import { Image } from "@/components/image";
+import { Toggle } from "@/components/toggle";
 import payload from "@/data.json";
 import { cn } from "@/utils/classname";
 import type { Photo } from "@/utils/types";
@@ -14,6 +15,8 @@ export default function Home() {
   return (
     <Provider>
       <Scroller>
+        <Toggle />
+
         {payload.map((item, index) => {
           return (
             <Album

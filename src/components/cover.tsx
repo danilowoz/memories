@@ -113,12 +113,12 @@ export const Cover = ({
           opacity: layout === "list" ? 1 : 0,
         }}
         id={`horizontal-${coverId}`}
-        className="absolute inset-0 md:inset-6 md:bottom-13 md:rounded bg-center bg-cover saturate-60"
+        className="absolute inset-0 md:inset-6 md:bottom-16 md:rounded bg-center bg-cover saturate-60"
         ref={ref}
       />
       <motion.div
         style={{ backgroundColor: "var(--color)" }}
-        className="absolute inset-0 top-0 md:inset-6 md:bottom-13 opacity-70 md:rounded cursor-pointer"
+        className="absolute inset-0 top-0 md:inset-6 md:bottom-16 opacity-70 md:rounded cursor-pointer"
         initial={{
           opacity: layout === "list" ? 0.3 : 0,
           filter: "saturate(50%)",
