@@ -1,10 +1,20 @@
 import { cn } from "@/utils/classname";
-import { AnimatePresence, motion } from "motion/react";
+import {
+  AnimatePresence,
+  type MotionNodeAnimationOptions,
+  motion,
+} from "motion/react";
 import React from "react";
 import { context } from "./context";
 
 export const Toggle = () => {
   const { layout, setLayout } = React.useContext(context);
+  const [show, setShow] = React.useState(false);
+  const transition: MotionNodeAnimationOptions["transition"] = {
+    type: "spring",
+    bounce: 0,
+    duration: 0.3,
+  };
 
   return (
     <motion.button
@@ -17,21 +27,23 @@ export const Toggle = () => {
       }}
       className={cn(
         "fixed left-6 bottom-5 z-50",
-        "w-7 h-7 rounded flex cursor-pointer",
-        "group",
+        "w-6 h-6 rounded flex cursor-pointer",
       )}
+      onMouseEnter={() => setShow(true)}
+      onMouseLeave={() => setShow(false)}
     >
       <AnimatePresence initial={false} mode="sync">
         {layout === "grid" && (
           <motion.svg
-            width="15"
-            height="15"
+            width="18"
+            height="18"
             viewBox="0 0 15 15"
             fill="none"
-            className="absolute inset-0 will-change-transform m-auto opacity-0 group-hover:opacity-100 transition-opacity"
+            className="absolute inset-0 will-change-transform m-auto"
             initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
+            animate={{ scale: 1, opacity: show ? 1 : 0 }}
             exit={{ scale: 0 }}
+            transition={transition}
           >
             <title>Grid View</title>
             <path
@@ -47,13 +59,14 @@ export const Toggle = () => {
       <AnimatePresence initial={false} mode="sync">
         {layout === "list" && (
           <motion.svg
-            width="15"
-            height="15"
+            width="18"
+            height="18"
             viewBox="0 0 15 15"
-            className="absolute inset-0 will-change-transform m-auto opacity-0 group-hover:opacity-100 transition-opacity"
+            className="absolute inset-0 will-change-transform m-auto"
             initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
+            animate={{ scale: 1, opacity: show ? 1 : 0 }}
             exit={{ scale: 0 }}
+            transition={transition}
           >
             <title>Grid View</title>
             <path
@@ -66,19 +79,21 @@ export const Toggle = () => {
         )}
       </AnimatePresence>
 
-      <svg
+      <motion.svg
         width="371"
         height="371"
         viewBox="0 0 371 371"
         fill="none"
-        className="absolute inset-0 w-7 h-7"
+        className="absolute inset-0 w-6 h-6 text-gray-700"
+        animate={{ scale: show ? 0.7 : 1, opacity: show ? 0 : 1 }}
+        transition={transition}
       >
         <title>Logo</title>
         <path
           d="M10 259H42V326H109V358H10V259ZM363 358H264V326H331V259H363V358ZM109 5V37H42V104H10V5H109ZM363 104H331V37H264V5H363V104Z"
-          fill="black"
+          fill="currentColor"
         />
-      </svg>
+      </motion.svg>
     </motion.button>
   );
 };

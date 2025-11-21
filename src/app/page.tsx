@@ -15,8 +15,6 @@ export default function Home() {
   return (
     <Provider>
       <Scroller>
-        <Toggle />
-
         {payload.map((item, index) => {
           return (
             <Album
@@ -32,6 +30,8 @@ export default function Home() {
 
         <GridView />
       </Scroller>
+
+      <Toggle />
     </Provider>
   );
 }

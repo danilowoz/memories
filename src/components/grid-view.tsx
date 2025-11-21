@@ -101,7 +101,7 @@ export const GridView = () => {
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       exit={{ opacity: 0 }}
-                      className="sticky top-0 pr-6 aspect-square inline-block hover:text-(--color) transition-colors cursor-pointer text-gray-900 m-0 text-lg font-display -rotate-90 translate-x-6"
+                      className="sticky top-0 pr-6 aspect-square inline-block hover:text-(--color) transition-colors cursor-pointer text-gray-900 m-0 text-lg font-display -rotate-90 translate-x-5.5"
                       onClick={() => {
                         handleImageClick(`horizontal-${album.id}`);
                       }}
