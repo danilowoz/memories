@@ -51,8 +51,6 @@ export const Scroller = ({
     new Array(payload.length).fill([0, 0]),
   );
 
-  console.log(albumSizes);
-
   const updateThumbSizeAndPosition = React.useCallback(() => {
     if (!contentRef.current || !trackRef.current) {
       return;

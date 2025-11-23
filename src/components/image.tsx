@@ -35,9 +35,19 @@ export const Image = ({
         key={safari ? "safari" : "other"}
         className="mt-6 pb-22 md:px-36"
         initial={safari ? undefined : { filter: "blur(20px)", opacity: 0.2 }}
-        whileInView={{ filter: "blur(0px)", opacity: 1 }}
+        whileInView={{
+          filter: "blur(0px)",
+          opacity: layout === "list" ? 1 : 0,
+        }}
         transition={
-          safari ? undefined : { type: "spring", duration: 0.3, bounce: 0 }
+          safari
+            ? undefined
+            : {
+                type: "spring",
+                duration: 0.3,
+                bounce: 0,
+                delay: layout === "list" ? 0 : 1,
+              }
         }
         viewport={safari ? undefined : { amount: 0.1 }}
       >

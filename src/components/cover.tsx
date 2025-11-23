@@ -17,7 +17,8 @@ export const Cover = ({
 }) => {
   const ref = React.useRef<HTMLDivElement>(null);
   const [offsetLeft, setOffsetLeft] = React.useState(0);
-  const { scrollX, windowWidth, setLayout, layout } = React.useContext(context);
+  const { scrollX, windowWidth, setLayout, layout, setEnableDarkMode } =
+    React.useContext(context);
   const isMobile = windowWidth < 768;
   const x = useTransform(
     scrollX,
@@ -146,6 +147,7 @@ export const Cover = ({
           });
 
           setLayout("grid");
+          setEnableDarkMode(false);
         }}
       />
 

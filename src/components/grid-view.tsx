@@ -142,6 +142,10 @@ export const GridView = () => {
                           )}
                           src={photo.filename}
                           alt={photo.filename}
+                          whileHover={{
+                            scale: 1.03,
+                            transition: { duration: 0.2 },
+                          }}
                         />
                       )}
                     </AnimatePresence>
@@ -162,5 +166,5 @@ function getDuration(target: number, index: number) {
   }
 
   const distance = Math.abs(target - index);
-  return distance === 0 ? 0.3 : Math.max(0.1, 0.3 - distance * 0.01);
+  return distance === 0 ? 0.3 : Math.max(0.1, 0.3 - distance * 0.1);
 }
