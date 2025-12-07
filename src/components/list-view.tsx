@@ -17,7 +17,7 @@ import { context } from "./context";
 
 const payload = data as Memories;
 
-export const Scroller = ({
+export const ListView = ({
   children,
 }: {
   children: React.ReactNode;
@@ -311,7 +311,7 @@ export const Scroller = ({
       {children}
 
       <motion.div
-        className="hidden md:flex fixed left-0 right-0 bottom-0 mx-6 flex-row gap-4 items-center h-[70px]"
+        className="hidden md:flex fixed left-0 right-0 bottom-0 mx-6 flex-row gap-4 items-center h-[64px]"
         initial={{ opacity: 0 }}
         animate={{ opacity: layout === "list" ? 1 : 0 }}
         transition={{
@@ -321,7 +321,7 @@ export const Scroller = ({
       >
         <div
           ref={trackRef}
-          className="flex flex-row gap-6 items-center flex-1 peer h-[50px]"
+          className="flex flex-row gap-6 items-center flex-1 peer h-[42px]"
           onMouseDown={handleThumbMouseDown}
           onClick={handleTrackClick}
           onMouseMove={(e) => {
@@ -447,6 +447,12 @@ const TimelineItem = ({
     if (isDark) {
       return relativePosition.on("change", (value) => {
         setEnableDarkMode(value > -40);
+
+        if (value > -40) {
+          document.body.classList.add("dark");
+        } else {
+          document.body.classList.remove("dark");
+        }
       });
     }
   }, [isDark, relativePosition, setEnableDarkMode]);

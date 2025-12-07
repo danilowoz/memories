@@ -2,12 +2,14 @@
 
 import payload from "@/data.json";
 import { cn } from "@/utils/classname";
-import { AnimatePresence, motion } from "motion/react";
+import { formatDate } from "@/utils/date";
+import { AnimatePresence, type HTMLMotionProps, motion } from "motion/react";
 import React from "react";
 import { context } from "./context";
 
 export const GridView = () => {
   const { layout, setLayout, clickedId } = React.useContext(context);
+  const [hasInteracted, setHasInteracted] = React.useState(false);
 
   function handleImageClick(id: string) {
     const horizontalElementImage = document.getElementById(id);
@@ -75,15 +77,16 @@ export const GridView = () => {
           });
         }}
         className={cn(
-          "fixed inset-0 overflow-auto z-20 grid grid-cols-4 gap-24 py-4",
+          "fixed inset-0 overflow-auto z-20 md:grid md:grid-cols-4 md:gap-24 md:py-4",
           {
             "pointer-events-none": layout === "list",
           },
         )}
       >
         {payload.map((album) => {
-          const indexClickedId = album.photos.findIndex(
-            (p) => p.filename === clickedId,
+          const indexClickedId = Math.max(
+            album.photos.findIndex((p) => p.filename === clickedId),
+            hasInteracted ? 0 : -1,
           );
 
           return (
@@ -101,7 +104,11 @@ export const GridView = () => {
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       exit={{ opacity: 0 }}
-                      className="sticky top-0 pr-6 aspect-square inline-block hover:text-(--color) transition-colors cursor-pointer text-gray-900 m-0 text-lg font-display -rotate-90 translate-x-5.5"
+                      className={cn(
+                        "text-lg font-display text-gray-900",
+                        "w-full flex gap-4 items-center md:inline-block md:w-auto p-4 md:p-0",
+                        "md:sticky md:top-0 md:pr-6 md:aspect-square md:hover:text-(--color) md:transition-colors md:cursor-pointer md:m-0 md:-rotate-90 md:translate-x-5.5",
+                      )}
                       onClick={() => {
                         handleImageClick(`horizontal-${album.id}`);
                       }}
@@ -110,6 +117,20 @@ export const GridView = () => {
                         opacity: 1,
                       }}
                     >
+                      <svg
+                        width="371"
+                        height="371"
+                        viewBox="0 0 371 371"
+                        fill="none"
+                        className="inset-0 w-5 h-5 md:hidden"
+                      >
+                        <title>Logo</title>
+                        <path
+                          d="M10 259H42V326H109V358H10V259ZM363 358H264V326H331V259H363V358ZM109 5V37H42V104H10V5H109ZM363 104H331V37H264V5H363V104Z"
+                          fill="currentColor"
+                        />
+                      </svg>
+
                       {album.name}
                     </motion.h2>
                   )}
@@ -118,37 +139,60 @@ export const GridView = () => {
               <div className="flex flex-wrap gap-4 col-span-3">
                 {album.photos.map((photo, index) => {
                   return (
-                    <AnimatePresence key={photo.id} initial={false}>
-                      {layout === "grid" && (
-                        <motion.img
-                          id={`vertical-${photo.filename}`}
-                          layoutId={photo.filename}
-                          width={photo.format === "landscape" ? 1024 : 1024}
-                          height={photo.format === "landscape" ? 1536 : 1536}
-                          onClick={() => {
-                            handleImageClick(`horizontal-${photo.filename}`);
-                          }}
-                          transition={{
-                            duration: getDuration(indexClickedId, index),
-                          }}
-                          style={{
-                            zIndex: indexClickedId === index ? 10 : 1,
-                          }}
-                          className={cn(
-                            "h-72 w-auto cursor-pointer rounded-xs relative",
-                            {
-                              "w-[432px]": photo.format === "landscape",
-                            },
-                          )}
-                          src={photo.filename}
-                          alt={photo.filename}
-                          whileHover={{
-                            scale: 1.03,
-                            transition: { duration: 0.2 },
-                          }}
-                        />
+                    <React.Fragment key={photo.id}>
+                      <AnimatePresence initial={false} key={photo.id}>
+                        {layout === "grid" && (
+                          <motion.img
+                            id={`vertical-${photo.filename}`}
+                            layoutId={photo.filename}
+                            width={photo.format === "landscape" ? 1024 : 1024}
+                            height={photo.format === "landscape" ? 1536 : 1536}
+                            onClick={() => {
+                              handleImageClick(`horizontal-${photo.filename}`);
+                              setHasInteracted(false);
+                            }}
+                            transition={{
+                              type: "spring",
+                              bounce: 0,
+                              duration: 0.4,
+                              // duration:
+                              //   activeAlbumIndex === albumIndex
+                              //     ? getDuration(indexClickedId, index)
+                              //     : 0,
+                            }}
+                            style={{
+                              zIndex: indexClickedId === index ? 10 : 1,
+                            }}
+                            className={cn(
+                              "md:h-72 md:w-auto cursor-pointer md:rounded-xs relative pointer-events-none md:pointer-events-auto",
+                              {
+                                "md:w-[432px]": photo.format === "landscape",
+                              },
+                            )}
+                            src={photo.filename}
+                            alt={photo.filename}
+                            whileHover={{
+                              scale: 1.03,
+                              transition: { duration: 0.2 },
+                            }}
+                            onMouseEnter={() => {
+                              setHasInteracted(true);
+                            }}
+                          />
+                        )}
+                      </AnimatePresence>
+
+                      {"location" in photo && photo.date && (
+                        <figcaption className="md:hidden p-4 pb-12 flex gap-2">
+                          <p className="text-gray-900 m-0 text-sm font-display">
+                            {photo.location}
+                          </p>
+                          <p className="text-gray-900/50 m-0 text-sm">
+                            {formatDate(photo.date)}
+                          </p>
+                        </figcaption>
                       )}
-                    </AnimatePresence>
+                    </React.Fragment>
                   );
                 })}
               </div>
@@ -166,5 +210,5 @@ function getDuration(target: number, index: number) {
   }
 
   const distance = Math.abs(target - index);
-  return distance === 0 ? 0.3 : Math.max(0.1, 0.3 - distance * 0.1);
+  return distance === 0 ? 0.6 : Math.max(0, 0.6 - distance * 0.03);
 }

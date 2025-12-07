@@ -1,8 +1,7 @@
 "use client";
 
 import { useIsSafari } from "@/utils/browser";
-import { cn } from "@/utils/classname";
-import { motion, useScroll, useTransform } from "motion/react";
+import { motion, useTransform } from "motion/react";
 import React from "react";
 import { context } from "./context";
 
@@ -16,23 +15,13 @@ export const Cover = ({
   name: string;
 }) => {
   const ref = React.useRef<HTMLDivElement>(null);
-  const [offsetLeft, setOffsetLeft] = React.useState(0);
   const { scrollX, windowWidth, setLayout, layout, setEnableDarkMode } =
     React.useContext(context);
   const isMobile = windowWidth < 768;
-  const x = useTransform(
-    scrollX,
-    [offsetLeft - windowWidth, offsetLeft + windowWidth * 2],
-    [windowWidth / 20, -windowWidth / 10],
-  );
   const [scrollDirection, setScrollDirection] = React.useState<
     "left" | "right"
   >("right");
   const safari = useIsSafari();
-
-  React.useLayoutEffect(() => {
-    setOffsetLeft((ref.current?.parentNode as HTMLElement)?.offsetLeft ?? 0);
-  }, []);
 
   scrollX.on("change", (value) => {
     if (safari) {
@@ -154,7 +143,6 @@ export const Cover = ({
       <motion.h1
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        style={{ left: isMobile ? 0 : x }}
         transition={{
           ease: "easeInOut",
           delay: 0.2,

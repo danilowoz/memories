@@ -9,12 +9,12 @@ import payload from "@/data.json";
 import { cn } from "@/utils/classname";
 import type { Photo } from "@/utils/types";
 import { motion } from "motion/react";
-import { Scroller } from "../components/scroller";
+import { ListView } from "../components/list-view";
 
 export default function Home() {
   return (
     <Provider>
-      <Scroller>
+      <ListView>
         {payload.map((item, index) => {
           return (
             <Album
@@ -29,7 +29,7 @@ export default function Home() {
         })}
 
         <GridView />
-      </Scroller>
+      </ListView>
 
       <Toggle />
     </Provider>

@@ -2,6 +2,7 @@
 
 import { useIsSafari } from "@/utils/browser";
 import { cn } from "@/utils/classname";
+import { formatDate } from "@/utils/date";
 import { AnimatePresence, motion } from "motion/react";
 import NextjsImage from "next/image";
 import React from "react";
@@ -121,17 +122,3 @@ export const Image = ({
     </>
   );
 };
-
-function formatDate(date: string) {
-  const fullDate = new Date(date);
-
-  const month = fullDate.toLocaleDateString("en-US", {
-    month: "short",
-  });
-
-  const year = fullDate.toLocaleDateString("en-US", {
-    year: "numeric",
-  });
-
-  return `${month}, ${year}`;
-}

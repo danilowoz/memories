@@ -8,7 +8,7 @@ import React from "react";
 import { context } from "./context";
 
 export const Toggle = () => {
-  const { layout, setLayout } = React.useContext(context);
+  const { layout, setLayout, setEnableDarkMode } = React.useContext(context);
   const [show, setShow] = React.useState(false);
   const transition: MotionNodeAnimationOptions["transition"] = {
     type: "spring",
@@ -24,10 +24,15 @@ export const Toggle = () => {
       type="button"
       onClick={() => {
         setLayout((prev) => (prev === "grid" ? "list" : "grid"));
+        if (layout === "list") {
+          setEnableDarkMode(false);
+          document.body.classList.remove("dark");
+        }
       }}
       className={cn(
-        "fixed left-6 bottom-5 z-50",
-        "w-6 h-6 rounded flex cursor-pointer",
+        "hidden md:flex fixed left-6 bottom-5 z-50",
+        "w-6 h-6 rounded cursor-pointer",
+        "text-gray-700 dark:text-gray-400 transition-colors",
       )}
       onMouseEnter={() => setShow(true)}
       onMouseLeave={() => setShow(false)}
@@ -84,7 +89,7 @@ export const Toggle = () => {
         height="371"
         viewBox="0 0 371 371"
         fill="none"
-        className="absolute inset-0 w-6 h-6 text-gray-700"
+        className="absolute inset-0 w-6 h-6"
         animate={{ scale: show ? 0.7 : 1, opacity: show ? 0 : 1 }}
         transition={transition}
       >
