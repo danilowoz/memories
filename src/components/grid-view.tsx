@@ -105,7 +105,7 @@ export const GridView = () => {
                       animate={{ opacity: 1 }}
                       exit={{ opacity: 0 }}
                       className={cn(
-                        "text-lg font-display text-gray-900",
+                        "text-lg font-display text-neutral-900",
                         "w-full flex gap-4 items-center md:inline-block md:w-auto p-4 md:p-0",
                         "md:sticky md:top-0 md:pr-6 md:aspect-square md:hover:text-(--color) md:transition-colors md:cursor-pointer md:m-0 md:-rotate-90 md:translate-x-5.5",
                       )}
@@ -167,8 +167,12 @@ export const GridView = () => {
                             src={photo.filename}
                             alt={photo.filename}
                             whileHover={{
-                              scale: 1.03,
-                              transition: { duration: 0.2 },
+                              scale: 1.02,
+                              transition: {
+                                duration: 0.6,
+                                type: "spring",
+                                bounce: 0,
+                              },
                             }}
                             onAnimationComplete={() => {
                               setHasInteracted(true);
@@ -179,10 +183,10 @@ export const GridView = () => {
 
                       {"location" in photo && photo.date && (
                         <figcaption className="md:hidden p-4 pb-12 flex gap-2">
-                          <p className="text-gray-900 m-0 text-sm font-display">
+                          <p className="text-neutral-900 m-0 text-sm font-display">
                             {photo.location}
                           </p>
-                          <p className="text-gray-900/50 m-0 text-sm">
+                          <p className="text-neutral-900/50 m-0 text-sm">
                             {formatDate(photo.date)}
                           </p>
                         </figcaption>

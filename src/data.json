@@ -209,6 +209,27 @@
         "location": "Varanasi, India",
         "filename": "/her/000049.jpg",
         "format": "portrait"
+      },
+      {
+        "id": 23,
+        "date": "09/09/2025",
+        "location": "Dune 45, Namibia",
+        "filename": "/her/DSCF4929.jpg",
+        "format": "portrait"
+      },
+      {
+        "id": 24,
+        "date": "09/09/2025",
+        "location": "Deadvlei, Namibia",
+        "filename": "/her/DSCF4983.jpg",
+        "format": "portrait"
+      },
+      {
+        "id": 25,
+        "date": "09/09/2025",
+        "location": "Skeleton Cost, Namibia",
+        "filename": "/her/000046_1.jpg",
+        "format": "landscape"
       }
     ]
   },
@@ -257,6 +278,11 @@
         "id": 8,
         "filename": "/layers/IMG_2258.jpeg",
         "cover": true,
+        "format": "portrait"
+      },
+      {
+        "id": 10,
+        "filename": "/layers/000058_1.jpg",
         "format": "portrait"
       }
     ]

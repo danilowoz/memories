@@ -467,7 +467,7 @@ const TimelineItem = ({
         className="h-5 rounded-full relative overflow-hidden"
         style={{ flexGrow: flexRatio, height }}
       >
-        <div className="h-0.5 absolute left-0 right-0 top-[calc(50%-1px)] bg-gray-400/20 rounded-full" />
+        <div className="h-0.5 absolute left-0 right-0 top-[calc(50%-1px)] bg-neutral-400/20 rounded-full" />
 
         <motion.div
           className={cn("absolute h-full rounded-full cursor-ew-resize m-auto")}

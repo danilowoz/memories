@@ -98,7 +98,7 @@ export const Image = ({
                 whileInView={safari ? undefined : { opacity: 1, y: 0 }}
                 transition={{ type: "spring", duration: 0.5, bounce: 0 }}
                 viewport={safari ? undefined : { amount: 0.5 }}
-                className={cn("text-gray-900 m-0 text-sm font-display", {
+                className={cn("text-neutral-900 m-0 text-sm font-display", {
                   "text-white": dark,
                 })}
               >
@@ -109,7 +109,7 @@ export const Image = ({
                 whileInView={safari ? undefined : { opacity: 1, y: 0 }}
                 transition={{ type: "spring", duration: 0.5, bounce: 0 }}
                 viewport={safari ? undefined : { amount: 0.5 }}
-                className={cn("text-gray-900/50 m-0 text-sm", {
+                className={cn("text-neutral-900/50 m-0 text-sm", {
                   "text-white opacity-50": dark,
                 })}
               >

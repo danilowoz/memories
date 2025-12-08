@@ -32,7 +32,7 @@ export const Toggle = () => {
       className={cn(
         "hidden md:flex fixed left-6 bottom-5 z-50",
         "w-6 h-6 rounded cursor-pointer",
-        "text-gray-700 dark:text-gray-400 transition-colors",
+        "text-neutral-700 dark:text-neutral-400 transition-colors",
       )}
       onMouseEnter={() => setShow(true)}
       onMouseLeave={() => setShow(false)}
