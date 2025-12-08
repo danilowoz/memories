@@ -149,12 +149,11 @@ export const GridView = () => {
                             height={photo.format === "landscape" ? 1536 : 1536}
                             onClick={() => {
                               handleImageClick(`horizontal-${photo.filename}`);
-                              setHasInteracted(false);
                             }}
                             transition={{
                               type: "spring",
                               bounce: 0,
-                              duration: 0.4,
+                              duration: hasInteracted ? 0.4 : 0,
                               // duration:
                               //   activeAlbumIndex === albumIndex
                               //     ? getDuration(indexClickedId, index)
