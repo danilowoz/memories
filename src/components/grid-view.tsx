@@ -3,7 +3,7 @@
 import payload from "@/data.json";
 import { cn } from "@/utils/classname";
 import { formatDate } from "@/utils/date";
-import { AnimatePresence, type HTMLMotionProps, motion } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 import React from "react";
 import { context } from "./context";
 
@@ -154,10 +154,6 @@ export const GridView = () => {
                               type: "spring",
                               bounce: 0,
                               duration: hasInteracted ? 0.4 : 0,
-                              // duration:
-                              //   activeAlbumIndex === albumIndex
-                              //     ? getDuration(indexClickedId, index)
-                              //     : 0,
                             }}
                             style={{
                               zIndex: indexClickedId === index ? 10 : 1,
@@ -174,7 +170,7 @@ export const GridView = () => {
                               scale: 1.03,
                               transition: { duration: 0.2 },
                             }}
-                            onMouseEnter={() => {
+                            onAnimationComplete={() => {
                               setHasInteracted(true);
                             }}
                           />
