@@ -53,6 +53,7 @@ export const Image = ({
         viewport={safari ? undefined : { amount: 0.1 }}
       >
         <MotionImage
+          layoutDependency={layout}
           id={`horizontal-${src}`}
           layoutId={src}
           width={format === "landscape" ? 1024 : 1024}

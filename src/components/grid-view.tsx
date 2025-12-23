@@ -143,6 +143,7 @@ export const GridView = () => {
                       <AnimatePresence initial={false} key={photo.id}>
                         {layout === "grid" && (
                           <motion.img
+                            layoutDependency={layout}
                             id={`vertical-${photo.filename}`}
                             layoutId={photo.filename}
                             width={photo.format === "landscape" ? 1024 : 1024}
@@ -159,7 +160,7 @@ export const GridView = () => {
                               zIndex: indexClickedId === index ? 10 : 1,
                             }}
                             className={cn(
-                              "md:h-72 md:w-auto cursor-pointer md:rounded-xs relative pointer-events-none md:pointer-events-auto",
+                              "md:h-72 md:w-auto cursor-pointer md:rounded-xs relative pointer-events-none md:pointer-events-auto will-change-transform",
                               {
                                 "md:w-[432px]": photo.format === "landscape",
                               },
