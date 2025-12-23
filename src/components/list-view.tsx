@@ -424,7 +424,8 @@ const TimelineItem = ({
   onThumbMouseEnter: () => void;
   onThumbMouseLeave: () => void;
 }) => {
-  const { enableDarkMode, setEnableDarkMode } = React.useContext(context);
+  const { enableDarkMode, setEnableDarkMode, layout } =
+    React.useContext(context);
   const relativePosition = useTransform(
     thumbPosition,
     (value) => value - (startOffset / scrollWidth) * trackWidth,
@@ -444,7 +445,7 @@ const TimelineItem = ({
   }, [isHovering, moveLeft, moveTop]);
 
   React.useEffect(() => {
-    if (isDark) {
+    if (isDark && layout === "list") {
       return relativePosition.on("change", (value) => {
         setEnableDarkMode(value > -40);
 
@@ -455,7 +456,7 @@ const TimelineItem = ({
         }
       });
     }
-  }, [isDark, relativePosition, setEnableDarkMode]);
+  }, [isDark, relativePosition, setEnableDarkMode, layout]);
 
   return (
     <>

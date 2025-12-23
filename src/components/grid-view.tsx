@@ -107,7 +107,7 @@ export const GridView = () => {
                       className={cn(
                         "text-lg font-display text-neutral-900",
                         "w-full flex gap-4 items-center md:inline-block md:w-auto p-4 md:p-0",
-                        "md:sticky md:top-0 md:pr-6 md:aspect-square md:hover:text-(--color) md:transition-colors md:cursor-pointer md:m-0 md:-rotate-90 md:translate-x-5.5",
+                        "md:sticky md:top-0 md:aspect-square md:hover:text-(--color) md:transition-colors md:cursor-pointer md:m-0 md:-rotate-90 md:translate-x-5.5",
                       )}
                       onClick={() => {
                         handleImageClick(`horizontal-${album.id}`);
@@ -202,12 +202,3 @@ export const GridView = () => {
     </>
   );
 };
-
-function getDuration(target: number, index: number) {
-  if (target === -1) {
-    return 0;
-  }
-
-  const distance = Math.abs(target - index);
-  return distance === 0 ? 0.6 : Math.max(0, 0.6 - distance * 0.03);
-}
