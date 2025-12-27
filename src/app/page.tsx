@@ -7,15 +7,109 @@ import { Image } from "@/components/image";
 import { Toggle } from "@/components/toggle";
 import payload from "@/data.json";
 import { cn } from "@/utils/classname";
-import type { Photo } from "@/utils/types";
+import type { Memories, Memory, Photo } from "@/utils/types";
 import { motion } from "motion/react";
+import React from "react";
 import { ListView } from "../components/list-view";
 
 export default function Home() {
+  const [albumsData, setAlbumsData] = React.useState<Memories>(payload);
+  const [selectedAlbumId, setSelectedAlbumId] = React.useState(0);
+
+  const menu = [
+    {
+      label: "by memory",
+      onClick: () => {
+        setAlbumsData(payload);
+      },
+    },
+    {
+      label: "by year",
+      onClick: () => {
+        const allYears = payload
+          .reduce<Memories>((acc, curr) => {
+            for (const photo of curr.photos) {
+              if (photo.date) {
+                const year = photo.date.split("/")[2];
+
+                if (!acc.find((item) => item.name === year)) {
+                  const album: Memory = {
+                    id: year,
+                    name: year,
+                    photos: [],
+                    dark: false,
+                  };
+
+                  acc.push(album);
+                }
+              }
+            }
+
+            return acc;
+          }, [])
+          .sort((a, b) => Number.parseInt(a.name) - Number.parseInt(b.name));
+
+        const byYear = payload.reduce((acc, album) => {
+          for (const photo of album.photos) {
+            if (photo.date) {
+              const year = photo.date.split("/")[2];
+              const index = acc.findIndex((item) => item.name === year);
+              acc[index].photos.push(photo);
+            }
+          }
+
+          return acc;
+        }, allYears);
+
+        setAlbumsData(byYear);
+      },
+    },
+    {
+      label: "by country",
+      onClick: () => {
+        const allCountries = payload
+          .reduce<Memories>((acc, album) => {
+            for (const photo of album.photos) {
+              if (photo.location) {
+                const country = photo.location.split(",")[1].trim();
+                const index = acc.findIndex((item) => item.name === country);
+                if (index === -1) {
+                  const countryAlbum: Memory = {
+                    id: country,
+                    name: country,
+                    photos: [],
+                    dark: false,
+                  };
+
+                  acc.push(countryAlbum);
+                }
+              }
+            }
+            return acc;
+          }, [])
+          .sort((a, b) => a.name.localeCompare(b.name));
+
+        const byCountry = payload.reduce((acc, album) => {
+          for (const photo of album.photos) {
+            if (photo.location) {
+              const country = photo.location.split(",")[1].trim();
+              const index = acc.findIndex((item) => item.name === country);
+              acc[index].photos.push(photo);
+            }
+          }
+
+          return acc;
+        }, allCountries);
+
+        setAlbumsData(byCountry);
+      },
+    },
+  ];
+
   return (
     <Provider>
-      <ListView>
-        {payload.map((item, index) => {
+      <ListView payload={albumsData}>
+        {albumsData.map((item, index) => {
           return (
             <Album
               key={item.id}
@@ -28,7 +122,34 @@ export default function Home() {
           );
         })}
 
-        <GridView />
+        <GridView payload={albumsData}>
+          <div className="fixed bottom-4.5 left-16 z-30 flex gap-2">
+            {menu.map((item, index) => {
+              return (
+                <button
+                  key={item.label}
+                  className="text-neutral-500 text-sm font-display cursor-pointer hover:text-neutral-900 transition-colors flex items-center gap-2 ml-2 data-[selected='true']:text-neutral-900"
+                  type="button"
+                  data-selected={selectedAlbumId === index}
+                  onClick={() => {
+                    setSelectedAlbumId(index);
+                    item.onClick();
+                  }}
+                >
+                  {selectedAlbumId === index ? (
+                    <motion.span
+                      className="w-1 h-1 inline-block rounded-full bg-neutral-500"
+                      layoutId="sort-button"
+                    />
+                  ) : (
+                    <span className="w-1 h-1 inline-block rounded-full bg-white" />
+                  )}
+                  {item.label}
+                </button>
+              );
+            })}
+          </div>
+        </GridView>
       </ListView>
 
       <Toggle />

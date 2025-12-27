@@ -1,18 +1,17 @@
 export interface Photo {
   id: number;
-  date: string;
-  location: string;
-  filename: string;
-  format: "portrait" | "landscape";
+  date?: string;
+  location?: string;
+  filename?: string;
+  format: string;
   cover?: boolean;
 }
 
 export interface Memory {
-  id: number;
+  id: number | string;
   name: string;
   dark: boolean;
   photos: Photo[];
-  titlePosition: "string";
 }
 
 export type Memories = Memory[];

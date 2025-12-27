@@ -1,13 +1,16 @@
 "use client";
 
-import payload from "@/data.json";
 import { cn } from "@/utils/classname";
 import { formatDate } from "@/utils/date";
+import type { Memories } from "@/utils/types";
 import { AnimatePresence, motion } from "motion/react";
 import React from "react";
 import { context } from "./context";
 
-export const GridView = () => {
+export const GridView = ({
+  payload,
+  children,
+}: { payload: Memories; children: React.ReactNode }) => {
   const { layout, setLayout, clickedId } = React.useContext(context);
   const [hasInteracted, setHasInteracted] = React.useState(false);
 
@@ -36,6 +39,7 @@ export const GridView = () => {
 
   return (
     <>
+      {children}
       <AnimatePresence initial={false}>
         {layout === "grid" && (
           <motion.div
@@ -47,7 +51,8 @@ export const GridView = () => {
         )}
       </AnimatePresence>
 
-      <div
+      <motion.div
+        layout
         ref={() => {
           // Send message
           const event = new Event("grid-loaded");
@@ -91,7 +96,8 @@ export const GridView = () => {
 
           return (
             <React.Fragment key={album.id}>
-              <div
+              <motion.div
+                layout
                 style={
                   {
                     "--color": `var(--color-${album.id})`,
@@ -135,7 +141,7 @@ export const GridView = () => {
                     </motion.h2>
                   )}
                 </AnimatePresence>
-              </div>
+              </motion.div>
               <div className="flex flex-wrap gap-4 col-span-3">
                 {album.photos.map((photo, index) => {
                   return (
@@ -145,7 +151,8 @@ export const GridView = () => {
                           <motion.img
                             layoutDependency={layout}
                             id={`vertical-${photo.filename}`}
-                            layoutId={photo.filename}
+                            layoutId={photo.id.toString()}
+                            layout
                             width={photo.format === "landscape" ? 1024 : 1024}
                             height={photo.format === "landscape" ? 1536 : 1536}
                             onClick={() => {
@@ -199,7 +206,7 @@ export const GridView = () => {
             </React.Fragment>
           );
         })}
-      </div>
+      </motion.div>
     </>
   );
 };

@@ -1,6 +1,5 @@
 "use client";
 
-import data from "@/data.json";
 import { useIsSafari } from "@/utils/browser";
 import { cn } from "@/utils/classname";
 import type { Memories } from "@/utils/types";
@@ -15,12 +14,12 @@ import {
 import * as React from "react";
 import { context } from "./context";
 
-const payload = data as Memories;
-
 export const ListView = ({
   children,
+  payload,
 }: {
   children: React.ReactNode;
+  payload: Memories;
 }) => {
   const contentRef = React.useRef<HTMLDivElement>(null);
   const trackRef = React.useRef<HTMLDivElement>(null);
@@ -50,6 +49,10 @@ export const ListView = ({
   const [albumSizes, setAlbumSizes] = React.useState<Array<[number, number]>>(
     new Array(payload.length).fill([0, 0]),
   );
+
+  React.useEffect(() => {
+    setAlbumSizes(new Array(payload.length).fill([0, 0]));
+  }, [payload]);
 
   const updateThumbSizeAndPosition = React.useCallback(() => {
     if (!contentRef.current || !trackRef.current) {
@@ -354,33 +357,39 @@ export const ListView = ({
             }
           }}
         >
-          {payload.map((album, index) => (
-            <TimelineItem
-              key={album.id}
-              flexRatio={albumSizes[index][0]}
-              thumbWidth={thumbWidth}
-              thumbPosition={thumbPosition}
-              startOffset={albumSizes[index][1]}
-              trackWidth={trackRef.current?.clientWidth || 0}
-              scrollWidth={scrollWidth}
-              id={album.id}
-              isDragging={isDragging}
-              isHovering={isHovering}
-              isDark={album.dark}
-              isLast={index === payload.length - 1}
-              moveTop={moveTop}
-              moveLeft={moveLeft}
-              height={handlerHeight}
-              onThumbMouseEnter={() => {
-                handlerHeight.set(THUMB_SIZE_STATE.DRAG);
-              }}
-              onThumbMouseLeave={() => {
-                if (!isDragging) {
-                  handlerHeight.set(THUMB_SIZE_STATE.ACTIVE);
-                }
-              }}
-            />
-          ))}
+          {payload.map((album, index) => {
+            if (!albumSizes[index]?.[0]) {
+              return null;
+            }
+
+            return (
+              <TimelineItem
+                key={album.id}
+                flexRatio={albumSizes[index][0]}
+                thumbWidth={thumbWidth}
+                thumbPosition={thumbPosition}
+                startOffset={albumSizes[index][1]}
+                trackWidth={trackRef.current?.clientWidth || 0}
+                scrollWidth={scrollWidth}
+                id={album.id}
+                isDragging={isDragging}
+                isHovering={isHovering}
+                isDark={album.dark}
+                isLast={index === payload.length - 1}
+                moveTop={moveTop}
+                moveLeft={moveLeft}
+                height={handlerHeight}
+                onThumbMouseEnter={() => {
+                  handlerHeight.set(THUMB_SIZE_STATE.DRAG);
+                }}
+                onThumbMouseLeave={() => {
+                  if (!isDragging) {
+                    handlerHeight.set(THUMB_SIZE_STATE.ACTIVE);
+                  }
+                }}
+              />
+            );
+          })}
         </div>
 
         <div className={cn("w-7 h-7 order-first pointer-events-none")} />
