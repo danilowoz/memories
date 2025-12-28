@@ -123,7 +123,7 @@ export default function Home() {
         })}
 
         <GridView payload={albumsData}>
-          <div className="fixed bottom-[22px] left-16 z-30 flex gap-2">
+          <div className="fixed bottom-[22px] left-20 z-30 flex gap-6">
             {menu.map((item, index) => {
               return (
                 <button

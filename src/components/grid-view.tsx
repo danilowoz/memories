@@ -66,7 +66,7 @@ export const GridView = ({
           updateFirstVisible();
         },
         {
-          rootMargin: "-30px 0px -100% 0px",
+          rootMargin: "-20px 0px -100% 0px",
           threshold: [0],
         },
       );
@@ -75,7 +75,6 @@ export const GridView = ({
       observers.push(observer);
     }
 
-
     return () => {
       for (const observer of observers) {
         observer.disconnect();
@@ -83,7 +82,6 @@ export const GridView = ({
 
       visibilityMap.clear();
     };
-    
   }, [payload]);
 
   return (
