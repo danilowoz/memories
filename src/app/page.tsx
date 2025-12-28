@@ -8,7 +8,6 @@ import { Toggle } from "@/components/toggle";
 import payload from "@/data.json";
 import { cn } from "@/utils/classname";
 import type { Memories, Memory, Photo } from "@/utils/types";
-import { motion } from "motion/react";
 import React from "react";
 import { ListView } from "../components/list-view";
 
@@ -198,14 +197,7 @@ const Album = ({
       </div>
 
       {photos.map((item, index) => (
-        <motion.figure
-          initial={{ x: 0, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          transition={{
-            ease: "easeOut",
-            delay: 0.6,
-            duration: 0.6,
-          }}
+        <figure
           key={item.id}
           className={cn("md:flex", {
             "md:pl-10": index === 0,
@@ -220,7 +212,7 @@ const Album = ({
             dark={dark}
             format={item.format}
           />
-        </motion.figure>
+        </figure>
       ))}
     </div>
   );

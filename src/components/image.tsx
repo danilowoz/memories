@@ -32,7 +32,12 @@ export const Image = ({
 
   return (
     <>
-      <div className="mt-6 pb-22 md:px-36">
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: layout === "list" ? 1 : 0 }}
+        transition={{ duration: layout === "list" ? 0 : 10 }}
+        className="mt-6 pb-22 md:px-36"
+      >
         <MotionImage
           layoutDependency={layout}
           id={`horizontal-${src}`}
@@ -102,7 +107,7 @@ export const Image = ({
             </motion.figcaption>
           )}
         </AnimatePresence>
-      </div>
+      </motion.div>
     </>
   );
 };
