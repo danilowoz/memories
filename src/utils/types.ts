@@ -1,8 +1,8 @@
 export interface Photo {
   id: number;
-  date?: string;
-  location?: string;
-  filename?: string;
+  date: string;
+  location: string;
+  filename: string;
   format: string;
   cover?: boolean;
 }

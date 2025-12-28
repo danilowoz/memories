@@ -1,5 +1,6 @@
 "use client";
 
+import { COLORS } from "@/styles/colors";
 import { useIsSafari } from "@/utils/browser";
 import { cn } from "@/utils/classname";
 import type { Memories } from "@/utils/types";
@@ -135,7 +136,7 @@ export const ListView = ({
         return [item.scrollWidth / window.innerWidth, startOffset];
       }),
     );
-  }, []);
+  }, [payload]);
 
   const updateBodyHeight = React.useCallback(() => {
     const smallScreen = window.innerWidth < 768;
@@ -371,7 +372,7 @@ export const ListView = ({
                 startOffset={albumSizes[index][1]}
                 trackWidth={trackRef.current?.clientWidth || 0}
                 scrollWidth={scrollWidth}
-                id={album.id}
+                albumIndex={index % 3}
                 isDragging={isDragging}
                 isHovering={isHovering}
                 isDark={album.dark}
@@ -405,7 +406,7 @@ const TimelineItem = ({
   startOffset,
   trackWidth,
   scrollWidth,
-  id,
+  albumIndex,
   isDragging,
   isHovering,
   isDark,
@@ -422,7 +423,7 @@ const TimelineItem = ({
   startOffset: number;
   trackWidth: number;
   scrollWidth: number;
-  id: number;
+  albumIndex: number;
   isDragging: boolean;
   isHovering: boolean;
   isDark: boolean;
@@ -485,7 +486,7 @@ const TimelineItem = ({
             height,
             width: `${thumbWidth}px`,
             left: relativePosition,
-            backgroundColor: `var(--color-${id})`,
+            backgroundColor: COLORS[albumIndex % COLORS.length],
             y: moveTop,
             x: moveLeft,
             scaleX: isDragging ? undefined : scaleX,

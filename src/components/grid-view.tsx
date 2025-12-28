@@ -37,9 +37,69 @@ export const GridView = ({
     setLayout("list");
   }
 
+  React.useEffect(() => {
+    const elements = document.querySelectorAll(".md\\:sticky");
+    const observers: IntersectionObserver[] = [];
+    const visibilityMap = new Map<Element, boolean>();
+
+    const updateFirstVisible = () => {
+      for (const el of elements) {
+        el.classList.remove("text-neutral-900");
+      }
+
+      for (const element of elements) {
+        if (visibilityMap.get(element)) {
+          element.classList.add("text-neutral-900");
+          break;
+        }
+      }
+    };
+
+    for (const element of elements) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            const isVisible = entry.isIntersecting;
+            visibilityMap.set(entry.target, isVisible);
+          }
+
+          updateFirstVisible();
+        },
+        {
+          rootMargin: "-30px 0px -100% 0px",
+          threshold: [0],
+        },
+      );
+
+      observer.observe(element);
+      observers.push(observer);
+    }
+
+
+    return () => {
+      for (const observer of observers) {
+        observer.disconnect();
+      }
+
+      visibilityMap.clear();
+    };
+    
+  }, [payload]);
+
   return (
     <>
-      {children}
+      <AnimatePresence initial={false}>
+        {layout === "grid" && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            {children}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <AnimatePresence initial={false}>
         {layout === "grid" && (
           <motion.div
@@ -51,8 +111,7 @@ export const GridView = ({
         )}
       </AnimatePresence>
 
-      <motion.div
-        layout
+      <div
         ref={() => {
           // Send message
           const event = new Event("grid-loaded");
@@ -88,7 +147,7 @@ export const GridView = ({
           },
         )}
       >
-        {payload.map((album) => {
+        {payload.map((album, albumIndex) => {
           const indexClickedId = Math.max(
             album.photos.findIndex((p) => p.filename === clickedId),
             hasInteracted ? 0 : -1,
@@ -96,32 +155,20 @@ export const GridView = ({
 
           return (
             <React.Fragment key={album.id}>
-              <motion.div
-                layout
-                style={
-                  {
-                    "--color": `var(--color-${album.id})`,
-                  } as React.CSSProperties
-                }
-              >
+              <div>
                 <AnimatePresence>
                   {layout === "grid" && (
-                    <motion.h2
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
+                    <h2
                       className={cn(
-                        "text-lg font-display text-neutral-900",
+                        "text-lg font-display text-neutral-400 hover:text-neutral-900",
                         "w-full flex gap-4 items-center md:inline-block md:w-auto p-4 md:p-0",
-                        "md:sticky md:top-0 md:aspect-square md:hover:text-(--color) md:transition-colors md:cursor-pointer md:m-0 md:-rotate-90 md:translate-x-5.5",
+                        "md:sticky md:top-0 md:aspect-square md:transition-colors md:cursor-pointer md:m-0 md:-rotate-90 md:translate-x-5.5",
+                        albumIndex === 0 ? "text-neutral-900" : "",
                       )}
                       onClick={() => {
-                        handleImageClick(`horizontal-${album.id}`);
+                        handleImageClick(`horizontal-${albumIndex}`);
                       }}
                       id={`vertical-${album.id}`}
-                      whileInView={{
-                        opacity: 1,
-                      }}
                     >
                       <svg
                         width="371"
@@ -138,10 +185,10 @@ export const GridView = ({
                       </svg>
 
                       {album.name}
-                    </motion.h2>
+                    </h2>
                   )}
                 </AnimatePresence>
-              </motion.div>
+              </div>
               <div className="flex flex-wrap gap-4 col-span-3">
                 {album.photos.map((photo, index) => {
                   return (
@@ -151,8 +198,7 @@ export const GridView = ({
                           <motion.img
                             layoutDependency={layout}
                             id={`vertical-${photo.filename}`}
-                            layoutId={photo.id.toString()}
-                            layout
+                            layoutId={photo.filename}
                             width={photo.format === "landscape" ? 1024 : 1024}
                             height={photo.format === "landscape" ? 1536 : 1536}
                             onClick={() => {
@@ -206,7 +252,7 @@ export const GridView = ({
             </React.Fragment>
           );
         })}
-      </motion.div>
+      </div>
     </>
   );
 };

@@ -24,7 +24,7 @@ export const Image = ({
   location: string;
   date: string;
   dark: boolean;
-  format: "landscape" | "portrait";
+  format: string;
 }) => {
   const { setLayout, layout, setEnableDarkMode, setClickedId } =
     React.useContext(context);

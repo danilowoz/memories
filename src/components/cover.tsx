@@ -1,16 +1,17 @@
 "use client";
 
+import { COLORS } from "@/styles/colors";
 import { useIsSafari } from "@/utils/browser";
 import { motion, useTransform } from "motion/react";
 import React from "react";
 import { context } from "./context";
 
 export const Cover = ({
-  coverId,
+  albumIndex,
   src,
   name,
 }: {
-  coverId: string | number;
+  albumIndex: number;
   src: string;
   name: string;
 }) => {
@@ -102,19 +103,19 @@ export const Cover = ({
         animate={{
           opacity: layout === "list" ? 1 : 0,
         }}
-        id={`horizontal-${coverId}`}
+        id={`horizontal-${albumIndex}`}
         className="absolute inset-0 md:inset-6 md:bottom-16 md:rounded bg-center bg-cover saturate-60"
         ref={ref}
       />
       <motion.div
-        style={{ backgroundColor: "var(--color)" }}
+        style={{ backgroundColor: COLORS[albumIndex % COLORS.length] }}
         className="absolute inset-0 top-0 md:inset-6 md:bottom-16 opacity-70 md:rounded cursor-pointer"
         initial={{
-          opacity: layout === "list" ? 0.3 : 0,
+          opacity: layout === "list" ? 0.5 : 0,
           filter: "saturate(50%)",
         }}
         animate={{
-          opacity: layout === "list" ? 0.3 : 0,
+          opacity: layout === "list" ? 0.5 : 0,
           filter: "saturate(100%)",
         }}
         transition={{
@@ -125,7 +126,7 @@ export const Cover = ({
           const controller = new AbortController();
           const readMessage = () => {
             window.dispatchEvent(
-              new CustomEvent("image-clicked", { detail: coverId }),
+              new CustomEvent("image-clicked", { detail: albumIndex }),
             );
 
             controller.abort();

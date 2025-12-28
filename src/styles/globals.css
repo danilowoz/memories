@@ -5,10 +5,6 @@
 :root {
   --saturation: 40%;
   --lightness: 40%;
-
-  --color-1: hsl(126, var(--saturation), var(--lightness));
-  --color-2: hsl(0, var(--saturation), var(--lightness));
-  --color-3: oklch(70.7% 0.022 261.325);
 }
 
 *::selection {

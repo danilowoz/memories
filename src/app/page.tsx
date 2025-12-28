@@ -115,7 +115,7 @@ export default function Home() {
               key={item.id}
               name={item.name}
               photos={item.photos as Photo[]}
-              id={item.id}
+              albumIndex={index % 3}
               dark={item.dark}
               isLast={index === payload.length - 1}
             />
@@ -123,12 +123,12 @@ export default function Home() {
         })}
 
         <GridView payload={albumsData}>
-          <div className="fixed bottom-4.5 left-16 z-30 flex gap-2">
+          <div className="fixed bottom-[22px] left-16 z-30 flex gap-2">
             {menu.map((item, index) => {
               return (
                 <button
                   key={item.label}
-                  className="text-neutral-500 text-sm font-display cursor-pointer hover:text-neutral-900 transition-colors flex items-center gap-2 ml-2 data-[selected='true']:text-neutral-900"
+                  className="text-neutral-400 text-sm font-display cursor-pointer hover:text-neutral-900 transition-colors flex items-center gap-2 ml-2 data-[selected='true']:text-neutral-900"
                   type="button"
                   data-selected={selectedAlbumId === index}
                   onClick={() => {
@@ -136,14 +136,6 @@ export default function Home() {
                     item.onClick();
                   }}
                 >
-                  {selectedAlbumId === index ? (
-                    <motion.span
-                      className="w-1 h-1 inline-block rounded-full bg-neutral-500"
-                      layoutId="sort-button"
-                    />
-                  ) : (
-                    <span className="w-1 h-1 inline-block rounded-full bg-white" />
-                  )}
                   {item.label}
                 </button>
               );
@@ -160,17 +152,18 @@ export default function Home() {
 const Album = ({
   name,
   photos,
-  id,
+  albumIndex,
   dark,
   isLast,
 }: {
   name: string;
   photos: Photo[];
-  id: string | number;
+  albumIndex: number;
   dark: boolean;
   isLast: boolean;
 }) => {
   const coverPhoto = photos.find((photo) => photo.cover);
+  const randomPhoto = photos[Math.floor(Math.random() * photos.length)];
 
   return (
     <div
@@ -181,15 +174,12 @@ const Album = ({
         },
       )}
     >
-      <div
-        className="item min-h-[6em] md:min-w-[calc(100vh*1.4)] md:min-h-screen flex relative overflow-hidden"
-        style={
-          {
-            "--color": `var(--color-${id})`,
-          } as React.CSSProperties
-        }
-      >
-        <Cover coverId={id} name={name} src={coverPhoto?.filename ?? ""} />
+      <div className="item min-h-[6em] md:min-w-[calc(100vh*1.4)] md:min-h-screen flex relative overflow-hidden">
+        <Cover
+          albumIndex={albumIndex}
+          name={name}
+          src={coverPhoto?.filename ?? randomPhoto.filename ?? ""}
+        />
       </div>
 
       {photos.map((item, index) => (
