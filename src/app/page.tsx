@@ -18,6 +18,21 @@ export default function Home() {
 
   const menu = [
     {
+      label: "shuffle",
+      onClick: () => {
+        setAlbumsData((prev) => {
+          return prev
+            .map((item) => {
+              return {
+                ...item,
+                photos: item.photos.sort(() => Math.random() - 0.5),
+              };
+            })
+            .sort(() => Math.random() - 0.5);
+        });
+      },
+    },
+    {
       label: "by memory",
       onClick: () => {
         setAlbumsData(payload);

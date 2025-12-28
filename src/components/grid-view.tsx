@@ -154,7 +154,7 @@ export const GridView = ({
           return (
             <React.Fragment key={album.id}>
               <div>
-                <AnimatePresence>
+                <AnimatePresence initial={false}>
                   {layout === "grid" && (
                     <h2
                       className={cn(
@@ -190,60 +190,48 @@ export const GridView = ({
               <div className="flex flex-wrap gap-4 col-span-3">
                 {album.photos.map((photo, index) => {
                   return (
-                    <React.Fragment key={photo.id}>
-                      <AnimatePresence initial={false} key={photo.id}>
-                        {layout === "grid" && (
-                          <motion.img
-                            layoutDependency={layout}
-                            id={`vertical-${photo.filename}`}
-                            layoutId={photo.filename}
-                            width={photo.format === "landscape" ? 1024 : 1024}
-                            height={photo.format === "landscape" ? 1536 : 1536}
-                            onClick={() => {
-                              handleImageClick(`horizontal-${photo.filename}`);
-                            }}
-                            transition={{
+                    <AnimatePresence initial={false} key={photo.filename}>
+                      {layout === "grid" && (
+                        <motion.img
+                          layoutDependency={[layout, payload]}
+                          id={`vertical-${photo.filename}`}
+                          layoutId={photo.filename}
+                          width={photo.format === "landscape" ? 1024 : 1024}
+                          height={photo.format === "landscape" ? 1536 : 1536}
+                          onClick={() => {
+                            handleImageClick(`horizontal-${photo.filename}`);
+                          }}
+                          transition={{
+                            type: "spring",
+                            bounce: 0,
+                            duration: 10,
+                            // duration: hasInteracted ? 0.4 : 0,
+                          }}
+                          style={{
+                            zIndex: indexClickedId === index ? 10 : 1,
+                          }}
+                          className={cn(
+                            "md:h-72 md:w-auto cursor-pointer md:rounded-xs relative pointer-events-none md:pointer-events-auto will-change-transform",
+                            {
+                              "md:w-[432px]": photo.format === "landscape",
+                            },
+                          )}
+                          src={photo.filename}
+                          alt={photo.filename}
+                          whileHover={{
+                            scale: 1.02,
+                            transition: {
+                              duration: 0.6,
                               type: "spring",
                               bounce: 0,
-                              duration: hasInteracted ? 0.4 : 0,
-                            }}
-                            style={{
-                              zIndex: indexClickedId === index ? 10 : 1,
-                            }}
-                            className={cn(
-                              "md:h-72 md:w-auto cursor-pointer md:rounded-xs relative pointer-events-none md:pointer-events-auto will-change-transform",
-                              {
-                                "md:w-[432px]": photo.format === "landscape",
-                              },
-                            )}
-                            src={photo.filename}
-                            alt={photo.filename}
-                            whileHover={{
-                              scale: 1.02,
-                              transition: {
-                                duration: 0.6,
-                                type: "spring",
-                                bounce: 0,
-                              },
-                            }}
-                            onAnimationComplete={() => {
-                              setHasInteracted(true);
-                            }}
-                          />
-                        )}
-                      </AnimatePresence>
-
-                      {"location" in photo && photo.date && (
-                        <figcaption className="md:hidden p-4 pb-12 flex gap-2">
-                          <p className="text-neutral-900 m-0 text-sm font-display">
-                            {photo.location}
-                          </p>
-                          <p className="text-neutral-900/50 m-0 text-sm">
-                            {formatDate(photo.date)}
-                          </p>
-                        </figcaption>
+                            },
+                          }}
+                          onAnimationComplete={() => {
+                            setHasInteracted(true);
+                          }}
+                        />
                       )}
-                    </React.Fragment>
+                    </AnimatePresence>
                   );
                 })}
               </div>
