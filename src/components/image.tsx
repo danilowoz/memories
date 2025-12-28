@@ -32,26 +32,7 @@ export const Image = ({
 
   return (
     <>
-      <motion.div
-        key={safari ? "safari" : "other"}
-        className="mt-6 pb-22 md:px-36"
-        initial={safari ? undefined : { filter: "blur(20px)", opacity: 0.2 }}
-        whileInView={{
-          filter: "blur(0px)",
-          opacity: layout === "list" ? 1 : 0,
-        }}
-        transition={
-          safari
-            ? undefined
-            : {
-                type: "spring",
-                duration: 0.3,
-                bounce: 0,
-                delay: layout === "list" ? 0 : 1,
-              }
-        }
-        viewport={safari ? undefined : { amount: 0.1 }}
-      >
+      <div className="mt-6 pb-22 md:px-36">
         <MotionImage
           layoutDependency={layout}
           id={`horizontal-${src}`}
@@ -107,11 +88,13 @@ export const Image = ({
               </motion.p>
               <motion.p
                 initial={safari ? undefined : { opacity: 0, y: -4 }}
-                whileInView={safari ? undefined : { opacity: 1, y: 0 }}
+                whileInView={
+                  safari ? undefined : { opacity: dark ? 0.6 : 1, y: 0 }
+                }
                 transition={{ type: "spring", duration: 0.5, bounce: 0 }}
                 viewport={safari ? undefined : { amount: 0.5 }}
                 className={cn("text-neutral-900/50 m-0 text-sm", {
-                  "text-white opacity-50": dark,
+                  "text-white opacity-20": dark,
                 })}
               >
                 {formatDate(date)}
@@ -119,7 +102,7 @@ export const Image = ({
             </motion.figcaption>
           )}
         </AnimatePresence>
-      </motion.div>
+      </div>
     </>
   );
 };

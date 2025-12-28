@@ -309,7 +309,7 @@ export const ListView = ({
       className={cn(
         "h-screen w-screen md:fixed md:inset-0",
         "flex flex-col md:flex-row md:flex-nowrap md:overflow-hidden gap-12 md:gap-0",
-        "bg-white md:has-data-dark:bg-black transition-colors duration-500",
+        "md:has-data-dark:bg-black transition-colors duration-500",
       )}
     >
       {children}
