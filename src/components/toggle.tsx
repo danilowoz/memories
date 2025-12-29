@@ -17,7 +17,7 @@ export const Toggle = () => {
   };
 
   return (
-    <div className="hidden md:flex fixed bottom-0 left-6 pt- pb-5 z-50 to-white to-50% from-transparent bg-linear-to-b">
+    <div className="hidden md:flex fixed bottom-0 left-6 pt- pb-5 z-50 to-white to-50% from-transparent bg-linear-to-b dark:bg-none">
       <motion.button
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}

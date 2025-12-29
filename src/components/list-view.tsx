@@ -458,15 +458,17 @@ const TimelineItem = ({
     if (isDark && layout === "list") {
       return relativePosition.on("change", (value) => {
         setEnableDarkMode(value > -40);
-
-        if (value > -40) {
-          document.body.classList.add("dark");
-        } else {
-          document.body.classList.remove("dark");
-        }
       });
     }
   }, [isDark, relativePosition, setEnableDarkMode, layout]);
+
+  React.useEffect(() => {
+    if (enableDarkMode) {
+      document.body.classList.add("dark");
+    } else {
+      document.body.classList.remove("dark");
+    }
+  }, [enableDarkMode]);
 
   return (
     <>
