@@ -2,11 +2,13 @@
 
 import originalPayload from "@/data.json";
 import { cn } from "@/utils/classname";
-import { formatDate } from "@/utils/date";
 import type { Memories, Memory } from "@/utils/types";
 import { AnimatePresence, LayoutGroup, motion } from "motion/react";
+import NextjsImage from "next/image";
 import React from "react";
 import { context } from "./context";
+
+const MotionImage = motion.create(NextjsImage);
 
 export const GridView = ({
   payload,
@@ -316,7 +318,7 @@ export const GridView = ({
                     return (
                       <motion.div key={photo.filename} layout="position">
                         {layout === "grid" && (
-                          <motion.img
+                          <MotionImage
                             layoutDependency={[layout, payload]}
                             id={`vertical-${photo.filename}`}
                             layoutId={photo.filename}
@@ -350,6 +352,7 @@ export const GridView = ({
                                 bounce: 0,
                               },
                             }}
+                            quality={60}
                             onAnimationComplete={() => {
                               setHasInteracted(true);
                             }}
