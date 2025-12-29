@@ -33,13 +33,14 @@ export const Image = ({
   return (
     <>
       <motion.div
+        layoutDependency={[layout]}
         initial={{ opacity: 0 }}
         animate={{ opacity: layout === "list" ? 1 : 0 }}
         transition={{ duration: layout === "list" ? 0 : 10 }}
         className="mt-6 pb-22 md:px-36"
       >
         <MotionImage
-          layoutDependency={layout}
+          layoutDependency={[layout]}
           id={`horizontal-${src}`}
           layoutId={src}
           width={format === "landscape" ? 1024 : 1024}

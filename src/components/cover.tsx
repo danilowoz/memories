@@ -41,7 +41,7 @@ export const Cover = ({
 
     return (
       <>
-        {leftSide && <div className="opacity-40">Memories</div>}
+        {leftSide && <div className="opacity-60">Memories</div>}
         <motion.div
           className="text-white opacity-20 whitespace-pre"
           initial={safari ? undefined : "initial"}
@@ -88,7 +88,7 @@ export const Cover = ({
                   </motion.span>
                 ))}
         </motion.div>
-        {!leftSide && <div className="opacity-40">Memories</div>}
+        {!leftSide && <div className="opacity-60">Memories</div>}
       </>
     );
   };
@@ -104,18 +104,18 @@ export const Cover = ({
           opacity: layout === "list" ? 1 : 0,
         }}
         id={`horizontal-${albumIndex}`}
-        className="absolute inset-0 md:inset-6 md:bottom-16 md:rounded bg-center bg-cover saturate-60"
+        className="absolute inset-0 md:inset-6 md:bottom-16 md:rounded bg-center bg-cover saturate-40 brightness-5-0"
         ref={ref}
       />
       <motion.div
         style={{ backgroundColor: COLORS[albumIndex % COLORS.length] }}
         className="absolute inset-0 top-0 md:inset-6 md:bottom-16 opacity-70 md:rounded cursor-pointer"
         initial={{
-          opacity: layout === "list" ? 0.5 : 0,
+          opacity: layout === "list" ? 0.4 : 0,
           filter: "saturate(50%)",
         }}
         animate={{
-          opacity: layout === "list" ? 0.5 : 0,
+          opacity: layout === "list" ? 0.4 : 0,
           filter: "saturate(100%)",
         }}
         transition={{

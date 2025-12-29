@@ -1,18 +1,111 @@
 "use client";
 
+import originalPayload from "@/data.json";
 import { cn } from "@/utils/classname";
 import { formatDate } from "@/utils/date";
-import type { Memories } from "@/utils/types";
+import type { Memories, Memory } from "@/utils/types";
 import { AnimatePresence, LayoutGroup, motion } from "motion/react";
 import React from "react";
 import { context } from "./context";
 
 export const GridView = ({
   payload,
-  children,
-}: { payload: Memories; children: React.ReactNode }) => {
+  setAlbumsData,
+}: { payload: Memories; setAlbumsData: (data: Memories) => void }) => {
   const { layout, setLayout, clickedId } = React.useContext(context);
   const [hasInteracted, setHasInteracted] = React.useState(false);
+  const [selectedAlbumId, setSelectedAlbumId] = React.useState(0);
+  const containerRef = React.useRef<HTMLDivElement>(null);
+
+  const menu = [
+    {
+      label: "by memory",
+      onClick: () => {
+        setAlbumsData(originalPayload);
+      },
+    },
+    {
+      label: "by year",
+      onClick: () => {
+        const allYears = payload
+          .reduce<Memories>((acc, curr) => {
+            for (const photo of curr.photos) {
+              if (photo.date) {
+                const year = photo.date.split("/")[2];
+
+                if (!acc.find((item) => item.name === year)) {
+                  const album: Memory = {
+                    id: year,
+                    name: year,
+                    photos: [],
+                    dark: false,
+                  };
+
+                  acc.push(album);
+                }
+              }
+            }
+
+            return acc;
+          }, [])
+          .sort((a, b) => Number.parseInt(a.name) - Number.parseInt(b.name));
+
+        const byYear = payload.reduce((acc, album) => {
+          for (const photo of album.photos) {
+            if (photo.date) {
+              const year = photo.date.split("/")[2];
+              const index = acc.findIndex((item) => item.name === year);
+              acc[index].photos.push(photo);
+            }
+          }
+
+          return acc;
+        }, allYears);
+
+        setAlbumsData(byYear);
+      },
+    },
+    {
+      label: "by country",
+      onClick: () => {
+        const allCountries = payload
+          .reduce<Memories>((acc, album) => {
+            for (const photo of album.photos) {
+              if (photo.location) {
+                const country = photo.location.split(",")[1].trim();
+                const index = acc.findIndex((item) => item.name === country);
+                if (index === -1) {
+                  const countryAlbum: Memory = {
+                    id: country,
+                    name: country,
+                    photos: [],
+                    dark: false,
+                  };
+
+                  acc.push(countryAlbum);
+                }
+              }
+            }
+            return acc;
+          }, [])
+          .sort((a, b) => a.name.localeCompare(b.name));
+
+        const byCountry = payload.reduce((acc, album) => {
+          for (const photo of album.photos) {
+            if (photo.location) {
+              const country = photo.location.split(",")[1].trim();
+              const index = acc.findIndex((item) => item.name === country);
+              acc[index].photos.push(photo);
+            }
+          }
+
+          return acc;
+        }, allCountries);
+
+        setAlbumsData(byCountry);
+      },
+    },
+  ];
 
   function handleImageClick(id: string) {
     const horizontalElementImage = document.getElementById(id);
@@ -93,7 +186,34 @@ export const GridView = ({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
-            {children}
+            <div
+              className={cn(
+                "fixed z-30 flex gap-6 whitespace-nowrap",
+                "bg-white bottom-5 left-1/2 -translate-1/2 px-6 py-2  rounded-full",
+                "md:bg-transparent md:bottom-[22px] md:left-20 md:translate-none md:p-0",
+              )}
+            >
+              {menu.map((item, index) => {
+                return (
+                  <button
+                    key={item.label}
+                    className="text-neutral-400 text-sm font-display cursor-pointer hover:text-neutral-900 transition-colors flex items-center gap-2 data-[selected='true']:text-neutral-900"
+                    type="button"
+                    data-selected={selectedAlbumId === index}
+                    onClick={() => {
+                      setSelectedAlbumId(index);
+                      item.onClick();
+                      containerRef.current?.scrollTo({
+                        top: 0,
+                        behavior: "smooth",
+                      });
+                    }}
+                  >
+                    {item.label}
+                  </button>
+                );
+              })}
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
@@ -111,6 +231,7 @@ export const GridView = ({
 
       <LayoutGroup>
         <motion.div
+          ref={containerRef}
           layout
           layoutDependency={[layout]}
           onLayoutMeasure={() => {
