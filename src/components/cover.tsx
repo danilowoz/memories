@@ -149,7 +149,7 @@ export const Cover = ({
           delay: 0.2,
           duration: 0.6,
         }}
-        className="text-[30px] md:p-40 font-heading md:text-4xl text-neutral-50 mix-blend-plus-lighter flex gap-1 relative m-auto pointer-events-none"
+        className="text-[30px] md:p-40 font-display md:text-4xl text-neutral-50 mix-blend-plus-lighter flex gap-1 relative m-auto pointer-events-none tracking-tight"
       >
         {renderTitle()}
       </motion.h1>

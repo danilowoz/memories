@@ -192,14 +192,14 @@ export const GridView = ({
               className={cn(
                 "fixed z-30 flex gap-6 whitespace-nowrap",
                 "bg-white bottom-5 left-1/2 -translate-1/2 px-6 py-2  rounded-full",
-                "md:bg-transparent md:bottom-[22px] md:left-20 md:translate-none md:p-0",
+                "md:bg-transparent md:bottom-5 md:left-20 md:translate-none md:p-0",
               )}
             >
               {menu.map((item, index) => {
                 return (
                   <button
                     key={item.label}
-                    className="text-neutral-400 text-sm font-display cursor-pointer hover:text-neutral-900 transition-colors flex items-center gap-2 data-[selected='true']:text-neutral-900"
+                    className="text-neutral-400 text-sm font-display cursor-pointer hover:text-neutral-900 transition-colors flex items-center gap-2 data-[selected='true']:text-neutral-900 capitalize tracking-wide"
                     type="button"
                     data-selected={selectedAlbumId === index}
                     onClick={() => {
@@ -284,7 +284,7 @@ export const GridView = ({
                     {layout === "grid" && (
                       <h2
                         className={cn(
-                          "text-lg font-display text-neutral-400 hover:text-neutral-900",
+                          "text-lg font-display text-neutral-400 hover:text-neutral-900 tracking-wider",
                           "w-full flex gap-4 items-center md:inline-block md:w-auto p-4 md:p-0",
                           "md:sticky md:top-0 md:aspect-square md:transition-colors md:cursor-pointer md:m-0 md:-rotate-90 md:translate-x-5.5",
                           albumIndex === 0 ? "text-neutral-900" : "",

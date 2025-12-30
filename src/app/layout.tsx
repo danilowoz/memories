@@ -1,17 +1,10 @@
 import "@/styles/globals.css";
 
-import { Instrument_Serif } from "next/font/google";
-import { Inter } from "next/font/google";
+import { Nunito_Sans } from "next/font/google";
 
-const heading = Instrument_Serif({
+const inter = Nunito_Sans({
   weight: "400",
-  variable: "--font-heading",
-  subsets: ["latin"],
-});
-
-const inter = Inter({
-  weight: "400",
-  variable: "--font-body",
+  variable: "--font-display",
   subsets: ["latin"],
 });
 
@@ -24,9 +17,7 @@ export default function RootLayout({
     <html lang="en">
       <title>Memories - Danilo Woznica</title>
       <link rel="icon" type="image/svg+xml" href="/icon.svg" />
-      <body className={`antialiased ${heading.variable} ${inter.variable}`}>
-        {children}
-      </body>
+      <body className={`antialiased ${inter.variable}`}>{children}</body>
     </html>
   );
 }
