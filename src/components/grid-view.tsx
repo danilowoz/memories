@@ -179,6 +179,26 @@ export const GridView = ({
     };
   }, [payload, layout]);
 
+  React.useEffect(() => {
+    const controller = new AbortController();
+
+    window.addEventListener(
+      "keydown",
+      (event) => {
+        if (event.code === "Escape") {
+          setLayout("grid");
+        }
+      },
+      {
+        signal: controller.signal,
+      },
+    );
+
+    return () => {
+      controller.abort();
+    };
+  }, []);
+
   return (
     <>
       <AnimatePresence initial={false}>
