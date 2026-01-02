@@ -1,8 +1,8 @@
 import "@/styles/globals.css";
 
-import { Nunito_Sans } from "next/font/google";
+import { Proza_Libre } from "next/font/google";
 
-const inter = Nunito_Sans({
+const inter = Proza_Libre({
   weight: "400",
   variable: "--font-display",
   subsets: ["latin"],

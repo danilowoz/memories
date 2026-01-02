@@ -37,6 +37,10 @@ export const Cover = ({
   });
 
   const renderTitle = () => {
+    if (!name.includes("Memories")) {
+      return <div className="opacity-40">{name}</div>;
+    }
+
     const leftSide = name.indexOf("Memories") === 0;
 
     return (
