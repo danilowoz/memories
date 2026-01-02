@@ -192,14 +192,14 @@ export const GridView = ({
               className={cn(
                 "fixed z-30 flex gap-6 whitespace-nowrap",
                 "bg-white bottom-5 left-1/2 -translate-1/2 px-6 py-2  rounded-full",
-                "md:bg-transparent md:bottom-5 md:left-20 md:translate-none md:p-0",
+                "md:bg-transparent md:bottom-[22px] md:left-20 md:translate-none md:p-0",
               )}
             >
               {menu.map((item, index) => {
                 return (
                   <button
                     key={item.label}
-                    className="text-neutral-400 text-sm font-display cursor-pointer hover:text-neutral-900 transition-colors flex items-center gap-2 data-[selected='true']:text-neutral-900 capitalize tracking-wide"
+                    className="text-neutral-400 text-sm cursor-pointer hover:text-neutral-900 transition-colors flex items-center gap-2 data-[selected='true']:text-neutral-900 capitalize"
                     type="button"
                     data-selected={selectedAlbumId === index}
                     onClick={() => {
