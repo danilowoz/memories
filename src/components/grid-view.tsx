@@ -14,7 +14,8 @@ export const GridView = ({
   payload,
   setAlbumsData,
 }: { payload: Memories; setAlbumsData: (data: Memories) => void }) => {
-  const { layout, setLayout, clickedId } = React.useContext(context);
+  const { layout, setLayout, clickedId, setEnableDarkMode } =
+    React.useContext(context);
   const [hasInteracted, setHasInteracted] = React.useState(false);
   const [selectedAlbumId, setSelectedAlbumId] = React.useState(0);
   const containerRef = React.useRef<HTMLDivElement>(null);
@@ -187,6 +188,7 @@ export const GridView = ({
       (event) => {
         if (event.code === "Escape") {
           setLayout("grid");
+          setEnableDarkMode(false);
         }
       },
       {
