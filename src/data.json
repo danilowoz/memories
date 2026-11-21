@@ -158,6 +158,48 @@
         "location": "Etosha National Park, Namibia",
         "filename": "/travel/163AFBB3-BDCD-4C34-A9B3-8B7BD9FC873D_1_201_a1.jpg",
         "format": "portrait"
+      },
+      {
+        "id": 39,
+        "date": "04/06/2026",
+        "location": "Sidi Bou Said, Tunisia",
+        "filename": "/travel/DSCF7639.jpg",
+        "format": "portrait"
+      },
+      {
+        "id": 40,
+        "date": "04/08/2026",
+        "location": "Oran, Algeria",
+        "filename": "/travel/DSCF7733.jpg",
+        "format": "portrait"
+      },
+      {
+        "id": 42,
+        "date": "09/15/2026",
+        "location": "Fairy Meadows, Pakistan",
+        "filename": "/travel/DSCF9745.jpg",
+        "format": "portrait"
+      },
+      {
+        "id": 43,
+        "date": "09/16/2026",
+        "location": "Fairy Meadows, Pakistan",
+        "filename": "/travel/DSCF9779.jpg",
+        "format": "portrait"
+      },
+      {
+        "id": 44,
+        "date": "09/17/2026",
+        "location": "Fairy Meadows, Pakistan",
+        "filename": "/travel/DSCF9803.jpg",
+        "format": "portrait"
+      },
+      {
+        "id": 45,
+        "date": "09/18/2026",
+        "location": "Karakoram Highway, Pakistan",
+        "filename": "/travel/DSCF0001.jpg",
+        "format": "portrait"
       }
     ]
   },
@@ -236,6 +278,27 @@
         "date": "03/22/2023",
         "location": "Havana, Cuba",
         "filename": "/her/000055_11.jpg",
+        "format": "portrait"
+      },
+      {
+        "id": 46,
+        "date": "04/05/2026",
+        "location": "Tunis, Tunisia",
+        "filename": "/her/DSCF7569.jpg",
+        "format": "portrait"
+      },
+      {
+        "id": 47,
+        "date": "09/18/2026",
+        "location": "Passu, Pakistan",
+        "filename": "/her/DSCF0098.jpg",
+        "format": "portrait"
+      },
+      {
+        "id": 49,
+        "date": "10/30/2026",
+        "location": "Porto, Portugal",
+        "filename": "/her/000060_1.jpg",
         "format": "portrait"
       }
     ]
