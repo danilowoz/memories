@@ -6,24 +6,28 @@
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
     "start": "next start",
+    "test": "node --test src/lib/layout.test.ts",
+    "images": "node scripts/generate-images.mjs",
     "lint": "biome lint --write <files>",
     "format": "biome format --write"
   },
   "dependencies": {
     "@tailwindcss/postcss": "^4.1.16",
     "clsx": "^2.1.1",
-    "motion": "^12.23.24",
     "next": "16.0.7",
     "react": "^19.2.1",
     "react-dom": "^19.2.1",
     "tailwind-merge": "^3.0.2",
-    "tailwindcss": "^4.1.16"
+    "tailwindcss": "^4.1.16",
+    "three": "^0.187.0"
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
     "@types/node": "^22.13.7",
     "@types/react": "^19.2.2",
     "@types/react-dom": "^19.2.2",
+    "@types/three": "^0.187.0",
+    "sharp": "^0.35.5",
     "typescript": "^5.9.3"
   }
 }
